@@ -1,13 +1,8 @@
 # cmd:  snakemake -s wipe_read_pairs.smk --use-conda --cores 2
 
-# workdir: "/scratch/tom/pauch/"
-
-SAMPLES = ["osteo-FS", "excerpt"]
+SAMPLES = ["sample", "excerpt"]
 print(SAMPLES)
 
-# import glob, os
-# SAMPLES = [os.path.splitext(os.path.splitext(os.path.basename(f))[0])[0] for f in glob.glob("data/*.fastq.gz")]
-# print(SAMPLES)
 
 rule all:
     input:
