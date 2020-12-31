@@ -1,4 +1,4 @@
-# cmd:  snakemake -s wipe_read_pairs.smk --use-conda --cores 2
+# cmd:  snakemake -s fix_wipe_pairs_reads.smk --use-conda --cores 2
 
 SAMPLES = ["sample", "excerpt"]
 print(SAMPLES)

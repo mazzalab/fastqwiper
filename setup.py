@@ -4,20 +4,22 @@ try:
     from importlib import util
 except:
     sys.stdout.write(
-        "\nIt seems that importlib library is not available on this machine. Please install pip (e.g. for Ubuntu, run 'sudo apt-get install python3-pip'.\n")
+        "\nIt seems that importlib library is not available on this machine. Please install pip (e.g. for Ubuntu, run "
+        "'sudo apt-get install python3-pip'.\n")
     sys.exit()
 
 import glob
 
 if util.find_spec("setuptools") is None:
     sys.stdout.write(
-        "\nIt seems that setuptools is not available on this machine. Please install pip (e.g. for Ubuntu, run 'sudo apt-get install python3-pip'.\n")
+        "\nIt seems that setuptools is not available on this machine. Please install pip (e.g. for Ubuntu, run "
+        "'sudo apt-get install python3-pip'.\n")
     sys.exit()
 
 from setuptools import setup, find_packages
 
-if sys.version_info <= (3, 9):
-    sys.exit('Sorry, Python < 3.9 is not supported')
+if sys.version_info <= (3, 7):
+    sys.exit('Sorry, Python < 3.7 is not supported')
 
 with open('README.md') as f:
     long_description = f.read()

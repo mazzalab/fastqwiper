@@ -1,7 +1,7 @@
 # FastqWiper
 A workflow to **recover** corrupted `fastq.gz` files, **drop** wrong lines and **remove** unpaired reads.
 
-* Compatibility: Python 3.9
+* Compatibility: Python >3.7
 * OS: Windows (partly), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Pypi: available soon
