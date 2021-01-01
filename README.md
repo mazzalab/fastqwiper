@@ -5,7 +5,7 @@ A workflow to **recover** corrupted `fastq.gz` files, **drop** wrong lines and *
 * OS: Windows (partly), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Pypi: available soon
-* Conda: available soon
+* Conda: https://anaconda.org/bfxcss/fastqwiper
 * Docker Hub: available soon
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
