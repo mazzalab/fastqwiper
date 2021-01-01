@@ -16,8 +16,10 @@ specified above.
 
 ### Anaconda or Miniconda
 Create and activate an empty Conda environment, if not already available.<br/>
-`$ conda create -n FastqWiper python=3.9`<br/>
-`$ conda activate FastqWiper`
+```
+$ conda create -n FastqWiper python=3.9
+$ conda activate FastqWiper
+```
 
 then<br/>
 `$ conda install -y -c bfxcss -c conda-forge fastqwiper`
@@ -26,7 +28,7 @@ then<br/>
 _available soon_
 
 
-###Snakemake
+### Snakemake
 To enable the use of preconfigured workflows, you need to install **Snakemake**. The 
 recommended way to install Snakemake is via Conda, because it enables **Snakemake** to 
 [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
@@ -37,8 +39,10 @@ installing [Mamba](https://github.com/mamba-org/mamba) as a drop-in replacement 
 
 and then creating and activating a clean environment as above:
 
-`$ mamba create -c conda-forge -c bioconda -n FastqWiper snakemake`<br/>
-`$ conda activate FastqWiper`
+```
+$ mamba create -c conda-forge -c bioconda -n FastqWiper snakemake
+$ conda activate FastqWiper
+```
 
 and finally:<br/>
 `conda install -y -c bfxcss -c conda-forge fastqwiper`

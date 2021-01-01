@@ -19,29 +19,29 @@ if util.find_spec("setuptools") is None:
 from setuptools import setup, find_packages
 
 if sys.version_info <= (3, 7):
-    sys.exit('Sorry, Python < 3.7 is not supported')
+    sys.exit('Sorry, Python < 3.8 is not supported')
 
 with open('README.md') as f:
     long_description = f.read()
 
 setup(
     name='fastqwiper',
-    version='0.1',
+    version='2021.0.1',
     author='Tommaso Mazza',
     author_email='bioinformatics@css-mendel.it',
     description="A workflow to recover corrupted fastq.gz files, skip uncomplaint reads and remove unpaired reads",
     url="https://github.com/mazzalab/fastqwiper",
     packages=find_packages(),
     include_package_data=True,
-    license='GPL3',
+    license='MIT',
     long_description=long_description,
     long_description_content_type='text/markdown',
     entry_points={
         'console_scripts': [
-            'fastqwiper = fastq_wiper.wiper:wipe_fastq'
+            'wiper = fastq_wiper.wiper:wipe_fastq'
         ]
     },
-    setup_requires=['numpy'],
+    # setup_requires=['numpy'],
     install_requires=[
         "setuptools",
         "colorama==0.4.4",

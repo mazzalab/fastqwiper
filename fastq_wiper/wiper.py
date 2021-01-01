@@ -44,9 +44,10 @@ def write_fastq_file(file_path: str):
 
 
 @click.command()
-@click.option("--fastq_in", help="The input FASTQ file")
-@click.option("--fastq_out", help="The wiped FASTQ file")
-@click.option("--log_frequency", type=click.INT, default=500000, help="The number of reads you want to print a status message")
+@click.option("--fastq_in", required=True, help="The input FASTQ file")
+@click.option("--fastq_out", required=True, help="The wiped FASTQ file")
+@click.option("--log_frequency", type=click.INT, default=500000,
+              help="The number of reads you want to print a status message")
 def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
     # region Variables for final report
     tot_lines: int = 0
