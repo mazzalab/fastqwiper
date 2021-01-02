@@ -1,0 +1,38 @@
+{% set data = load_setup_py_data(setup_file='../setup.py', from_recipe_dir=True) %}
+
+package:
+  name: fastqwiper
+  version: {{ data.get('version') }}
+
+#app:
+#  icon: icon_64x64.png
+  
+source:
+  path: C:\\projects\\fastqwiper\\fastqwiper_src
+
+build:
+  number: 0
+  entry_points:
+    - wiper = fastq_wiper.wiper:wipe_fastq
+ 
+requirements:
+  host:
+    - python ==3.8
+    - numpy x.x
+    
+  run:
+    - python ==3.8
+    - colorama ==0.4.4
+    - click ==7.1.2
+
+test:
+  imports:
+    - fastq_wiper
+  commands:
+    - wiper --help
+    
+about:
+  home: https://github.com/mazzalab/fastqwiper
+  summary: A package to wipe uncomplaint reads from FASTQ files
+  license: MIT
+  license_file: LICENSE.txt
