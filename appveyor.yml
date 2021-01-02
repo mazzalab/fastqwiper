@@ -84,7 +84,7 @@ artifacts:
 
 
 on_success:
-  - anaconda -t $CONDA_TOKEN upload -u bfxcss  .\\conda_dist\\win-64\\fastqwiper-2021.1.{build}-py38_0.tar.bz2
+  - anaconda -t $CONDA_TOKEN upload -u bfxcss conda_dist\**\*.tar.bz2
 #  - TODO: upload the content of dist/*.whl to a public wheelhouse
 
 
