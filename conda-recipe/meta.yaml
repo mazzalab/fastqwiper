@@ -8,7 +8,7 @@ package:
 #  icon: icon_64x64.png
   
 source:
-  path: C:\\projects\\fastqwiper\\fastqwiper_src
+  path: C:\\projects\\fastqwiper
 
 build:
   number: 0

@@ -70,8 +70,9 @@ build_script:
 #  - ps: "rm fastqwiper.zip"
   # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
-  - ps: "mkdir conda_dist"
+#  - mkdir conda_dist
   - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder .\\conda_dist
+  - python setup.py bdist_wheel -d pypi_dist clean --all
 #   - python setup.py build_ext --inplace -i clean
 
 
