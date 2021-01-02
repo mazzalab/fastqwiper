@@ -65,6 +65,7 @@ build: off
 build_script:
   - git clone https://github.com/mazzalab/fastqwiper.git
   - ps: cd fastqwiper
+  - ps: "mkdir conda_dist"
   - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder ../conda_dist
   - cd ..
 #   - python setup.py build_ext --inplace -i clean
