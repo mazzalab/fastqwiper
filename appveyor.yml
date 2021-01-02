@@ -39,13 +39,7 @@ init:
   - ps: 'Invoke-WebRequest https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
   - ps: "Expand-Archive -LiteralPath fastqwiper.zip -DestinationPath ."
   - ps: "rm fastqwiper.zip"
-
-  - mkdir fastqwiper_src
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - cd fastqwiper_src
-
-#   -  cmd: ECHO %PYTHON_VERSION% %MINICONDA%
-#   - $blockRdp = $true; ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
   - sh: wget $MINICONDA_REPO -O ~/miniconda.sh
