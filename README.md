@@ -1,11 +1,11 @@
 # FastqWiper
 A workflow to **recover** corrupted `fastq.gz` files, **drop** wrong lines and **remove** unpaired reads.
 
-* Compatibility: Python >3.7
+* Compatibility: Python <3.9
 * OS: Windows (partly), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Pypi: available soon
-* Conda: available soon
+* Conda: https://anaconda.org/bfxcss/fastqwiper
 * Docker Hub: available soon
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
@@ -15,9 +15,11 @@ FastqWiper can be installed using both Conda and PyPi and runs smoothly on all O
 specified above.
 
 ### Anaconda or Miniconda
+[![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/version.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/latest_release_date.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/platforms.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/downloads.svg)](https://anaconda.org/bfxcss/fastqwiper)
+
 Create and activate an empty Conda environment, if not already available.<br/>
 ```
-$ conda create -n FastqWiper python=3.9
+$ conda create -n FastqWiper python=3.8
 $ conda activate FastqWiper
 ```
 
