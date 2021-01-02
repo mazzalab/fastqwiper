@@ -42,7 +42,7 @@ init:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 clone_script:
-- ps: "git clone -q -n --branch=master https://github.com/mazzalab/fastqwiper.git C:\projects\fastqwiper\fastqwiper_src"
+  - ps: "git clone -q -n --branch=master https://github.com/mazzalab/fastqwiper.git C:\projects\fastqwiper\fastqwiper_src"
 
 install:
   - sh: wget $MINICONDA_REPO -O ~/miniconda.sh
