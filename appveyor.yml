@@ -15,13 +15,9 @@ environment:
 
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      MINICONDA: "C:\\Miniconda38"
-      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x86"
-      platform: x32
-#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-#      MINICONDA: "C:\\Miniconda37-x64"
-#      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
-#      platform: x64
+      MINICONDA: "C:\\Miniconda38-x64"
+      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
+      platform: x64
 #
 #    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
 #      platform: x64
@@ -47,7 +43,7 @@ install:
 
   - cmd: set PATH=%MINICONDA%;%MINICONDA%\Scripts;%WINKITS%;%PATH%
   - cmd: ECHO %PATH%
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
   - cmd: activate.bat
 
