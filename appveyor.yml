@@ -1,0 +1,121 @@
+# os: windows
+
+# version format
+version: 0.0.{build}
+
+branches:
+  only:
+    - master
+
+only_commits:
+  message: /\[build\]/
+
+environment:
+  PYTHON_VERSION: 3.8
+
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      MINICONDA: "C:\\Miniconda38"
+      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x86"
+      platform: x32
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+#      MINICONDA: "C:\\Miniconda37-x64"
+#      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
+#      platform: x64
+#
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#      platform: x64
+#      MINICONDA: /home/appveyor/Miniconda37-x64
+#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh
+#
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+#      platform: x64
+#      MINICONDA: /Users/appveyor/Miniconda37-x64
+#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-MacOSX-x86_64.sh
+
+init:
+  - ps: |
+      if ($isMacOS) {
+        brew install wget
+      }
+#   -  cmd: ECHO %PYTHON_VERSION% %MINICONDA%
+#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+install:
+  - sh: wget $MINICONDA_REPO -O ~/miniconda.sh
+  - sh: bash ~/miniconda.sh -b -p $MINICONDA
+
+  - cmd: set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%WINKITS%;%PATH%
+  - cmd: activate.bat
+
+  - sh: source $MINICONDA/bin/activate
+  - sh: conda init
+
+  - cmd: set PYTHONUNBUFFERED=1
+  - sh: PYTHONUNBUFFERED=1
+
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda config --set show_channel_urls true
+  - conda config --add channels conda-forge
+  - conda install -c conda-forge setuptools wheel conda-build anaconda-client conda-verify --yes --quiet # coverage codecov
+
+build: off
+
+build_script:
+  - git clone https://github.com/mazzalab/fastqwiper.git
+  - ps: cd fastqwiper
+  - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder ../conda_dist
+  - cd ..
+#   - python setup.py build_ext --inplace -i clean
+
+
+test_script:
+#  - ps: |
+#      python -m unittest tests.graph.test_basegraph
+#      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
+#  - python -m unittest tests.graph.test_basegraph
+#  - coverage run -m unittest tests.graph.test_basegraph
+#  - coverage xml
+#  - ps: "cd .."
+
+# after_test:
+#  - python setup.py bdist_wheel -d pypi_dist clean --all
+  # - conda build --quiet -c conda-forge conda-recipe --output-folder conda_dist
+  # - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder conda_dist
+  # - ps: "ls pypi_dist"
+  # - ps: "ls conda_dist"
+
+
+artifacts:
+    - path: conda_dist\**\*.tar.bz2
+#  - path: pypi_dist\*.whl
+#    name: pypi_whl
+#  - path: pagral\coverage.xml
+#  - path: pagral\.coverage
+
+
+# on_success:
+#  - TODO: upload the content of dist/*.whl to a public wheelhouse
+
+
+#deploy:
+#  - provider: GitHub
+#    release: pagral-v$(APPVEYOR_BUILD_VERSION)
+#    description: 'Latest tagged release of Pagral'
+#    artifact: pypi_whl
+#    draft: false
+#    prerelease: false
+#    auth_token:
+#      secure: qmatt+fSRfcwrPNpBFF+bXSOtwPdIJ4cqBoHnxEkuLDLd4N8GHJqeg2QPxaFI6u2
+#    on:
+#      branch: master                # release from master branch only
+#      APPVEYOR_REPO_TAG: false       # deploy on tag push only
+
+# on_finish:
+  # - sh: export APPVEYOR_SSH_BLOCK=true
+  # - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
+
+# UPLOAD TO CODECOV
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#  - codecov -f pagral\coverage.xml
