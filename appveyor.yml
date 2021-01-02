@@ -36,8 +36,8 @@ init:
       }
   - mkdir fastqwiper_project
   - cd fastqwiper_project
-  - ps: "(New-Object System.Net.WebClient).DownloadFile(https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip, $PSScriptRoot\fastqwiper.zip)"
-  - ps: "Expand-Archive -Force $PSScriptRoot\fastqwiper.zip $PSScriptRoot"
+  - ps: "(New-Object System.Net.WebClient).DownloadFile('https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip', '$PSScriptRoot\fastqwiper.zip')"
+  - ps: "Expand-Archive -Force '$PSScriptRoot\fastqwiper.zip' '$PSScriptRoot'"
 
 
 #   -  cmd: ECHO %PYTHON_VERSION% %MINICONDA%
