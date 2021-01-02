@@ -36,6 +36,8 @@ init:
       }
   - mkdir fastqwiper_project
   - cd fastqwiper_project
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
   - ps: "$WebClient = New-Object System.Net.WebClient"
   - ps: '$WebClient.DownloadFile("https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip","$PSScriptRoot/fastqwiper.zip")'
   - ps: "Expand-Archive -Force '$PSScriptRoot/fastqwiper.zip' '$PSScriptRoot'"
@@ -50,7 +52,7 @@ install:
 
   - cmd: set PATH=%MINICONDA%;%MINICONDA%\Scripts;%WINKITS%;%PATH%
   - cmd: ECHO %PATH%
-  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 
   - cmd: activate.bat
 
