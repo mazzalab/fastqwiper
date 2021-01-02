@@ -62,10 +62,8 @@ install:
 build: off
 
 build_script:
-  - ps: cd fastqwiper
   - ps: "mkdir conda_dist"
-  - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder ../conda_dist
-  - cd ..
+  - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder conda_dist
 #   - python setup.py build_ext --inplace -i clean
 
 
