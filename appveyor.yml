@@ -34,6 +34,12 @@ init:
       if ($isMacOS) {
         brew install wget
       }
+  - mkdir fastqwiper_project
+  - cd fastqwiper_project
+  - ps: "(New-Object System.Net.WebClient).DownloadFile(https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip, $PSScriptRoot\fastqwiper.zip)"
+  - ps: "Expand-Archive -Force $PSScriptRoot\fastqwiper.zip $PSScriptRoot"
+
+
 #   -  cmd: ECHO %PYTHON_VERSION% %MINICONDA%
 #   - $blockRdp = $true; ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
