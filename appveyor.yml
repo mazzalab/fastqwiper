@@ -65,7 +65,7 @@ build_script:
   - ps: "Copy-Item -Path .\\fastqwiper_src\\ -Destination .\\fastqwiper\\ -Recurse"
   - cd fastqwiper
 
-  - ps: 'Invoke-WebRequest https://www.dropbox.com/s/5ky69a0mi398mc1/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
+  - ps: 'Invoke-WebRequest https://www.dropbox.com/s/h4cknybzbgyiv5u/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
   - ps: "Expand-Archive -LiteralPath fastqwiper.zip -DestinationPath ."
   - ps: "rm fastqwiper.zip"
   # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

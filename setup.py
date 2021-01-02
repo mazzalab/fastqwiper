@@ -39,7 +39,7 @@ setup(
     version=VERSION,
     author='Tommaso Mazza',
     author_email='bioinformatics@css-mendel.it',
-    description="A workflow to recover corrupted fastq.gz files, skip uncomplaint reads and remove unpaired reads",
+    description="A package to wipe uncomplaint reads from FASTQ files",
     url="https://github.com/mazzalab/fastqwiper",
     packages=find_packages(),
     include_package_data=True,
