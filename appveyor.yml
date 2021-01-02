@@ -65,7 +65,7 @@ build_script:
   - ps: "Get-ChildItem -Path C:\\projects\\fastqwiper\\ | Copy-Item -Destination C:\\projects\\fastqwiper_src -Recurse -Container"
   - ps: "Remove-Item -Recurse -Force C:\\projects\\fastqwiper"
   - mkdir fastqwiper
-  - ps: "Copy-Item -Path .\\fastqwiper_proj\\ -Destination .\\fastqwiper\\ -Recurse"
+  - ps: "Copy-Item -Path .\\fastqwiper_src\\ -Destination .\\fastqwiper\\ -Recurse"
   - cd fastqwiper
 
   # - ps: "$WebClient = New-Object System.Net.WebClient"
