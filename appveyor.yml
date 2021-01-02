@@ -57,26 +57,10 @@ install:
 build: off
 
 build_script:
-#  - cd ..
-#  - mkdir fastqwiper_src
-#  - ps: "Get-ChildItem -Path C:\\projects\\fastqwiper\\ | Copy-Item -Destination C:\\projects\\fastqwiper_src -Recurse -Container"
-#  - ps: "Remove-Item -Recurse -Force C:\\projects\\fastqwiper"
-#  - mkdir fastqwiper
-#  - ps: "Copy-Item -Path .\\fastqwiper_src\\ -Destination .\\fastqwiper\\ -Recurse"
-#  - cd fastqwiper
-#
-#  - ps: 'Invoke-WebRequest https://www.dropbox.com/s/h4cknybzbgyiv5u/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
-#  - ps: "Expand-Archive -LiteralPath fastqwiper.zip -DestinationPath ."
-#  - ps: "rm fastqwiper.zip"
-  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - which python
+  - python setup.py build_ext --inplace -i clean
 
-#  - mkdir conda_dist
-  - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder .\\conda_dist
-  - python setup.py bdist_wheel -d pypi_dist clean --all
-#   - python setup.py build_ext --inplace -i clean
-
-
-test_script:
+# test_script:
 #  - ps: |
 #      python -m unittest tests.graph.test_basegraph
 #      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode) }
@@ -85,23 +69,22 @@ test_script:
 #  - coverage xml
 #  - ps: "cd .."
 
-# after_test:
-#  - python setup.py bdist_wheel -d pypi_dist clean --all
-  # - conda build --quiet -c conda-forge conda-recipe --output-folder conda_dist
-  # - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder conda_dist
-  # - ps: "ls pypi_dist"
-  # - ps: "ls conda_dist"
-
+after_test:
+  - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder .\\conda_dist
+  - python setup.py bdist_wheel -d pypi_dist clean --all
+  - ps: "ls pypi_dist"
+  - ps: "ls conda_dist"
 
 artifacts:
-    - path: conda_dist\**\*.tar.bz2
-#  - path: pypi_dist\*.whl
+  - path: conda_dist\**\*.tar.bz2
+  - path: pypi_dist\*.whl
 #    name: pypi_whl
 #  - path: pagral\coverage.xml
 #  - path: pagral\.coverage
 
 
-# on_success:
+on_success:
+  - anaconda upload .\\conda_dist\win-64\fastqwiper-2021.1.{build}-py38_0.tar.bz2
 #  - TODO: upload the content of dist/*.whl to a public wheelhouse
 
 
