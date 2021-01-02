@@ -1,7 +1,7 @@
 # os: windows
 
 # version format
-version: 0.0.{build}
+version: 2021.1.{build}
 
 branches:
   only:
@@ -40,9 +40,6 @@ install:
   - sh: bash ~/miniconda.sh -b -p $MINICONDA
 
   - cmd: set PATH=%MINICONDA%;%MINICONDA%\Scripts;%WINKITS%;%PATH%
-  - cmd: ECHO %PATH%
-
-
   - cmd: activate.bat
 
   - sh: source $MINICONDA/bin/activate
@@ -68,14 +65,13 @@ build_script:
   - ps: "Copy-Item -Path .\\fastqwiper_src\\ -Destination .\\fastqwiper\\ -Recurse"
   - cd fastqwiper
 
-  # - ps: "$WebClient = New-Object System.Net.WebClient"
   - ps: 'Invoke-WebRequest https://www.dropbox.com/s/5ky69a0mi398mc1/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
   - ps: "Expand-Archive -LiteralPath fastqwiper.zip -DestinationPath ."
   - ps: "rm fastqwiper.zip"
   # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
   - ps: "mkdir conda_dist"
-  - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder conda_dist
+  - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder .\\conda_dist
 #   - python setup.py build_ext --inplace -i clean
 
 

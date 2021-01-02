@@ -1,4 +1,6 @@
 import sys
+import os
+import re
 
 try:
     from importlib import util
@@ -24,9 +26,17 @@ if sys.version_info <= (3, 7):
 with open('README.md') as f:
     long_description = f.read()
 
+if 'APPVEYOR_BUILD_VERSION' not in os.environ:
+    VERSION = os.environ['PKG_VERSION']
+else:
+    VERSION = os.environ['APPVEYOR_BUILD_VERSION']
+
+print("version {} passed to setup.py".format(VERSION))
+assert re.match('^[0-9]+\.[0-9]+\.[0-9]+$', VERSION), "Invalid version number"
+
 setup(
     name='fastqwiper',
-    version='2021.0.1',
+    version=VERSION,
     author='Tommaso Mazza',
     author_email='bioinformatics@css-mendel.it',
     description="A workflow to recover corrupted fastq.gz files, skip uncomplaint reads and remove unpaired reads",
