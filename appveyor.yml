@@ -46,7 +46,7 @@ install:
   - sh: bash ~/miniconda.sh -b -p $MINICONDA
 
   - cmd: set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%WINKITS%;%PATH%
-  - ECHO %PYTHON_VERSION% %MINICONDA% %PATH%
+  - cmd: ECHO %PYTHON_VERSION% %MINICONDA% %PATH%
   - cmd: activate.bat
 
   - sh: source $MINICONDA/bin/activate
