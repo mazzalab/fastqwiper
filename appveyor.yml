@@ -47,7 +47,7 @@ install:
 
   - cmd: set PATH=%MINICONDA%;%MINICONDA%\Scripts;%WINKITS%;%PATH%
   - cmd: ECHO %PATH%
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
   - cmd: activate.bat
 
