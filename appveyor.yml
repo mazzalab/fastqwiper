@@ -34,14 +34,15 @@ init:
       if ($isMacOS) {
         brew install wget
       }
-  - mkdir fastqwiper_project
-  - cd fastqwiper_project
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
-  - ps: "$WebClient = New-Object System.Net.WebClient"
-  - ps: '$WebClient.DownloadFile("https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip","$PSScriptRoot/fastqwiper.zip")'
-  - ps: "Expand-Archive -Force '$PSScriptRoot/fastqwiper.zip' '$PSScriptRoot'"
+  # - ps: "$WebClient = New-Object System.Net.WebClient"
+  - ps: 'Invoke-WebRequest https://www.dropbox.com/s/fl9cjr3lqgtllyw/fastqwiper.zip?dl=1 -OutFile fastqwiper.zip'
+  - ps: "Expand-Archive -LiteralPath fastqwiper.zip -DestinationPath ."
+  - ps: "rm fastqwiper.zip"
 
+  - mkdir fastqwiper_src
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - cd fastqwiper_src
 
 #   -  cmd: ECHO %PYTHON_VERSION% %MINICONDA%
 #   - $blockRdp = $true; ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -71,6 +72,7 @@ install:
 build: off
 
 build_script:
+  - cmd: cd C:\projects\fastqwiper
   - ps: "mkdir conda_dist"
   - conda build --quiet -c bfxcss -c conda-forge . --python=3.8 --output-folder conda_dist
 #   - python setup.py build_ext --inplace -i clean
