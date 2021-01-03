@@ -14,20 +14,20 @@ environment:
   PYTHON_VERSION: 3.8
 
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      MINICONDA: "C:\\Miniconda38-x64"
-      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
-      platform: x64
-#
-#    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+#      MINICONDA: "C:\\Miniconda38-x64"
+#      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
 #      platform: x64
-#      MINICONDA: /home/appveyor/Miniconda37-x64
-#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh
+#
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      platform: x64
+      MINICONDA: /home/appveyor/Miniconda37-x64
+      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh
 #
 #    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
 #      platform: x64
 #      MINICONDA: /Users/appveyor/Miniconda37-x64
-#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-MacOSX-x86_64.sh
+#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-MacOSX-x86_64.sh
 
 init:
   - ps: |
@@ -87,6 +87,9 @@ on_success:
   # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - cmd: anaconda -t %CONDA_TOKEN% upload -u bfxcss conda_dist\**\*.tar.bz2
   - cmd: twine upload pypi_dist\*.whl -u __token__ -p %PYPI_TOKEN%
+
+  - sh: anaconda -t $(CONDA_TOKEN) upload -u bfxcss conda_dist\**\*.tar.bz2
+  - sh:  twine upload pypi_dist\*.whl -u __token__ -p $(PYPI_TOKEN)
 
 
 #deploy:

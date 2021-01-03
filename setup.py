@@ -57,19 +57,19 @@ setup(
         "colorama==0.4.4",
         "click==7.1.2",
     ],
-	classifiers=[
-		"Development Status :: 5 - Production/Stable",
-		"Intended Audience :: Science/Research",
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-	project_urls={
-		# 'Documentation': 'http://pyntacle.css-mendel.it:10080/#docs',
-		'Source': 'https://github.com/mazzalab/fastqwiper',
-		'Tracker': 'https://github.com/mazzalab/fastqwiper/issues',
-		'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
-	},
-	keywords='genomics, ngs, fastq, bioinformatics',
-    python_requires='>=3.8',
+    project_urls={
+        # 'Documentation': 'http://pyntacle.css-mendel.it:10080/#docs',
+        'Source': 'https://github.com/mazzalab/fastqwiper',
+        'Tracker': 'https://github.com/mazzalab/fastqwiper/issues',
+        'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
+    },
+    keywords='genomics, ngs, fastq, bioinformatics',
+    python_requires='<3.9',
 )
