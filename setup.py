@@ -39,7 +39,7 @@ setup(
     version=VERSION,
     author='Tommaso Mazza',
     author_email='bioinformatics@css-mendel.it',
-    description="A package to wipe uncomplaint reads from FASTQ files",
+    description="A package to wipe uncompliant reads from FASTQ files",
     url="https://github.com/mazzalab/fastqwiper",
     packages=find_packages(),
     include_package_data=True,

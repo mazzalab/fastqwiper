@@ -52,7 +52,7 @@ install:
   - conda update -q conda
   - conda config --set show_channel_urls true
   - conda config --add channels conda-forge
-  - conda install -c conda-forge setuptools wheel conda-build anaconda-client conda-verify --yes --quiet # coverage codecov
+  - conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet # coverage codecov
 
 build: off
 

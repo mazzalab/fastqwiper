@@ -33,6 +33,6 @@ test:
     
 about:
   home: https://github.com/mazzalab/fastqwiper
-  summary: A package to wipe uncomplaint reads from FASTQ files
+  summary: A package to wipe uncompliant reads from FASTQ files
   license: MIT
   license_file: LICENSE.txt
