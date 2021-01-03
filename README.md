@@ -1,6 +1,6 @@
 # FastqWiper
 [![Build status](https://ci.appveyor.com/api/projects/status/y09medho67x2nrgn?svg=true)](https://ci.appveyor.com/project/mazzalab/fastqwiper)
-![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)
+[![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)](https://github.com/mazzalab/fastqwiper/issues)
 
 `FastqWiper` is a Python application that wipes out wrong and uncompliant reads from FASTQ files. 
 
