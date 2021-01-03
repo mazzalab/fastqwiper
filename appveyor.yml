@@ -5,10 +5,10 @@ version: 2021.1.{build}
 
 branches:
   only:
-    - master
+    - main
 
 only_commits:
-  message: /[build]/
+  message: /\[build\]/
 
 environment:
   PYTHON_VERSION: 3.8
