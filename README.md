@@ -1,4 +1,7 @@
 # FastqWiper
+[![Build status](https://ci.appveyor.com/api/projects/status/y09medho67x2nrgn?svg=true)](https://ci.appveyor.com/project/mazzalab/fastqwiper)
+![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)
+
 `FastqWiper` is a Python application that wipes out wrong and uncompliant reads from FASTQ files. 
 
 Complex workflows that join `FastqWiper` with other existing tools to **recover** corrupted `fastq.gz` 
@@ -32,6 +35,8 @@ then<br/>
 `$ conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Pypi
+[![PyPI version](https://badge.fury.io/py/fastqwiper.svg)](https://badge.fury.io/py/fastqwiper)
+
 `pip install fastqwiper`
 
 ### Usage
@@ -65,4 +70,16 @@ and finally:<br/>
 `conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Usage
+
+
+#Author
+Tommaso Mazza  ![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Firongraft)
+
+Laboratory of Bioinformatics<br/>
+Fondazione IRCCS Casa Sollievo della Sofferenza<br/>
+Viale Regina Margherita 261 - 00198 Roma IT<br/>
+Tel: +39 06 44160526 - Fax: +39 06 44160548<br/>
+E-mail: t.mazza@css-mendel.it<br/>
+Web page: http://www.css-mendel.it/<br/>
+Web page: http://bioinformatics.css-mendel.it<br/>
 
