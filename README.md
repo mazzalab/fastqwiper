@@ -1,17 +1,20 @@
 # FastqWiper
-A workflow to **recover** corrupted `fastq.gz` files, **drop** wrong lines and **remove** unpaired reads.
+FastqWiper is a Python application that wipes wrong and uncompliant reads from FASTQ files. Complex workflows that
+join FAstqWiper with other existing tools are here to 
+**recover** corrupted `fastq.gz` files, **drop** wrong lines and **remove** unpaired reads can be run 
+through Snakemake and the preconfigured pipeline files here provided.
 
 * Compatibility: Python <3.9
-* OS: Windows (partly), Linux, Mac OS
+* OS: Windows (excluding pipelines), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
-* Pypi: available soon
+* Pypi: https://pypi.org/project/fastqwiper
 * Conda: https://anaconda.org/bfxcss/fastqwiper
 * Docker Hub: available soon
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
 
 ## Installation
-FastqWiper can be installed using both Conda and PyPi and runs smoothly on all OS 
+FastqWiper alone can be installed using both Conda and PyPi and runs smoothly on all OS 
 specified above.
 
 ### Anaconda or Miniconda
