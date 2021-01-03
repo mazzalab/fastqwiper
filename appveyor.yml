@@ -70,7 +70,7 @@ build_script:
 #  - ps: "cd .."
 
 after_test:
-  - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder .\\conda_dist
+  - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder conda_dist
   - python setup.py sdist bdist_wheel -d pypi_dist clean --all
   - ps: "ls pypi_dist"
   - ps: "ls conda_dist"
