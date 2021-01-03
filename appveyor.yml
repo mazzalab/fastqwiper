@@ -58,7 +58,7 @@ build: off
 
 build_script:
   - which python
-  - python setup.py build_ext --inplace -i clean
+  - python setup.py build
 
 # test_script:
 #  - ps: |
@@ -71,7 +71,7 @@ build_script:
 
 after_test:
   - conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=3.8 --output-folder .\\conda_dist
-  - python setup.py bdist_wheel -d pypi_dist clean --all
+  - python setup.py sdist bdist_wheel -d pypi_dist clean --all
   - ps: "ls pypi_dist"
   - ps: "ls conda_dist"
 
@@ -84,9 +84,9 @@ artifacts:
 
 
 on_success:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - anaconda -t %CONDA_TOKEN% upload -u bfxcss conda_dist\**\*.tar.bz2
-#  - TODO: upload the content of dist/*.whl to a public wheelhouse
+  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - cmd: anaconda -t %CONDA_TOKEN% upload -u bfxcss conda_dist\**\*.tar.bz2
+  - cmd: twine upload pypi_dist\*.whl -u __token__ -p %PYPI_TOKEN%
 
 
 #deploy:

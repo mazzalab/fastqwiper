@@ -23,8 +23,8 @@ from setuptools import setup, find_packages
 if sys.version_info <= (3, 7):
     sys.exit('Sorry, Python < 3.8 is not supported')
 
-with open('README.md') as f:
-    long_description = f.read()
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 if 'APPVEYOR_BUILD_VERSION' not in os.environ:
     VERSION = os.environ['PKG_VERSION']
@@ -57,4 +57,19 @@ setup(
         "colorama==0.4.4",
         "click==7.1.2",
     ],
+	classifiers=[
+		"Development Status :: 5 - Production/Stable",
+		"Intended Audience :: Science/Research",
+        "Programming Language :: Python :: >3.8",
+        "License :: OSI Approved :: MIT",
+        "Operating System :: OS Independent",
+    ],
+	project_urls={
+		# 'Documentation': 'http://pyntacle.css-mendel.it:10080/#docs',
+		'Source': 'https://github.com/mazzalab/fastqwiper',
+		'Tracker': 'https://github.com/mazzalab/fastqwiper/issues',
+		'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
+	},
+	keywords='genomics, ngs, fastq, bioinformatics',
+    python_requires='>=3.8',
 )
