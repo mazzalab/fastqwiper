@@ -60,8 +60,8 @@ setup(
 	classifiers=[
 		"Development Status :: 5 - Production/Stable",
 		"Intended Audience :: Science/Research",
-        "Programming Language :: Python :: >3.8",
-        "License :: OSI Approved :: MIT",
+        "Programming Language :: Python :: 3.8",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
 	project_urls={
