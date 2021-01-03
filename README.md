@@ -3,7 +3,8 @@
 
 Complex workflows that join `FastqWiper` with other existing tools to **recover** corrupted `fastq.gz` 
 files, **drop** wrong lines and **remove** unpaired reads can be run 
-through Snakemake and the preconfigured [pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) here provided.
+through Snakemake and the preconfigured 
+[pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) provided here.
 
 * Compatibility: Python <3.9
 * OS: Windows (excluding pipelines), Linux, Mac OS
@@ -33,21 +34,22 @@ then<br/>
 ### Pypi
 `pip install fastqwiper`
 
-## Usage
-`FastqWiper`, in the current release, accepts three parameters:
+### Usage
+`FastqWiper` - in the current release - accepts three parameters:
 ```
 Options:
   --fastq_in TEXT          The input FASTQ file to be cleaned  [required]
   --fastq_out TEXT         The wiped FASTQ file                [required]
-  --log_frequency INTEGER  The number of reads that you want to print a status message after
+  --log_frequency INTEGER  The number of processed reads that you want to print a status message after
 ```
+It  accepts in input and outputs `*.fastq` or `*.fastq.gz` files.
 
 
-### Snakemake
+## Snakemake
 To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The 
 recommended way to install Snakemake is via Conda, because it enables **Snakemake** to 
 [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
-However, the default conda solver is slow and often hungs. Therefore, we recommend 
+However, the default conda solver is slow and often hangs. Therefore, we recommend 
 installing [Mamba](https://github.com/mamba-org/mamba) as a drop-in replacement via
 
 `$ conda install -c conda-forge mamba`
@@ -62,4 +64,5 @@ $ conda activate FastqWiper
 and finally:<br/>
 `conda install -y -c bfxcss -c conda-forge fastqwiper`
 
- 
+### Usage
+
