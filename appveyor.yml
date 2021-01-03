@@ -85,7 +85,7 @@ artifacts:
 
 on_success:
   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - anaconda -t $CONDA_TOKEN upload -u bfxcss conda_dist\**\*.tar.bz2
+  - anaconda -t %CONDA_TOKEN% upload -u bfxcss conda_dist\**\*.tar.bz2
 #  - TODO: upload the content of dist/*.whl to a public wheelhouse
 
 
