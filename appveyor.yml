@@ -88,8 +88,8 @@ on_success:
   - cmd: anaconda -t %CONDA_TOKEN% upload -u bfxcss conda_dist\**\*.tar.bz2
   - cmd: twine upload pypi_dist\*.whl -u __token__ -p %PYPI_TOKEN%
 
-  - sh: anaconda -t $(CONDA_TOKEN) upload -u bfxcss conda_dist\**\*.tar.bz2
-  - sh:  twine upload pypi_dist\*.whl -u __token__ -p $(PYPI_TOKEN)
+  - sh: anaconda -t $CONDA_TOKEN upload -u bfxcss conda_dist\**\*.tar.bz2
+  - sh:  twine upload pypi_dist\*.whl -u __token__ -p $PYPI_TOKEN
 
 
 #deploy:

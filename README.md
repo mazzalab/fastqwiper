@@ -1,8 +1,9 @@
 # FastqWiper
-FastqWiper is a Python application that wipes wrong and uncompliant reads from FASTQ files. Complex workflows that
-join FAstqWiper with other existing tools are here to 
-**recover** corrupted `fastq.gz` files, **drop** wrong lines and **remove** unpaired reads can be run 
-through Snakemake and the preconfigured pipeline files here provided.
+`FastqWiper` is a Python application that wipes wrong and uncompliant reads from FASTQ files. 
+
+Complex workflows that join `FastqWiper` with other existing tools to **recover** corrupted `fastq.gz` 
+files, **drop** wrong lines and **remove** unpaired reads can be run 
+through Snakemake and the preconfigured [pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) here provided.
 
 * Compatibility: Python <3.9
 * OS: Windows (excluding pipelines), Linux, Mac OS
@@ -14,7 +15,7 @@ through Snakemake and the preconfigured pipeline files here provided.
 
 
 ## Installation
-FastqWiper alone can be installed using both Conda and PyPi and runs smoothly on all OS 
+`FastqWiper` alone can be installed using both Conda and PyPi and runs smoothly on all OS 
 specified above.
 
 ### Anaconda or Miniconda
@@ -30,11 +31,10 @@ then<br/>
 `$ conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Pypi
-_available soon_
-
+`pip install fastqwiper`
 
 ### Snakemake
-To enable the use of preconfigured workflows, you need to install **Snakemake**. The 
+To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The 
 recommended way to install Snakemake is via Conda, because it enables **Snakemake** to 
 [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
 However, the default conda solver is slow and often hungs. Therefore, we recommend 
