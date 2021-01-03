@@ -8,17 +8,17 @@ branches:
     - master
 
 only_commits:
-  message: /\[build\]/
+  message: /[build]/
 
 environment:
   PYTHON_VERSION: 3.8
 
   matrix:
-#    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-#      MINICONDA: "C:\\Miniconda38-x64"
-#      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
-#      platform: x64
-#
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      MINICONDA: "C:\\Miniconda38-x64"
+      WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
+      platform: x64
+
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
       platform: x64
       MINICONDA: /home/appveyor/Miniconda38-x64
@@ -89,7 +89,7 @@ on_success:
   - cmd: twine upload pypi_dist\*.whl -u __token__ -p %PYPI_TOKEN%
 
   - sh: anaconda -t $CONDA_TOKEN upload -u bfxcss conda_dist/**/*.tar.bz2
-  - sh:  twine upload pypi_dist/*.whl -u __token__ -p $PYPI_TOKEN
+  # - sh:  twine upload pypi_dist/*.whl -u __token__ -p $PYPI_TOKEN
 
 
 #deploy:
