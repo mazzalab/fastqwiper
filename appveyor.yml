@@ -23,11 +23,11 @@ environment:
       platform: x64
       MINICONDA: /home/appveyor/Miniconda38-x64
       MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh
-#
-#    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-#      platform: x64
-#      MINICONDA: /Users/appveyor/Miniconda38-x64
-#      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-MacOSX-x86_64.sh
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      platform: x64
+      MINICONDA: /Users/appveyor/Miniconda38-x64
+      MINICONDA_REPO: https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-MacOSX-x86_64.sh
 
 init:
   - ps: |
