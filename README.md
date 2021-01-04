@@ -66,11 +66,52 @@ $ mamba create -c conda-forge -c bioconda -n FastqWiper snakemake
 $ conda activate FastqWiper
 ```
 
-and finally:<br/>
-`conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Usage
-coming soon
+Clone the FastqWiper repository:
+
+`git clone https://github.com/mazzalab/fastqwiper.git`.
+
+It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing the released pipeline and a folder `fastq_wiper` with the source files of FastqWiper. Copy further fastq files to be processed into the **data** folder. All software packages not fetched from `Conda` and used by the pipelines should be copied, even if it is not strictly mandatory, in the root directory. 
+
+Currently, to run the FastqWiper pipelines, the following packages are not included in `Conda` but are required:
+
+### required packages:
+[gzrt](https://github.com/arenn/gzrt) (install [instructions](https://github.com/arenn/gzrt/blob/master/README.build))
+```
+$ (within the FastqWiper root folder) git clone https://github.com/arenn/gzrt.git
+$ cd gzrt
+$ make
+$ cd ..
+```
+
+### Commands:
+- Personalize a pipeline: using, for example, `fix_wipe_pairs_reads.smk` requires you to edit line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. If the files are:
+```
+excerpt_S1_R1_001.fastq.gz
+excerpt_S1_R2_001.fastq.gz
+sample_S1_R1_001.fastq.gz
+sample_S1_R2_001.fastq.gz
+```
+the SAMPLE vector should be: `SAMPLES = ["sample", "excerpt"]`
+
+- Get a dry run of a pipeline (e.g., `fix_wipe_pairs_reads.smk`):
+
+`snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2 -np`
+
+- Generate the planned DAG:
+
+`snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag -Tpdf > dag.pdf`
+<img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="600">
+
+- Run the pipeline (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:
+```
+snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2
+```
+
+Results will be 
+
+
 
 # Author
 **Tommaso Mazza**  
