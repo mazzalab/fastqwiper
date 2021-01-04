@@ -118,7 +118,7 @@ that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
 
 # Author
 **Tommaso Mazza**  
-![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Firongraft)
+![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https://twitter.com/irongraft)
 
 Laboratory of Bioinformatics<br/>
 Fondazione IRCCS Casa Sollievo della Sofferenza<br/>
