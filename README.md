@@ -35,7 +35,7 @@ then<br/>
 `$ conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Pypi
-[![PyPI version](https://badge.fury.io/py/fastqwiper.svg)](https://badge.fury.io/py/fastqwiper)
+[![PyPI version](https://badge.fury.io/py/fastqwiper.svg)](https://pypi.org/project/fastqwiper/)
 
 `pip install fastqwiper`
 
@@ -119,6 +119,7 @@ that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
 # Author
 **Tommaso Mazza**  
 ![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Firongraft)
+[![Tweeting](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/irongraft)
 
 Laboratory of Bioinformatics<br/>
 Fondazione IRCCS Casa Sollievo della Sofferenza<br/>
