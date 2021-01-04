@@ -86,7 +86,7 @@ $ cd ..
 ```
 
 ### Commands:
-- Personalize a pipeline: using, for example, `fix_wipe_pairs_reads.smk` requires you to edit line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. If the files are:
+- **Personalize a pipeline**. Using, for example, `fix_wipe_pairs_reads.smk` requires you to edit line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. If the files are:
 ```
 excerpt_S1_R1_001.fastq.gz
 excerpt_S1_R2_001.fastq.gz
@@ -95,14 +95,14 @@ sample_S1_R2_001.fastq.gz
 ```
 the SAMPLE vector should be: `SAMPLES = ["sample", "excerpt"]`
 
-- Get a dry run of a pipeline (e.g., `fix_wipe_pairs_reads.smk`):<br />
+- **Get a dry run** of a pipeline (e.g., `fix_wipe_pairs_reads.smk`):<br />
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2 -np`
 
-- Generate the planned DAG:<br />
+- **Generate the planned DAG**:<br />
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag -Tpdf > dag.pdf`<br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="600">
 
-- Run the pipeline (n.b., during the first execution, Snakemake will download and install some required remote 
+- **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote 
   packages and may take longer). The number of computing cores can be tuned accordingly:<br />
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2`
 
