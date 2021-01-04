@@ -70,16 +70,17 @@ and finally:<br/>
 `conda install -y -c bfxcss -c conda-forge fastqwiper`
 
 ### Usage
-
+coming soon
 
 #Author
-Tommaso Mazza  ![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Firongraft)
+**Tommaso Mazza**  
+![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Firongraft)
 
 Laboratory of Bioinformatics<br/>
 Fondazione IRCCS Casa Sollievo della Sofferenza<br/>
 Viale Regina Margherita 261 - 00198 Roma IT<br/>
 Tel: +39 06 44160526 - Fax: +39 06 44160548<br/>
-E-mail: t.mazza@css-mendel.it<br/>
-Web page: http://www.css-mendel.it/<br/>
-Web page: http://bioinformatics.css-mendel.it<br/>
+E-mail: t.mazza@css-mendel.it <br/>
+Web page: http://www.css-mendel.it <br/>
+Web page: http://bioinformatics.css-mendel.it <br/>
 
