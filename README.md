@@ -79,7 +79,8 @@ Currently, to run the FastqWiper pipelines, the following packages are not inclu
 ### required packages:
 [gzrt](https://github.com/arenn/gzrt) (install [instructions](https://github.com/arenn/gzrt/blob/master/README.build))
 ```
-$ (within the FastqWiper root folder) git clone https://github.com/arenn/gzrt.git
+$ cd fastqwiper
+$ git clone https://github.com/arenn/gzrt.git
 $ cd gzrt
 $ make
 $ cd ..
