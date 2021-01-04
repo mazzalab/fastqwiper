@@ -95,22 +95,22 @@ sample_S1_R2_001.fastq.gz
 ```
 the SAMPLE vector should be: `SAMPLES = ["sample", "excerpt"]`
 
-- Get a dry run of a pipeline (e.g., `fix_wipe_pairs_reads.smk`):
-
+- Get a dry run of a pipeline (e.g., `fix_wipe_pairs_reads.smk`):<br />
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2 -np`
 
-- Generate the planned DAG:
-
-`snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag -Tpdf > dag.pdf`
+- Generate the planned DAG:<br />
+`snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag -Tpdf > dag.pdf`<br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="600">
 
-- Run the pipeline (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:
-```
-snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2
-```
+- Run the pipeline (n.b., during the first execution, Snakemake will download and install some required remote 
+  packages and may take longer). The number of computing cores can be tuned accordingly:<br />
+`snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2`
 
-Results will be 
-
+Fixed files will be copied in the `data` folder and will be suffixed with the string `_fixed_wiped_paired`. We remind 
+that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
+- execute `gzrt` on corrupted fastq.gz files (i.e., that cannot be unzipped because of errors) and recover readable reads;
+- execute `fastqwiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
+- execute `trimmomatic` on wiped reads to remove residual unpaired reads 
 
 
 # Author
