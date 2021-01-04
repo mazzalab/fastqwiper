@@ -86,7 +86,9 @@ $ cd ..
 ```
 
 ### Commands:
-- **Personalize a pipeline**. Using, for example, `fix_wipe_pairs_reads.smk` requires you to edit line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. If the files are:
+- **Personalize a pipeline**. Using, for example, `fix_wipe_pairs_reads.smk` requires you to edit 
+  line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. 
+  If the files were:
 ```
 excerpt_S1_R1_001.fastq.gz
 excerpt_S1_R2_001.fastq.gz
