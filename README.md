@@ -87,7 +87,8 @@ $ cd ..
 ```
 
 ### Commands:
-- **Personalize a pipeline**. Using, for example, `fix_wipe_pairs_reads.smk` requires you to edit 
+#### Paired-end files
+- **Personalize a pipeline**. Using `fix_wipe_pairs_reads.smk` requires you to edit 
   line 3 of the file with the name of the fastq files stored in `data` folder that you want to process. 
   If the files were:
 ```
@@ -102,7 +103,7 @@ the SAMPLE vector should be: `SAMPLES = ["sample", "excerpt"]`
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2 -np`
 
 - **Generate the planned DAG**:<br />
-`snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag -Tpdf > dag.pdf`<br />
+`snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag | dot -Tpdf > dag.pdf`<br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="600">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote 
@@ -115,6 +116,19 @@ that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
 - execute `fastqwiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
 - execute `trimmomatic` on wiped reads to remove residual unpaired reads 
 
+#### Single-end files
+Using `fix_wipe_pairs_reads.smk` requires you to make the same edits as above. This pipeline will not execute `trimmomatic`.
+
+- **Get a dry run** of a pipeline (e.g., `fix_wipe_single_reads.smk`):<br />
+`snakemake -s pipeline/fix_wipe_single_reads.smk --use-conda --cores 2 -np`
+
+- **Generate the planned DAG**:<br />
+`snakemake -s pipeline/fix_wipe_single_reads.smk --dag | dot -Tpdf > dag.pdf`<br />
+<img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_single_reads.png?raw=true" width="200">
+
+- **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote 
+  packages and may take longer). The number of computing cores can be tuned accordingly:<br />
+`snakemake -s pipeline/fix_wipe_single_reads.smk --use-conda --cores 2`
 
 # Author
 **Tommaso Mazza**  
