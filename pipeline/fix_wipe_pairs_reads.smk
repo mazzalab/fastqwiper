@@ -1,11 +1,12 @@
 # cmd:  snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2
 
-SAMPLES = ["sample", "excerpt"]
+# SAMPLES = ["sample", "excerpt"]
+SAMPLES = ["sample"]
 
 rule all:
     input:
-        expand("data/{s}_S1_R{r}_001_fixed_wiped_paired.fastq.gz", s=SAMPLES, r = [1,2]),
-        expand("data/{s}_S1_R{r}_001_fixed_wiped_unpaired.fastq.gz", s = SAMPLES, r = [1, 2])
+        expand("data/{s}_S1_R{r}_001_fixed_wiped_paired.fastq.gz", s=SAMPLES, r = [1,2]) #,
+#        expand("data/{s}_S1_R{r}_001_fixed_wiped_unpaired.fastq.gz", s = SAMPLES, r = [1, 2])
 
 rule fix_gzrt:
     input:
@@ -31,20 +32,15 @@ rule wipe_fastq:
 
 rule drop_unpaired:
     input:
-        r1 = "data/{sample}_S1_R1_001_fixed_wiped.fastq.gz",
-        r2 = "data/{sample}_S1_R2_001_fixed_wiped.fastq.gz"
+        in1 = "data/{sample}_S1_R1_001_fixed_wiped.fastq.gz",
+        in2 = "data/{sample}_S1_R2_001_fixed_wiped.fastq.gz"
     output:
-        r1 = "data/{sample}_S1_R1_001_fixed_wiped_paired.fastq.gz",
-        r2="data/{sample}_S1_R2_001_fixed_wiped_paired.fastq.gz",
-        r1_unpaired="data/{sample}_S1_R1_001_fixed_wiped_unpaired.fastq.gz",
-        r2_unpaired = "data/{sample}_S1_R2_001_fixed_wiped_unpaired.fastq.gz"
+        out1 = "data/{sample}_S1_R1_001_fixed_wiped_paired.fastq.gz",
+        out2 = "data/{sample}_S1_R2_001_fixed_wiped_paired.fastq.gz"
     log:
-        "logs/drop_unpaired/drop_unpaired.{sample}.log"
-    params:
-        trimmer=["MINLEN:20"]
+        "logs/pairing/pairing.{sample}.log"
     threads:
         1
-    wrapper:
-        "0.68.0/bio/trimmomatic/pe"
-
-
+    cache: False
+    shell:
+        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle=singletons.fastq.gz 2> {log}"

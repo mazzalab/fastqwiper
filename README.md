@@ -72,18 +72,28 @@ Clone the FastqWiper repository:
 
 `git clone https://github.com/mazzalab/fastqwiper.git`.
 
-It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing the released pipeline and a folder `fastq_wiper` with the source files of FastqWiper. Copy further fastq files to be processed into the **data** folder. All software packages not fetched from `Conda` and used by the pipelines should be copied, even if it is not strictly mandatory, in the root directory. 
+It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing 
+the released pipeline and a folder `fastq_wiper` with the source files of FastqWiper. Copy further 
+fastq files to be processed into the **data** folder. All software packages not fetched from `Conda` 
+and used by the pipelines should be copied, even if it is not strictly mandatory, in the root 
+directory. 
 
-Currently, to run the FastqWiper pipelines, the following packages are not included in `Conda` but are required:
+Currently, to run the FastqWiper pipelines, the following packages are not included in `Conda` but are 
+required:
 
 ### required packages:
 [gzrt](https://github.com/arenn/gzrt) (install [instructions](https://github.com/arenn/gzrt/blob/master/README.build))
+
+[BBTools](https://jgi.doe.gov/data-and-tools/bbtools/) (install [instructions](https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/installation-guide/))
+
 ```
 $ cd fastqwiper
 $ git clone https://github.com/arenn/gzrt.git
 $ cd gzrt
 $ make
 $ cd ..
+$ cd fastqwiper
+$ tar -xvzf BBMap_(version).tar.gz
 ```
 
 ### Commands:
@@ -114,7 +124,7 @@ Fixed files will be copied in the `data` folder and will be suffixed with the st
 that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
 - execute `gzrt` on corrupted fastq.gz files (i.e., that cannot be unzipped because of errors) and recover readable reads;
 - execute `fastqwiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
-- execute `trimmomatic` on wiped reads to remove residual unpaired reads 
+- execute `BBmap (repair.sh)` on wiped reads to remove residual unpaired reads and sort fastq files 
 
 #### Single-end files
 Using `fix_wipe_pairs_reads.smk` requires you to make the same edits as above. This pipeline will not execute `trimmomatic`.
@@ -141,4 +151,3 @@ Tel: +39 06 44160526 - Fax: +39 06 44160548<br/>
 E-mail: t.mazza@css-mendel.it <br/>
 Web page: http://www.css-mendel.it <br/>
 Web page: http://bioinformatics.css-mendel.it <br/>
-
