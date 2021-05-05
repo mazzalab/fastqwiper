@@ -48,7 +48,7 @@ setup(
     long_description_content_type='text/markdown',
     entry_points={
         'console_scripts': [
-            'wiper = fastq_wiper.wiper:wipe_fastq'
+            'fastqwiper = fastq_wiper.wiper:wipe_fastq'
         ]
     },
     # setup_requires=['numpy'],
