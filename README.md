@@ -112,7 +112,7 @@ the SAMPLE vector should be: `SAMPLES = ["sample", "excerpt"]`
 
 - **Generate the planned DAG**:<br />
 `snakemake -s pipeline/fix_wipe_pairs_reads.smk --dag | dot -Tpdf > dag.pdf`<br />
-<img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="600">
+<img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="400">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote 
   packages and may take longer). The number of computing cores can be tuned accordingly:<br />
