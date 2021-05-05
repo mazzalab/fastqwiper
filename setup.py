@@ -10,8 +10,6 @@ except:
         "'sudo apt-get install python3-pip'.\n")
     sys.exit()
 
-import glob
-
 if util.find_spec("setuptools") is None:
     sys.stdout.write(
         "\nIt seems that setuptools is not available on this machine. Please install pip (e.g. for Ubuntu, run "
