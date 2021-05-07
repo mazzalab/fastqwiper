@@ -9,6 +9,7 @@ from fastq_wiper import log
 
 import gzip
 import re
+import codecs
 
 
 def open_fastq_file(file_path: str):
@@ -19,9 +20,10 @@ def open_fastq_file(file_path: str):
 
     if os.path.exists(file_path) and os.path.isfile(file_path):
         if file_path.endswith('.gz'):
-            fastq_file_handler = gzip.open(file_path, 'rt', encoding="utf8", errors='ignore')
+            fastq_file_handler = gzip.open(file_path, 'rt', encoding="utf-8", errors='ignore')
         elif file_path.endswith('.fastq'):
-            fastq_file_handler = open(file_path, 'rt', encoding="utf8", errors='ignore')
+            fastq_file_handler = codecs.open(file_path, encoding='utf-8', errors='ignore')
+            # fastq_file_handler = open(file_path, 'rt', encoding="utf8", errors='strict')
 
     return fastq_file_handler
 
@@ -36,9 +38,9 @@ def write_fastq_file(file_path: str):
 
     if os.path.isdir(parent_folder):
         if file_path.endswith('.gz'):
-            fastq_file_handler = gzip.open(file_path, 'wt', encoding="utf8")
+            fastq_file_handler = gzip.open(file_path, 'wt', encoding="utf-8")
         elif file_path.endswith('.fastq'):
-            fastq_file_handler = open(file_path, 'wt', encoding="utf8")
+            fastq_file_handler = open(file_path, 'wt', encoding="utf-8")
 
     return fastq_file_handler
 
@@ -82,50 +84,59 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
                 blank += 1
                 continue
 
-            if clean_reads % log_frequency == 0:
+            if clean_reads % log_frequency == 0 and clean_reads > 0:
                 log.info(f"Cleaned {clean_reads} reads")
 
-            if not line.startswith('@') and '@' in line:
-                # Drop all character preceding @ from the header
-                line = line[line.index('@'):]
+            if line.rfind('@') > 0:
+                # Drop all character preceding the last @ character of the header
+                line = line[line.rfind('@'):]
                 head_at += 1
 
             if line.startswith('@') and line.rstrip().isprintable():
                 header: str = line
 
-                # read the SEQ line
-                line = fin.readline()
-                if line.strip():
-                    tot_lines += 1
-                else:
-                    blank += 1
-                    continue
-                if reg.match(line.rstrip()):
-                    raw_seq: str = line
-
-                    # read the '+' line
+                # read the SEQ line skipping blank lines
+                while True:
                     line = fin.readline()
                     if line.strip():
                         tot_lines += 1
+                        break
                     else:
                         blank += 1
                         continue
 
-                    if not line.startswith('+') and '+' in line:
-                        # Drop all character preceding + from the + line
-                        line = line[line.index('+'):]
-                        head_plus += 1
+                if reg.match(line.rstrip()):
+                    raw_seq: str = line
+
+                    # read the '+' line
+                    while True:
+                        line = fin.readline()
+                        if line.strip():
+                            tot_lines += 1
+                            break
+                        else:
+                            blank += 1
+                            continue
+
+                    if '+' in line:
+                        if line != "+\n":
+                            # Drop all characters except + of the qual line separator
+                            line = '+\n'
+                            head_plus += 1
 
                     if line.startswith('+'):
                         head_qual_sep: str = line
 
                         # read the QUAL file
-                        line = fin.readline().rstrip()
-                        if line.strip():
-                            tot_lines += 1
-                        else:
-                            blank += 1
-                            continue
+                        while True:
+                            line = fin.readline().rstrip()
+                            if line.strip():
+                                tot_lines += 1
+                                break
+                            else:
+                                blank += 1
+                                continue
+
                         min_ascii = min(ord(c) for c in line)
                         max_ascii = max(ord(c) for c in line)
                         if min_ascii >= 33 and max_ascii <= 126:
@@ -148,7 +159,6 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
                     seq_odd_chars += 1
             else:
                 head_print += 1
-                head_at -= 1
 
         fout.close()
         fin.close()
