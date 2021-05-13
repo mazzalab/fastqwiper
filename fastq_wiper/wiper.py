@@ -5,11 +5,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from colorama import init
 init(convert=True)
 import click
-from fastq_wiper import log
-
 import gzip
 import re
 import codecs
+from fastq_wiper import log
 
 
 def open_fastq_file(file_path: str):
@@ -58,11 +57,15 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
     qual_out_range = 0
     plus_row = 0
     seq_odd_chars = 0
+    qual_odd_chars = 0
     head_print = 0
     head_at = 0
     blank = 0
     head_plus = 0
+    unexpected_line = 0
     # endregion
+
+    MIN_HEADER_LEN = 10
 
     fin = open_fastq_file(fastq_in)
     if not fin:
@@ -77,88 +80,99 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
         # Open file out stream
         fout = write_fastq_file(fastq_out)
 
+        # Loop through 4-line reads
+        at_found = False
+        seq_found = False
+        plus_found = False
+        qual_found = False
         for line in fin:
-            if line.strip():
-                tot_lines += 1
-            else:
-                blank += 1
-                continue
+            line = line.rstrip()
+
+            tot_lines += 1
 
             if clean_reads % log_frequency == 0 and clean_reads > 0:
                 log.info(f"Cleaned {clean_reads} reads")
 
-            if line.rfind('@') > 0:
-                # Drop all character preceding the last @ character of the header
-                line = line[line.rfind('@'):]
-                head_at += 1
-
-            if line.startswith('@') and line.rstrip().isprintable():
-                header: str = line
-
-                # read the SEQ line skipping blank lines
-                while True:
-                    line = fin.readline()
-                    if line.strip():
-                        tot_lines += 1
-                        break
-                    else:
-                        blank += 1
-                        continue
-
-                if reg.match(line.rstrip()):
-                    raw_seq: str = line
-
-                    # read the '+' line
-                    while True:
-                        line = fin.readline()
-                        if line.strip():
-                            tot_lines += 1
-                            break
-                        else:
-                            blank += 1
-                            continue
-
-                    if '+' in line:
-                        if line != "+\n":
-                            # Drop all characters except + of the qual line separator
-                            line = '+\n'
-                            head_plus += 1
-
-                    if line.startswith('+'):
-                        head_qual_sep: str = line
-
-                        # read the QUAL file
-                        while True:
-                            line = fin.readline().rstrip()
-                            if line.strip():
-                                tot_lines += 1
-                                break
-                            else:
-                                blank += 1
-                                continue
-
-                        min_ascii = min(ord(c) for c in line)
-                        max_ascii = max(ord(c) for c in line)
-                        if min_ascii >= 33 and max_ascii <= 126:
-                            qual: str = line + '\n'
-
-                            if len(raw_seq) == len(qual):
-                                fout.write(header)
-                                fout.write(raw_seq)
-                                fout.write(head_qual_sep)
-                                fout.write(qual)
-
-                                clean_reads += + 1
-                            else:
-                                seq_len_neq_qual_len += 1
-                        else:
-                            qual_out_range += 1
-                    else:
-                        plus_row += 1
+            while True:
+                if line:
+                    break
                 else:
-                    seq_odd_chars += 1
+                    blank += 1
+                    line = fin.readline()
+                    continue
+
+            # header line
+            if line.isprintable() and "@" in line:  # and len(line) > MIN_HEADER_LEN:
+                at_found = True
+                seq_found = False
+                plus_found = False
+
+                # Drop all character preceding the last @ character of the header
+                if line.rfind('@') > 0:
+                    line = line[line.rfind('@'):]
+                    head_at += 1
+
+                header: str = line.rstrip()
+
+            # seq line
+            elif line.isprintable() and at_found and reg.match(line):
+                seq_found = True
+                raw_seq: str = line
+
+            # + line
+            elif '+' in line and line.isprintable() and at_found and seq_found:
+                plus_found = True
+
+                if line != "+":
+                    # Drop all characters except + of the qual line separator
+                    line = '+'
+                    head_plus += 1
+
+                head_qual_sep: str = line
+
+            # qual line
+            elif line.isprintable() and at_found and seq_found and plus_found:
+                qual_found = True
+
+                min_ascii = min(ord(c) for c in line)
+                max_ascii = max(ord(c) for c in line)
+                if min_ascii >= 33 and max_ascii <= 126:
+                    qual: str = line
+
+                    if len(raw_seq) == len(qual) and len(qual) != 0:
+                        fout.write(header + '\n')
+                        fout.write(raw_seq + '\n')
+                        fout.write(head_qual_sep + '\n')
+                        fout.write(qual + '\n')
+
+                        clean_reads += + 1
+                    else:
+                        seq_len_neq_qual_len += 1
+                else:
+                    qual_out_range += 1
+
+                at_found = False
+                seq_found = False
+                plus_found = False
+                qual_found = False
+
+            # unexpected line
             else:
-                head_print += 1
+                if not at_found:
+                    head_print += 1
+                elif not seq_found:
+                    seq_odd_chars += 1
+                elif not plus_found:
+                    plus_row += 1
+                elif not qual_found:
+                    qual_odd_chars += 1
+                else:
+                    unexpected_line += 1
+
+                at_found = False
+                seq_found = False
+                plus_found = False
+                qual_found = False
 
         fout.close()
         fin.close()
@@ -177,12 +191,16 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
                            fg='blue' if seq_odd_chars == 0 else 'red'))
     click.echo(click.style(f"Not printable header lines: {head_print}/{tot_lines}",
                            fg='blue' if head_print == 0 else 'red'))
+    click.echo(click.style(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}",
+                           fg='blue' if qual_odd_chars == 0 else 'red'))
     click.echo(click.style(f"Fixed header lines: {head_at}/{tot_lines}",
                            fg='blue' if head_at == 0 else 'yellow'))
     click.echo(click.style(f"Fixed + lines: {head_plus}/{tot_lines}",
                            fg='blue' if head_plus == 0 else 'yellow'))
     click.echo(click.style(f"Blank lines: {blank}/{tot_lines}",
                            fg='blue' if blank == 0 else 'yellow'))
+    click.echo(click.style(f"Missplaced lines: {unexpected_line}/{tot_lines}",
+                           fg='blue' if unexpected_line == 0 else 'yellow'))
 
 
 if __name__ == '__main__':

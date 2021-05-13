@@ -154,8 +154,8 @@ dependencies:
   - six=1.15.0
   - slacker=0.14.0
   - smmap=3.0.4
-  - snakemake=5.31.1
-  - snakemake-minimal=5.31.1
+  - snakemake=6.3.0
+  - snakemake-minimal=6.3.0
   - sqlite=3.34.0
   - tk=8.6.10
   - toposort=1.6

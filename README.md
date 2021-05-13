@@ -62,6 +62,8 @@ and then creating and activating a clean environment as above:
 ```
 $ mamba create -c conda-forge -c bioconda -n FastqWiper snakemake
 $ conda activate FastqWiper
+$ conda install colorama click
+$ conda install mamba -c conda-forge
 ```
 
 
