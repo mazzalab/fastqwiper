@@ -14,7 +14,7 @@ environment:
   PYTHON_VERSION: 3.8
 
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       MINICONDA: "C:\\Miniconda38-x64"
       WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
       platform: x64

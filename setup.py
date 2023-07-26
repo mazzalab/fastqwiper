@@ -18,8 +18,8 @@ if util.find_spec("setuptools") is None:
 
 from setuptools import setup, find_packages
 
-if sys.version_info[0] < (3, 8):
-    sys.exit('Sorry, Python < 3.8 is not supported')
+if sys.version_info != (3, 8):
+    sys.exit('Sorry, Python diverse to 3.8 is not supported')
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
