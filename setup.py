@@ -18,7 +18,7 @@ if util.find_spec("setuptools") is None:
 
 from setuptools import setup, find_packages
 
-if sys.version_info <= (3, 7):
+if sys.version_info[0] < (3, 8):
     sys.exit('Sorry, Python < 3.8 is not supported')
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -69,5 +69,5 @@ setup(
         'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
     },
     keywords='genomics, ngs, fastq, bioinformatics',
-    python_requires='<3.9',
+    python_requires='=3.8',
 )

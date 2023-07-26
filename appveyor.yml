@@ -1,7 +1,7 @@
 # os: windows
 
 # version format
-version: 2021.1.{build}
+version: 2023.1.{build}
 
 branches:
   only:

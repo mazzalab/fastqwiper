@@ -8,7 +8,7 @@ More complex workflows, as **recover** corrupted `fastq.gz`, **dropping** or **f
 unpaired reads, and **fixing** reads interleaving, can be executed using Snakemake and the preconfigured 
 [pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) provided here.
 
-* Compatibility: Python <3.9
+* Compatibility: Python 3.8
 * OS: Windows (excluding pipelines), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Pypi: https://pypi.org/project/fastqwiper

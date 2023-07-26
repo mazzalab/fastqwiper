@@ -1,11 +1,11 @@
 # cmd: snakemake -s fix_wipe_single_reads.smk --use-conda --cores 2
 
-SAMPLES=["CTRL-I-Exp"]
+SAMPLES=["excerpt_S1"]
 
 
 rule all:
     input:
-        expand("data/{s}_S1_R{r}_001_fixed_wiped.fastq.gz", s=SAMPLES, r = [1]),
+        expand("data/{s}_R{r}_001_fixed_wiped.fastq.gz", s=SAMPLES, r = [2]),
 
 rule fix_gzrt:
     input:
@@ -15,7 +15,7 @@ rule fix_gzrt:
     log:
         "logs/fix_gzrt/fix_gzrt.{sample}.log"
     shell:
-        "gzrt/gzrecover -o {output} {input} -v 2> {log}"
+        "gzrecover -o {output} {input} -v 2> {log}"
 
 
 rule wipe_fastq:
