@@ -54,8 +54,7 @@ setup(
     install_requires=[
         "setuptools",
         "colorama==0.4.6",
-        "click==8.1.3",
-        "tqdm==4.38.0"
+        "click==8.1.3"
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -71,5 +70,5 @@ setup(
         'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
     },
     keywords='genomics, ngs, fastq, bioinformatics',
-    python_requires='3.8',
+    python_requires='==3.8',
 )

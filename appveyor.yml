@@ -49,10 +49,8 @@ install:
   - sh: PYTHONUNBUFFERED=1
 
   - conda config --set always_yes yes --set changeps1 no
-  # - conda update -q conda
   - conda config --set show_channel_urls true
   - conda config --add channels conda-forge
-  # - conda install tqdm  --yes --quiet
   - conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet # coverage codecov
 
 build: off
