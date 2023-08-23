@@ -1,3 +1,7 @@
+#my custom
+.vscode
+bbmap/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
