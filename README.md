@@ -2,11 +2,10 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/y09medho67x2nrgn?svg=true)](https://ci.appveyor.com/project/mazzalab/fastqwiper) [![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)](https://github.com/mazzalab/fastqwiper/issues) ![Docker Pulls](https://img.shields.io/docker/pulls/mazzalab/fastqwiper)
 [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/version.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/latest_release_date.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/platforms.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/downloads.svg)](https://anaconda.org/bfxcss/fastqwiper)
 
-`FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. The available and pre-designed workflows allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** 
-unpaired reads, and **fixing** reads interleaving.
+`FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. The available and pre-designed workflows allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving. More complex workflows, as **recover** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving, can be executed using Snakemake and the preconfigured [pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) provided here.
 
-* Compatibility: Python < 3.9 (<i>to be upgraded</i>)
-* OS: Windows (excluding pipelines), Linux, Mac OS
+* Compatibility: Python 3.8
+* OS: Windows (through Docker), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)

@@ -1,18 +1,13 @@
 # cmd:  snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2
 # zgrep -n -x '[^+]\{0,10\}' data/cov3-200825_S1_R1_001_fixed_wiped.fastq.gz
 
-# SAMPLES = ["sample", "excerpt"]
 from snakemake.io import expand, temp
 
-SAMPLES = ["cov3-200825"]
-# SAMPLES = ["sample"]
-
-# conda: "environment.yml"
+SAMPLES = ["sample"]
 
 rule all:
-    input:
-        expand("data/{s}_S1_R{r}_001_fixed_wiped_paired_interleaving.fastq.gz", s=SAMPLES, r = [1,2]) #,
-#        expand("data/{s}_S1_R{r}_001_fixed_wiped_unpaired.fastq.gz", s = SAMPLES, r = [1, 2])
+    input: 
+        expand("data/{s}_S1_R{r}_001_fixed_wiped_paired_interleaving.fastq.gz", s = SAMPLES, r = [1, 2])
 
 rule fix_gzrt:
     input:
@@ -22,7 +17,7 @@ rule fix_gzrt:
     log:
         "logs/fix_gzrt/fix_gzrt.{sample}.log"
     shell:
-        "gzrt/gzrecover -o {output} {input} -v 2> {log}"
+        "gzrecover -o {output} {input} -v 2> {log}"
 
 rule wipe_fastq:
     input:
@@ -48,11 +43,10 @@ rule drop_unpaired:
     params:
         trimmer = ["MINLEN:20"]
     threads:
-        1
+        4
     cache: False
     wrapper:
-        "0.74.0/bio/trimmomatic/pe"
-
+        "v2.2.1/bio/trimmomatic/pe"
 
 rule fix_interleaving:
     input:

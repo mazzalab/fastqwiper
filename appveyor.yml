@@ -1,7 +1,7 @@
 # os: windows
 
 # version format
-version: 2021.1.{build}
+version: 2023.1.{build}
 
 branches:
   only:
@@ -14,7 +14,7 @@ environment:
   PYTHON_VERSION: 3.8
 
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
       MINICONDA: "C:\\Miniconda38-x64"
       WINKITS: "C:\\Program Files (x86)\\Windows Kits\\8.0\\bin\\x64"
       platform: x64
@@ -49,7 +49,6 @@ install:
   - sh: PYTHONUNBUFFERED=1
 
   - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
   - conda config --set show_channel_urls true
   - conda config --add channels conda-forge
   - conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet # coverage codecov

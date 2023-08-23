@@ -18,8 +18,9 @@ if util.find_spec("setuptools") is None:
 
 from setuptools import setup, find_packages
 
-if sys.version_info <= (3, 7):
-    sys.exit('Sorry, Python < 3.8 is not supported')
+print(sys.version_info)
+if sys.version_info.major != 3 and sys.version_info.minor != 8:
+    sys.exit('Sorry, Python diverse to 3.8 is not supported')
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -52,8 +53,8 @@ setup(
     # setup_requires=['numpy'],
     install_requires=[
         "setuptools",
-        "colorama==0.4.4",
-        "click==7.1.2",
+        "colorama==0.4.6",
+        "click==8.1.3"
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -69,5 +70,5 @@ setup(
         'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
     },
     keywords='genomics, ngs, fastq, bioinformatics',
-    python_requires='<3.9',
+    python_requires='==3.8',
 )

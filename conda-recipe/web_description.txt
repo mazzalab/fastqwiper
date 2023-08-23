@@ -1,0 +1,10 @@
+A package to wipe out uncompliant reads from FASTQ files.
+
+Compatibility: Python <= 3.8<br/>
+Contributions: bioinformatics@css-mendel.it<br/>
+Website: <a href="https://github.com/mazzalab/fastqwiper" target="_blank">https://github.com/mazzalab/fastqwiper</a><br />
+Pypi: <a href="https://pypi.org/project/fastqwiper" target="_blank">https://pypi.org/project/fastqwiper</a><br />
+Conda: <a href="https://anaconda.org/bfxcss/fastqwiper" target="_blank">https://anaconda.org/bfxcss/fastqwiper</a><br />
+Docker Hub: NA yet<br />
+Bug report: <a href="https://github.com/mazzalab/fastqwiper/issues" target="_blank">https://github.com/mazzalab/fastqwiper/issues</a><br />
+<br />
