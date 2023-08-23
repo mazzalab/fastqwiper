@@ -20,7 +20,7 @@ from setuptools import setup, find_packages
 
 print(sys.version_info)
 if sys.version_info.major != 3 and sys.version_info.minor != 8:
-    sys.exit('Sorry, Python diverse to 3.8 is not supported')
+    sys.exit('Sorry, Python different than 3.8 is not supported')
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
