@@ -3,17 +3,18 @@
 
 [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/version.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/latest_release_date.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/platforms.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/downloads.svg)](https://anaconda.org/bfxcss/fastqwiper)
 
-`FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. The available and pre-designed workflows allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving. More complex workflows, as **recover** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving, can be executed using Snakemake and the preconfigured [pipeline files](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) provided here.
+`FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. Additionally, the available and pre-designed Snakemake [workflows](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving.
 
-* Compatibility: Python 3.8
-* OS: Windows (through Docker), Linux, Mac OS
+* Compatibility: Python 3.8 (to be upgraded soon)
+* OS: Windows (with Docker), Linux, Mac OS
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
 
 ## Installation
-There is an <b>easy</b> and a <b>hard</b> way to install and use `FastqWiper`. 
+There is an <b>EASY</b> and a <b>HARD</b> way to install and use `FastqWiper`.
+
 
 ### The easy way (Docker, all OS)
 1. Pull the Docker image available from DockerHub:
@@ -28,7 +29,7 @@ where:
 
 - `YOUR_LOCAL_PATH_TO_DATA_FOLDER` is the path to the folder where the fastq.gz files to be wiped are located;
 - `paired` triggers the cleaning of R1 and R2. Alternatively, `single` will trigger the wiping of individual FASTQ files;
-- `8` is the number of computing cores to be spawned;
+- `8` is the number of your choice of computing cores to be spawned;
 - `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything <u>before</u> these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. E.g., 
 
 `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper single 8 excerpt_R1_001`
