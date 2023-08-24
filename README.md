@@ -121,10 +121,10 @@ Using `fix_wipe_pairs_reads.smk` requires you to make the same edits as above. T
 **Tommaso Mazza**  
 [![Tweeting](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/irongraft)
 
-Laboratory of Bioinformatics
-Fondazione IRCCS Casa Sollievo della Sofferenza
-Viale Regina Margherita 261 - 00198 Roma IT
-Tel: +39 06 44160526 - Fax: +39 06 44160548
-E-mail: t.mazza@css-mendel.it
-Web page: http://www.css-mendel.it
-Web page: http://bioinformatics.css-mendel.it
+Laboratory of Bioinformatics</br>
+Fondazione IRCCS Casa Sollievo della Sofferenza</br>
+Viale Regina Margherita 261 - 00198 Roma IT</br>
+Tel: +39 06 44160526 - Fax: +39 06 44160548</br>
+E-mail: t.mazza@css-mendel.it</br>
+Web page: http://www.css-mendel.it</br>
+Web page: http://bioinformatics.css-mendel.it</br>
