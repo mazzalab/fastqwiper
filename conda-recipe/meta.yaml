@@ -16,6 +16,10 @@ build:
     - fastqwiper = fastq_wiper.wiper:wipe_fastq
  
 requirements:
+  build:
+    - anaconda-client
+    - conda-build
+
   host:
     - python
     - numpy
