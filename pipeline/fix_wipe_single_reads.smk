@@ -1,11 +1,10 @@
 # cmd: snakemake -s fix_wipe_single_reads.smk --use-conda --cores 2
 
-SAMPLES=["excerpt_S1"]
-
+SAMPLES=config["sample_name"]
 
 rule all:
     input:
-        expand("data/{s}_R{r}_001_fixed_wiped.fastq.gz", s=SAMPLES, r = [2]),
+        expand("data/{s}_fixed_wiped.fastq.gz", s=SAMPLES),
 
 rule fix_gzrt:
     input:
@@ -26,6 +25,6 @@ rule wipe_fastq:
     log:
         "logs/wipe_fastq/wipe_fastq.{sample}.log"
     shell:
-        "python fastq_wiper/wiper.py --fastq_in {input} --fastq_out {output} 2> {log}"
+        "fastqwiper --fastq_in {input} --fastq_out {output} 2> {log}"
 
 

@@ -69,7 +69,6 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
 
     fin = open_fastq_file(fastq_in)
     if not fin:
-        log.error('The input FASTQ file does not exist or bad extension')
         click.echo(click.style("The input FASTQ file does not exist or bad extension", fg='red'))
     else:
         click.echo(click.style(f"Start wiping {fastq_in}", fg='blue'))
@@ -160,6 +159,7 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
             else:
                 if not at_found:
                     head_print += 1
+                    print(line)
                 elif not seq_found:
                     seq_odd_chars += 1
                 elif not plus_found:
@@ -177,30 +177,31 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_frequency: int):
         fout.close()
         fin.close()
 
-    click.echo(click.style("Successfully terminated\n", fg='blue'))
+        # Print short report
+        click.echo(click.style("Successfully terminated\n", fg='blue'))
 
-    click.echo(click.style(f"Wiped lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)",
-                           fg='blue' if tot_lines == clean_reads else 'yellow'))
-    click.echo(click.style(f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}",
-                           fg='blue' if seq_len_neq_qual_len == 0 else 'red'))
-    click.echo(click.style(f"BAD QUAL lines: {qual_out_range}/{tot_lines}",
-                           fg='blue' if qual_out_range == 0 else 'red'))
-    click.echo(click.style(f"BAD + lines: {plus_row}/{tot_lines}",
-                           fg='blue' if plus_row == 0 else 'red'))
-    click.echo(click.style(f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}",
-                           fg='blue' if seq_odd_chars == 0 else 'red'))
-    click.echo(click.style(f"Not printable header lines: {head_print}/{tot_lines}",
-                           fg='blue' if head_print == 0 else 'red'))
-    click.echo(click.style(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}",
-                           fg='blue' if qual_odd_chars == 0 else 'red'))
-    click.echo(click.style(f"Fixed header lines: {head_at}/{tot_lines}",
-                           fg='blue' if head_at == 0 else 'yellow'))
-    click.echo(click.style(f"Fixed + lines: {head_plus}/{tot_lines}",
-                           fg='blue' if head_plus == 0 else 'yellow'))
-    click.echo(click.style(f"Blank lines: {blank}/{tot_lines}",
-                           fg='blue' if blank == 0 else 'yellow'))
-    click.echo(click.style(f"Missplaced lines: {unexpected_line}/{tot_lines}",
-                           fg='blue' if unexpected_line == 0 else 'yellow'))
+        click.echo(click.style(f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)",
+                            fg='blue' if tot_lines == clean_reads else 'yellow'))
+        click.echo(click.style(f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}",
+                            fg='blue' if seq_len_neq_qual_len == 0 else 'red'))
+        click.echo(click.style(f"BAD QUAL lines: {qual_out_range}/{tot_lines}",
+                            fg='blue' if qual_out_range == 0 else 'red'))
+        click.echo(click.style(f"BAD '+' lines: {plus_row}/{tot_lines}",
+                            fg='blue' if plus_row == 0 else 'red'))
+        click.echo(click.style(f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}",
+                            fg='blue' if seq_odd_chars == 0 else 'red'))
+        click.echo(click.style(f"Not printable header lines: {head_print}/{tot_lines}",
+                            fg='blue' if head_print == 0 else 'red'))
+        click.echo(click.style(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}",
+                            fg='blue' if qual_odd_chars == 0 else 'red'))
+        click.echo(click.style(f"Fixed header lines: {head_at}/{tot_lines}",
+                            fg='blue' if head_at == 0 else 'yellow'))
+        click.echo(click.style(f"Fixed + lines: {head_plus}/{tot_lines}",
+                            fg='blue' if head_plus == 0 else 'yellow'))
+        click.echo(click.style(f"Blank lines: {blank}/{tot_lines}",
+                            fg='blue' if blank == 0 else 'yellow'))
+        click.echo(click.style(f"Missplaced lines: {unexpected_line}/{tot_lines}",
+                            fg='blue' if unexpected_line == 0 else 'yellow'))
 
 
 if __name__ == '__main__':

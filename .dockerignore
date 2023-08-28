@@ -1,0 +1,12 @@
+.snakemake
+.vscode
+.gitignore
+
+__pycache__
+
+conda-recipe
+appveyor.yml
+environment.yml
+# README.md
+requirements.txt
+setup.py
