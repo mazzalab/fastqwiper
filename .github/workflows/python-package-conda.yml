@@ -26,7 +26,7 @@ jobs:
           auto-activate-base: true
           show-channel-urls: true
           python-version: ${{ matrix.python-version }}
-          environment-file: environment.yaml    # Path to the build conda environment
+          environment-file: environment.yml    # Path to the build conda environment
           
 
       # - name: Conda initialization
