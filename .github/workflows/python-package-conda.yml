@@ -23,8 +23,11 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
+          auto-activate-base: true
+          show-channel-urls: true
           python-version: ${{ matrix.python-version }}
-          activate-environment: ""
+          environment-file: environment.yaml    # Path to the build conda environment
+          
 
       # - name: Conda initialization
       #   shell: bash -el {0}
@@ -34,15 +37,17 @@ jobs:
       #     conda config --add channels conda-forge
       #     conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
 
-      - name: Build package
-        uses: cascode-labs/build-conda-action/action.yml@v0
+      - name: Build and upload the conda packages
+        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
         with:
-          # recipe_path: '{NEW_RECIPE_PATH}'
-          # base_env_prefix: '{NEW_BASE_PREFIX}'
-          package_artifact_name: FastqWiper
-          # test_results_artifact_name: '{NEW_TEST_RESULTS_NAME}'
-          build_options: --quiet -c bfxcss -c conda-forge
-          conda_build_env_filepath: conda_dist
+          meta_yaml_dir: conda-build
+          python-version: ${{ matrix.python-version }}
+          platform_linux-64: true
+          platform_osx-64: false
+          platform_win-64: false
+          user: bfxcss
+          label: auto
+          token: ${{ secrets.CONDA_TOKEN }} # Replace with the right name of your secret
 
     # steps:
     # - uses: actions/checkout@v3
