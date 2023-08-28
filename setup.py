@@ -30,7 +30,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # else:
 #     VERSION = os.environ['APPVEYOR_BUILD_VERSION']
 
-VERSION = os.environ['BUILD_NUMBER']
+VERSION = "2023.2." + os.environ['GITHUB_RUN_NUMBER']
 
 print("version {} passed to setup.py".format(VERSION))
 assert re.match('^[0-9]+\.[0-9]+\.[0-9]+$', VERSION), "Invalid version number"
@@ -55,8 +55,8 @@ setup(
     # setup_requires=['numpy'],
     install_requires=[
         "setuptools",
-        "colorama==0.4.6",
-        "click==8.1.3"
+        "colorama",
+        "click"
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

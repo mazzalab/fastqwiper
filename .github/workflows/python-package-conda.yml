@@ -17,12 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate build number
-        uses: onyxmueller/build-tag-number@v1
-        with:
-          token: ${{secrets.github_token}}
-          prefix: 2023.
-
       - name: Install Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
