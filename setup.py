@@ -18,17 +18,19 @@ if util.find_spec("setuptools") is None:
 
 from setuptools import setup, find_packages
 
-print(sys.version_info)
-if sys.version_info.major != 3 and sys.version_info.minor != 8:
-    sys.exit('Sorry, Python different than 3.8 is not supported')
+# print(sys.version_info)
+# if sys.version_info.major != 3 and sys.version_info.minor != 8:
+#     sys.exit('Sorry, Python different than 3.8 is not supported')
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-if 'APPVEYOR_BUILD_VERSION' not in os.environ:
-    VERSION = os.environ['PKG_VERSION']
-else:
-    VERSION = os.environ['APPVEYOR_BUILD_VERSION']
+# if 'APPVEYOR_BUILD_VERSION' not in os.environ:
+#     VERSION = os.environ['PKG_VERSION']
+# else:
+#     VERSION = os.environ['APPVEYOR_BUILD_VERSION']
+
+VERSION = os.environ['BUILD_NUMBER']
 
 print("version {} passed to setup.py".format(VERSION))
 assert re.match('^[0-9]+\.[0-9]+\.[0-9]+$', VERSION), "Invalid version number"
@@ -59,7 +61,7 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: >3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
@@ -70,5 +72,5 @@ setup(
         'Developmental plan': 'https://github.com/mazzalab/fastqwiper/projects',
     },
     keywords='genomics, ngs, fastq, bioinformatics',
-    python_requires='==3.8',
+    python_requires='>3.7',
 )

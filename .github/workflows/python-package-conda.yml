@@ -4,31 +4,67 @@ on: [push]
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       max-parallel: 5
+      matrix:
+        os: ["ubuntu-latest"]  # , "macos-latest", "windows-latest"
+        python-version: ["3.11"]  # , "2.7"
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    - name: Add conda to system path
-      run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
-    - name: Install dependencies
-      run: |
-        conda env update --file environment.yml --name base
-    - name: Lint with flake8
-      run: |
-        conda install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        conda install pytest
-        pytest
+      - name: Generate build number
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{secrets.github_token}}
+          prefix: 2023.
+
+      - name: Install Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          activate-environment: ""
+
+      # - name: Conda initialization
+      #   shell: bash -el {0}
+      #   run: |
+      #     conda config --set always_yes yes --set changeps1 no
+      #     conda config --set show_channel_urls true
+      #     conda config --add channels conda-forge
+      #     conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
+
+      - name: Build package
+        uses: cascode-labs/build-conda-action/action.yml@v0
+        with:
+          # recipe_path: '{NEW_RECIPE_PATH}'
+          # base_env_prefix: '{NEW_BASE_PREFIX}'
+          package_artifact_name: FastqWiper
+          # test_results_artifact_name: '{NEW_TEST_RESULTS_NAME}'
+          build_options: --quiet -c bfxcss -c conda-forge
+          conda_build_env_filepath: conda_dist
+
+    # steps:
+    # - uses: actions/checkout@v3
+    # - name: Set up Python
+    #   uses: actions/setup-python@v3
+    #   with:
+    #     python-version: '3.10'
+    # - name: Add conda to system path
+    #   run: |
+    #     # $CONDA is an environment variable pointing to the root of the miniconda directory
+    #     echo $CONDA/bin >> $GITHUB_PATH
+    # - name: Install dependencies
+    #   run: |
+    #     conda env update --file environment.yml --name base
+    # - name: Lint with flake8
+    #   run: |
+    #     conda install flake8
+    #     # stop the build if there are Python syntax errors or undefined names
+    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    # - name: Test with pytest
+    #   run: |
+    #     conda install pytest
+    #     pytest
