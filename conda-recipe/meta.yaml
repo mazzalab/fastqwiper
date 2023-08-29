@@ -20,7 +20,7 @@ requirements:
     - anaconda-client
     - conda-build
   script_env:
-    - GITHUB_RUN_NUMBER
+    - GITHUB_RUN_NUMBER=88
 
   host:
     - python
