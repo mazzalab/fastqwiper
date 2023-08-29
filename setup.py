@@ -25,13 +25,8 @@ from setuptools import setup, find_packages
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# if 'APPVEYOR_BUILD_VERSION' not in os.environ:
-#     VERSION = os.environ['PKG_VERSION']
-# else:
-#     VERSION = os.environ['APPVEYOR_BUILD_VERSION']
-
+# Get and set the build version
 VERSION = "2023.2." + os.environ['GITHUB_RUN_NUMBER']
-
 print("version {} passed to setup.py".format(VERSION))
 assert re.match('^[0-9]+\.[0-9]+\.[0-9]+$', VERSION), "Invalid version number"
 

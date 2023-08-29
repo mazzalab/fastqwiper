@@ -35,20 +35,9 @@ jobs:
         shell: bash -el {0}
         run: |
           conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          ls conda_dist
+          ls -lR conda_dist
 
-      # - name: Build and upload the conda packages
-      #   uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
-      #   with:
-      #     meta_yaml_dir: conda-recipe
-      #     python-version: ${{ matrix.python-version }}
-      #     platform_linux-64: true
-      #     platform_osx-64: false
-      #     platform_win-64: false
-      #     user: bfxcss
-      #     label: auto
-      #     token: ${{ secrets.CONDA_TOKEN }} # Replace with the right name of your secret
-
+      
     # steps:
     # - uses: actions/checkout@v3
     # - name: Set up Python
