@@ -17,10 +17,11 @@ build:
  
 requirements:
   build:
-    - anaconda-client
-    - conda-build
+    # - anaconda-client
+    # - conda-build
     script_env:
       - GITHUB_RUN_NUMBER
+    # number: {{ environ.get('GITHUB_RUN_NUMBER', 0) }}
 
   host:
     - python
