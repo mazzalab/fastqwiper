@@ -12,16 +12,16 @@ source:
 
 build:
   number: 0
+  script_env:
+      - GITHUB_RUN_NUMBER
+  # number: {{ environ.get('GITHUB_RUN_NUMBER', 0) }}
   entry_points:
     - fastqwiper = fastq_wiper.wiper:wipe_fastq
  
 requirements:
   build:
-    # - anaconda-client
-    # - conda-build
-    script_env:
-      - GITHUB_RUN_NUMBER
-    # number: {{ environ.get('GITHUB_RUN_NUMBER', 0) }}
+    - anaconda-client
+    - conda-build    
 
   host:
     - python
