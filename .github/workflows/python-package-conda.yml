@@ -35,6 +35,6 @@ jobs:
         shell: bash -el {0}
         run: |
           conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          conda convert --platform win-64 .conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
-          conda convert --platform osx-64 .conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
+          conda convert --platform win-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
+          conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
           ls -lR conda_dist
