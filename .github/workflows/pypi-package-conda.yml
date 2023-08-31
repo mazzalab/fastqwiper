@@ -40,4 +40,4 @@ jobs:
 
             - name: Publishing package
               shell: bash -el {0}
-              run: twine upload pypi_dist\*.whl -u __token__ -p %PYPI_TOKEN%
+              run: twine upload ./pypi_dist/*.whl -u __token__ -p %PYPI_TOKEN%
