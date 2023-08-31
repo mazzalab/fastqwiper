@@ -19,7 +19,7 @@ build:
  
 requirements:
   build:
-    - anaconda-client
+    # - anaconda-client
     - conda-build    
 
   host:
