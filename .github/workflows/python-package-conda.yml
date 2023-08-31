@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        os: ["ubuntu-latest"]  # , "macos-latest", "windows-latest"
+        os: ["ubuntu-latest", "windows-latest"]  # , "macos-latest"
         python-version: ["3.10"]  # , "2.7"
 
     steps:
@@ -31,13 +31,18 @@ jobs:
         shell: bash -el {0}
         run: conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
 
-      - name: Building package
+      - name: Building package for Linux&MacOS
         shell: bash -el {0}
         run: |
           conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          conda convert --platform win-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
           conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
-          ls -lR conda_dist
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Building package for Windows only
+        shell: bash -el {0}
+        run: |
+          conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
+        if: matrix.os == 'windows-latest'
 
       - name: Publishing package
         shell: bash -el {0}

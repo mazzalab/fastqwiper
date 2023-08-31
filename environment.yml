@@ -1,9 +1,9 @@
-name: fastqwiper
+name: fastqwiper2
 channels:
-  - bioconda
   - conda-forge
   - defaults
 dependencies:
-  - colorama=0.4.6
-  - click=8.1.7
-  - setuptools~=68.1.2
+  - python=3.10
+  - colorama
+  - click
+  - setuptools
