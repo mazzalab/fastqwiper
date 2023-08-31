@@ -38,3 +38,8 @@ jobs:
           conda convert --platform win-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
           conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
           ls -lR conda_dist
+
+      - name: Publishing package
+        shell: bash -el {0}
+        run: |
+          anaconda -t ${{ secrets.CONDA_TOKEN }} upload -u bfxcss ./conda_dist/**/*.tar.bz2

@@ -89,25 +89,3 @@ on_success:
 
   - sh: anaconda -t $CONDA_TOKEN upload -u bfxcss conda_dist/**/*.tar.bz2
   # - sh:  twine upload pypi_dist/*.whl -u __token__ -p $PYPI_TOKEN
-
-
-#deploy:
-#  - provider: GitHub
-#    release: pagral-v$(APPVEYOR_BUILD_VERSION)
-#    description: 'Latest tagged release of Pagral'
-#    artifact: pypi_whl
-#    draft: false
-#    prerelease: false
-#    auth_token:
-#      secure: qmatt+fSRfcwrPNpBFF+bXSOtwPdIJ4cqBoHnxEkuLDLd4N8GHJqeg2QPxaFI6u2
-#    on:
-#      branch: master                # release from master branch only
-#      APPVEYOR_REPO_TAG: false       # deploy on tag push only
-
-# on_finish:
-  # - sh: export APPVEYOR_SSH_BLOCK=true
-  # - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
-
-# UPLOAD TO CODECOV
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-#  - codecov -f pagral\coverage.xml

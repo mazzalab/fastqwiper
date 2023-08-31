@@ -5,12 +5,12 @@ ENV bbmap_version 39.01
 ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
 # Downgrade Python to 3.8
-RUN mamba install python=3.8
-RUN mamba install tabulate=0.8.10
+RUN mamba install python=3.10
+# RUN mamba install tabulate=0.8.10
 
 # RUN conda install -c conda-forge mamba
-RUN mamba install -c conda-forge -c bioconda snakemake=7.25.0 -y
-# RUN mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
+# RUN mamba install -c conda-forge -c bioconda snakemake=7.25.0 -y
+RUN mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
 RUN mamba install -c conda-forge colorama click -y
 
 # Install fastqwiper from conda
