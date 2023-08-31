@@ -39,6 +39,6 @@ test:
     
 about:
   home: https://github.com/mazzalab/fastqwiper
-  summary: A package to wipe out uncompliant reads from FASTQ files
+  summary: An ensamble method to recover corrupted FASTQ files, drop or fix pesky lines, remove unpaired reads, and fix reads interleaving
   license: MIT
   license_file: LICENSE.txt
