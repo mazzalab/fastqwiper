@@ -14,7 +14,7 @@ build:
   number: {{ environ.get('GITHUB_RUN_NUMBER', 0) }}
   script_env:
       - GITHUB_RUN_NUMBER
-      - FASTQWIPER_VER
+      - FASTQWIPER_VER = {{ environ.get('FASTQWIPER_VER', 0) }}
   entry_points:
     - fastqwiper = fastq_wiper.wiper:wipe_fastq
  

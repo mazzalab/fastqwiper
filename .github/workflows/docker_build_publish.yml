@@ -30,4 +30,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: mazzalab/fastqwiper:latest , mazzalab/fastqwiper:${{ env.FASTQWIPER_VER }}${{ github.run_number }}
+          tags: mazzalab/fastqwiper:latest , mazzalab/fastqwiper:${{ vars.FASTQWIPER_VER }}${{ github.run_number }}
