@@ -4,14 +4,11 @@ LABEL maintainer="mazza.tommaso@gmail.com"
 ENV bbmap_version 39.01
 ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
-# Downgrade Python to 3.8
+RUN mamba config --set channel_priority strict
 RUN mamba install python=3.10
-# RUN mamba install tabulate=0.8.10
-
-# RUN conda install -c conda-forge mamba
-# RUN mamba install -c conda-forge -c bioconda snakemake=7.25.0 -y
 RUN mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
 RUN mamba install -c conda-forge colorama click -y
+RUN mamba install -c bioconda trimmomatic -y
 
 # Install fastqwiper from conda
 RUN mamba install -y -c bfxcss -c conda-forge fastqwiper
@@ -19,7 +16,7 @@ RUN mamba install -y -c bfxcss -c conda-forge fastqwiper
 # Install gzrt, BBmap, and Java
 RUN apt update
 RUN apt-get install gzrt -y
-ADD https://sourceforge.net/projects/bbmap/files/BBMap_39.01.tar.gz/download /fastqwiper/BBMap_${bbmap_version}.tar.gz
+ADD https://sourceforge.net/projects/bbmap/files/BBMap_${bbmap_version}.tar.gz/download /fastqwiper/BBMap_${bbmap_version}.tar.gz
 RUN cd fastqwiper &&\
     tar -xvzf BBMap_${bbmap_version}.tar.gz &&\
     rm BBMap_${bbmap_version}.tar.gz 

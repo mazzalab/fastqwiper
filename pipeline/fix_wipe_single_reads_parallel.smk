@@ -18,7 +18,7 @@ rule fix_gzrt:
     log:
         "logs/fix_gzrt/fix_gzrt.{sample}.log"
     message: 
-        "Executing gzrt on {input}."
+        "Dropping unreadable reads from {input}."
     shell:
         "gzrecover -o {output} {input} -v 2> {log}"
 
@@ -47,7 +47,7 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:
-        "python fastq_wiper/wiper.py --fastq_in {input} --fastq_out {output} 2> {log}"
+        "fastqwiper --fastq_in {input} --fastq_out {output} 2> {log}"
     
 
 def aggregate_input(wildcards):
@@ -71,6 +71,9 @@ rule aggregate:
 
 onsuccess:
     print("Workflow finished, no error. Clean-up and shutdown")
-    shutil.rmtree(f"data/{SAMPLE}_chunks")
-    os.unlink(f"data/{SAMPLE}_fixed.fastq")
+
+    if os.path.isdir(f"data/{SAMPLE}_chunks"):
+        shutil.rmtree(f"data/{SAMPLE}_chunks")
     
+    if os.path.isfile(f"data/{SAMPLE}_fixed.fastq"):
+        os.remove(f"data/{SAMPLE}_fixed.fastq")

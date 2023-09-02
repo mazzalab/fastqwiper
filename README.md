@@ -1,7 +1,11 @@
-# FastqWiper
-[![Conda build](https://github.com/mazzalab/fastqwiper/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/mazzalab/fastqwiper/actions/workflows/python-package-conda.yml) [![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)](https://github.com/mazzalab/fastqwiper/issues) ![Docker Pulls](https://img.shields.io/docker/pulls/mazzalab/fastqwiper)
+# FastqWiper 
+[![Conda build](https://github.com/mazzalab/fastqwiper/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/mazzalab/fastqwiper/actions/workflows/python-package-conda.yml) [![Pypi build](https://github.com/mazzalab/fastqwiper/actions/workflows/pypi-package-conda.yml/badge.svg)](https://github.com/mazzalab/fastqwiper/actions/workflows/pypi-package-conda.yml) [![GitHub issues](https://img.shields.io/github/issues-raw/mazzalab/fastqwiper)](https://github.com/mazzalab/fastqwiper/issues) 
 
 [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/version.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/latest_release_date.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/platforms.svg)](https://anaconda.org/bfxcss/fastqwiper) [![Anaconda-Server Badge](https://anaconda.org/bfxcss/fastqwiper/badges/downloads.svg)](https://anaconda.org/bfxcss/fastqwiper)
+
+[![PyPI version](https://badge.fury.io/py/fastqwiper.svg)](https://badge.fury.io/py/fastqwiper) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/fastqwiper.svg)](https://pypi.python.org/pypi/fastqwiper/) ![PyPI - Downloads](https://img.shields.io/pypi/dm/fastqwiper)
+
+[![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://hub.docker.com/r/mazzalab/fastqwiper) ![Docker Pulls](https://img.shields.io/docker/pulls/mazzalab/fastqwiper)
 
 `FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. Additionally, the available and pre-designed Snakemake [workflows](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving.
 

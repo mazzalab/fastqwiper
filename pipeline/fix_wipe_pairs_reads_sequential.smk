@@ -1,5 +1,4 @@
-# cmd:  snakemake -s pipeline/fix_wipe_pairs_reads.smk --use-conda --cores 2
-# zgrep -n -x '[^+]\{0,10\}' data/cov3-200825_S1_R1_001_fixed_wiped.fastq.gz
+#cmd: snakemake --config sample_name=sample_R1 -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4
 
 from snakemake.io import expand, temp
 
@@ -16,6 +15,8 @@ rule fix_gzrt:
         temp("data/{sample}_fixed.fastq")
     log:
         "logs/fix_gzrt/fix_gzrt.{sample}.log"
+    message: 
+        "Dropping unreadable reads from {input}."
     shell:
         "gzrecover -o {output} {input} -v 2> {log}"
 
@@ -26,6 +27,8 @@ rule wipe_fastq:
         temp("data/{sample}_fixed_wiped.fastq.gz")
     log:
         "logs/wipe_fastq/wipe_fastq.{sample}.log"
+    message: 
+        "Running FastqWiper on {input}."
     shell:
         "fastqwiper --fastq_in {input} --fastq_out {output} 2> {log}"
 
@@ -40,13 +43,12 @@ rule drop_unpaired:
         r2_unpaired = temp("data/{sample}_R2_fixed_wiped_unpaired.fastq.gz")
     log:
         "logs/pairing/pairing.{sample}.log"
-    params:
-        trimmer = ["MINLEN:20"]
+    message:
+        "Dropping unpaired reads from {input}"
     threads:
-        4
-    cache: False
-    wrapper:
-        "v2.2.1/bio/trimmomatic/pe"
+        workflow.cores
+    shell:
+        "trimmomatic PE {input.r1} {input.r2} {output.r1} {output.r1_unpaired} {output.r2} {output.r2_unpaired} MINLEN:20"
 
 rule fix_interleaving:
     input:
@@ -57,6 +59,8 @@ rule fix_interleaving:
         out2 = "data/{sample}_R2_fixed_wiped_paired_interleaving.fastq.gz"
     log:
         "logs/pairing/pairing.{sample}.log"
+    message:
+        "Repair reads interleaving from {input}."
     threads:
         1
     cache: False

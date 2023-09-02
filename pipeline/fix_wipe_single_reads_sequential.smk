@@ -13,6 +13,8 @@ rule fix_gzrt:
         temp("data/{sample}_fixed.fastq")
     log:
         "logs/fix_gzrt/fix_gzrt.{sample}.log"
+    message:
+        "Dropping unreadable reads from {input}."
     shell:
         "gzrecover -o {output} {input} -v 2> {log}"
 
@@ -24,6 +26,8 @@ rule wipe_fastq:
         "data/{sample}_fixed_wiped.fastq.gz"
     log:
         "logs/wipe_fastq/wipe_fastq.{sample}.log"
+    message: 
+        "Running FastqWiper on {input}."
     shell:
         "fastqwiper --fastq_in {input} --fastq_out {output} 2> {log}"
 
