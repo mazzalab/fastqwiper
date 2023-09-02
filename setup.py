@@ -28,6 +28,7 @@ if sys.version_info.major != 3 and (
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+    print(long_description)
 
 # Get and set the build version
 if "--ver" in sys.argv:
@@ -61,7 +62,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10"
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
