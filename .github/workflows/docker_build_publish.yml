@@ -1,9 +1,6 @@
 name: Docker ci
 
-on:
-  push:
-    branches:
-      - 'main'
+on: [release]
 
 jobs:
   docker_build_publish:

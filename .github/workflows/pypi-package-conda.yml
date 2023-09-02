@@ -32,7 +32,7 @@ jobs:
                     
             - name: Package build
               shell: bash -el {0}
-              run: python setup.py build
+              run: python setup.py build --ver 2023.1.1
 
             - name: Wheel creation
               shell: bash -el {0}
