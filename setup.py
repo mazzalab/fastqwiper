@@ -33,6 +33,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 if "--ver" in sys.argv:
     VERSION = sys.argv[3]
     sys.argv.remove("--ver")
+    sys.argv.remove(VERSION)
 else:
     VERSION = "2023.2." + os.environ["GITHUB_RUN_NUMBER"]
 
