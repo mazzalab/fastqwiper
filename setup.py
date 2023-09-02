@@ -30,7 +30,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Get and set the build version
-VERSION = "2023.2." + os.environ["GITHUB_RUN_NUMBER"]
+#  VERSION = "2023.2." + os.environ["GITHUB_RUN_NUMBER"]
+VERSION = os.environ["FASTQWIPER_VER"] + os.environ["GITHUB_RUN_NUMBER"]
+
 print("version {} passed to setup.py".format(VERSION))
 assert re.match("^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
 

@@ -26,8 +26,10 @@ RUN cd /tmp/ &&\
 
 WORKDIR /fastqwiper
 
-COPY run_wiping.sh run_wiping.sh
 COPY pipeline pipeline
+COPY run_wiping.sh run_wiping.sh
+RUN chmod +x run_wiping.sh
+
 
 ## PAIRED
 # file names like: "sample_R1.fastq.gz" and "sample_R2.fastq.gz"
