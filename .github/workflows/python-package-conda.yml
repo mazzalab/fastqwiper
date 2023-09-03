@@ -32,6 +32,8 @@ jobs:
         run: |
           conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
           conda env config vars set RELEASE_VER=2023.0.1
+          conda deactivate
+          conda deactivate test
 
       - name: Building package for Linux&MacOS
         shell: bash -el {0}
