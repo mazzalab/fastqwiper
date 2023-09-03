@@ -1,4 +1,4 @@
-name: Pypi build
+name: Pypi
 
 on: [push]
 

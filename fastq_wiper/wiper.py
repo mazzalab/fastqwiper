@@ -268,7 +268,7 @@ def count_remainder():
     "--log_out",
     type=click.STRING,
     required=False,
-    help="The final quality summary report",
+    help="The file name of the final quality report summary",
 )
 @click.option(
     "--log_frequency",

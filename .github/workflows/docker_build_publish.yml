@@ -1,6 +1,6 @@
-name: Docker ci
+name: Docker
 
-on: [release]
+on: [push]
 
 jobs:
   docker_build_publish:

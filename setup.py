@@ -28,18 +28,18 @@ if sys.version_info.major != 3 and (
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
-    print(long_description)
 
-# Get and set the build version
+# Get and set the build version from the command list
 if "--ver" in sys.argv:
-    VERSION = sys.argv[3]
+    version_index = sys.argv.index("--ver")
+    VERSION = sys.argv[version_index + 1]
     sys.argv.remove("--ver")
     sys.argv.remove(VERSION)
 else:
-    VERSION = "2023.2." + os.environ["GITHUB_RUN_NUMBER"]
+    VERSION = "v" + os.environ["GITHUB_RUN_NUMBER"]
 
-print("version {} passed to setup.py".format(VERSION))
 assert re.match("^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
+print("version {} passed to setup.py".format(VERSION))
 
 setup(
     name="fastqwiper",

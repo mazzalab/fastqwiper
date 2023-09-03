@@ -1,6 +1,6 @@
-name: Conda build
+name: Conda
 
-on: [release]
+on: [push]
 
 jobs:
   build-linux:
