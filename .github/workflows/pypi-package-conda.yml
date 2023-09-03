@@ -1,6 +1,6 @@
 name: Pypi
 
-on: [push]
+on: [release]
 
 jobs:
     build-linux:
