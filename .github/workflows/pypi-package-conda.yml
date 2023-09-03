@@ -28,7 +28,9 @@ jobs:
 
             - name: Installing Conda packages
               shell: bash -el {0}
-              run: conda install -c conda-forge setuptools twine wheel --yes --quiet
+              run: |
+                conda install -c conda-forge setuptools twine wheel --yes --quiet
+                conda env config vars set RELEASE_VER=2023.0.1
                     
             - name: Package build
               shell: bash -el {0}
