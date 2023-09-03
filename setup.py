@@ -38,8 +38,8 @@ if "--ver" in sys.argv:
 else:
     VERSION = "v" + os.environ["GITHUB_RUN_NUMBER"]
 
+print("Passing version {} to setup.py".format(VERSION))
 assert re.match("^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
-print("version {} passed to setup.py".format(VERSION))
 
 setup(
     name="fastqwiper",

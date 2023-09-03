@@ -1,6 +1,6 @@
 name: Docker
 
-on: [push]
+on: [release]
 
 jobs:
   docker_build_publish:

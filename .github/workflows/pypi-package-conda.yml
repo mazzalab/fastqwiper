@@ -32,11 +32,11 @@ jobs:
                     
             - name: Package build
               shell: bash -el {0}
-              run: python setup.py build --ver 2023.1.1
+              run: python setup.py build --ver ${{ vars.FASTQWIPER_VER }}${{ github.run_number }}
 
             - name: Wheel creation
               shell: bash -el {0}
-              run: python setup.py sdist bdist_wheel -d pypi_dist clean --all
+              run: python setup.py --ver ${{ vars.FASTQWIPER_VER }}${{ github.run_number }} sdist bdist_wheel -d pypi_dist clean --all
 
             - name: Publishing package
               shell: bash -el {0}
