@@ -35,6 +35,7 @@ jobs:
           channels: conda-forge,defaults
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
+          use-mamba: true
           
       - name: Installing Conda packages
         shell: bash -el {0}
