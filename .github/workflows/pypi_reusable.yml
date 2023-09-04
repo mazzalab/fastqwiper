@@ -1,6 +1,14 @@
 name: Pypi
 
-on: [release]
+on: 
+  workflow_call:
+    inputs:
+      package_version:
+        required: true
+        type: string
+    secrets:
+      pypi_token:
+        required: true
 
 jobs:
     build-linux:
@@ -30,7 +38,7 @@ jobs:
               shell: bash -el {0}
               run: |
                 conda install -c conda-forge setuptools twine wheel --yes --quiet
-                conda env config vars set RELEASE_VER=${{vars.FASTQWIPER_VER}}${{github.run_number}}
+                conda env config vars set RELEASE_VER=${{ inputs.package_version }}
                     
             - name: Package build
               shell: bash -el {0}
@@ -42,4 +50,4 @@ jobs:
 
             - name: Publishing package
               shell: bash -el {0}
-              run: twine upload ./pypi_dist/*.whl -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+              run: twine upload ./pypi_dist/*.whl -u __token__ -p ${{ secrets.pypi_token }}
