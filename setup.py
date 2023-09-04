@@ -29,17 +29,8 @@ if sys.version_info.major != 3 and (
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# # Get and set the build version from the command list
-# if "--ver" in sys.argv:
-#     version_index = sys.argv.index("--ver")
-#     VERSION = sys.argv[version_index + 1]
-#     sys.argv.remove("--ver")
-#     sys.argv.remove(VERSION)
-# else:
-#     VERSION = "v" + os.environ["GITHUB_RUN_NUMBER"]
-
+# RELEASE_VER comes from the CONDA & Pypi actions files
 if os.getenv('RELEASE_VER'):
-    print(os.getenv('RELEASE_VER'))
     VERSION = os.getenv('RELEASE_VER')
 
 print("Passing version {} to setup.py".format(VERSION))
@@ -58,7 +49,6 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     entry_points={"console_scripts": ["fastqwiper = fastq_wiper.wiper:wipe_fastq"]},
-    # setup_requires=['numpy'],
     install_requires=["setuptools", "colorama", "click"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

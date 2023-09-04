@@ -1,6 +1,6 @@
 name: Conda
 
-on: [push]
+on: [release]
 
 jobs:
   build-linux:
@@ -9,8 +9,8 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        os: ["ubuntu-latest"]  # , "macos-latest", "windows-latest"
-        python-version: ["3.10"]  # , "3.9", "3.8", "3.7"
+        os: ["ubuntu-latest", "windows-latest"]  # , "macos-latest"
+        python-version: ["3.10", "3.9", "3.8", "3.7"] 
 
     steps:
       - uses: actions/checkout@v3
@@ -27,9 +27,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
           
-      # conda deactivate
-      # conda activate test
-
       - name: Installing Conda packages
         shell: bash -el {0}
         run: |
@@ -49,7 +46,7 @@ jobs:
           conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
         if: matrix.os == 'windows-latest'
 
-      # - name: Publishing package
-      #   shell: bash -el {0}
-      #   run: |
-      #     anaconda -t ${{ secrets.CONDA_TOKEN }} upload -u bfxcss ./conda_dist/**/*.tar.bz2
+      - name: Publishing package
+        shell: bash -el {0}
+        run: |
+          anaconda -t ${{ secrets.CONDA_TOKEN }} upload -u bfxcss ./conda_dist/**/*.tar.bz2
