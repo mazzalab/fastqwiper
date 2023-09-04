@@ -18,7 +18,7 @@ jobs:
       max-parallel: 5
       matrix:
         os: ["ubuntu-latest"]  # , "macos-latest" , "windows-latest"
-        python-version: ["3.10"] # "3.10", "3.9", , "3.7"
+        python-version: ["3.7"] # "3.8", "3.9", , "3.7"
 
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +31,6 @@ jobs:
           auto-update-conda: true
           auto-activate-base: true
           show-channel-urls: true
-          # mamba-version: "*"
           channels: conda-forge,defaults
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
