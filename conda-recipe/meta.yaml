@@ -19,7 +19,8 @@ build:
  
 requirements:
   build:
-    - conda-build    
+    - python
+    - numpy   
 
   host:
     - python
