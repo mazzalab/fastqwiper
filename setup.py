@@ -29,14 +29,14 @@ if sys.version_info.major != 3 and (
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-# Get and set the build version from the command list
-if "--ver" in sys.argv:
-    version_index = sys.argv.index("--ver")
-    VERSION = sys.argv[version_index + 1]
-    sys.argv.remove("--ver")
-    sys.argv.remove(VERSION)
-else:
-    VERSION = "v" + os.environ["GITHUB_RUN_NUMBER"]
+# # Get and set the build version from the command list
+# if "--ver" in sys.argv:
+#     version_index = sys.argv.index("--ver")
+#     VERSION = sys.argv[version_index + 1]
+#     sys.argv.remove("--ver")
+#     sys.argv.remove(VERSION)
+# else:
+#     VERSION = "v" + os.environ["GITHUB_RUN_NUMBER"]
 
 if os.getenv('RELEASE_VER'):
     print(os.getenv('RELEASE_VER'))
