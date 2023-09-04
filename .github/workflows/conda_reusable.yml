@@ -31,7 +31,7 @@ jobs:
           auto-update-conda: true
           auto-activate-base: true
           show-channel-urls: true
-          # mamba-version: "*"
+          mamba-version: "*"
           channels: conda-forge,defaults
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
