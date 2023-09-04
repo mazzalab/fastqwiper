@@ -19,6 +19,7 @@ jobs:
                 auto-update-conda: true
                 auto-activate-base: true
                 show-channel-urls: true
+                mamba-version: "*"
                 channels: defaults
                 python-version: ${{ matrix.python-version }}
             
