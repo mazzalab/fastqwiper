@@ -17,25 +17,23 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        os: ["windows-latest"]  # , "macos-latest", "ubuntu-latest", 
-        python-version: ["3.8"]  #"3.7", "3.8", "3.9", "3.10"
+        os: ["windows-latest", "ubuntu-latest"]  # , "macos-latest"", 
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Install Miniconda
+      - name: Install Miniconda (Mambaforge)
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
           auto-activate-base: true
           show-channel-urls: true
-          # mamba-version: "*"
           channels: conda-forge,defaults
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
-          # use-mamba: true
           miniforge-variant: Mambaforge
           
       - name: Installing Conda packages
@@ -43,19 +41,17 @@ jobs:
         run: |
           mamba install -c conda-forge setuptools twine wheel boa anaconda-client conda-verify --yes --quiet
           conda env config vars set RELEASE_VER=${{ inputs.package_version }}
-          
-      - name: Building package for Linux&MacOS
+
+      - name: Building package (all OS)
         shell: bash -el {0}
         run: |
           conda mambabuild --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: Building package for Windows only
+          
+      - name: Convert the built package from Linux to MacOS
         shell: bash -el {0}
         run: |
-          conda mambabuild -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-        if: matrix.os == 'windows-latest'
+          conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
+        if: matrix.os == 'ubuntu-latest'
 
       - name: Publishing package
         shell: bash -el {0}
