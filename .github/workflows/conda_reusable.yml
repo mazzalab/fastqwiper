@@ -41,19 +41,19 @@ jobs:
         shell: bash -el {0}
         run: |
           mamba install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
-          mamba env config vars set RELEASE_VER=${{ inputs.package_version }}
+          conda env config vars set RELEASE_VER=${{ inputs.package_version }}
           
       - name: Building package for Linux&MacOS
         shell: bash -el {0}
         run: |
-          mamba build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          mamba convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
+          conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
+          conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
         if: matrix.os == 'ubuntu-latest'
 
       - name: Building package for Windows only
         shell: bash -el {0}
         run: |
-          mamba build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
+          conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
         if: matrix.os == 'windows-latest'
 
       - name: Publishing package
