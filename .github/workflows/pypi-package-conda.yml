@@ -19,7 +19,6 @@ jobs:
                 auto-update-conda: true
                 auto-activate-base: true
                 show-channel-urls: true
-                mamba-version: "*"
                 channels: defaults
                 python-version: ${{ matrix.python-version }}
             
@@ -30,8 +29,8 @@ jobs:
             - name: Installing Conda packages
               shell: bash -el {0}
               run: |
-                mamba install -c conda-forge setuptools twine wheel --yes --quiet
-                mamba env config vars set RELEASE_VER=${{vars.FASTQWIPER_VER}}${{github.run_number}}
+                conda install -c conda-forge setuptools twine wheel --yes --quiet
+                conda env config vars set RELEASE_VER=${{vars.FASTQWIPER_VER}}${{github.run_number}}
                     
             - name: Package build
               shell: bash -el {0}

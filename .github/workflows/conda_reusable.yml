@@ -31,6 +31,7 @@ jobs:
           auto-update-conda: true
           auto-activate-base: true
           show-channel-urls: true
+          mamba-version: "*"
           channels: conda-forge,defaults
           python-version: ${{ matrix.python-version }}
           environment-file: environment.yml
@@ -38,20 +39,20 @@ jobs:
       - name: Installing Conda packages
         shell: bash -el {0}
         run: |
-          conda install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
-          conda env config vars set RELEASE_VER=${{ inputs.package_version }}
+          mamba install -c conda-forge setuptools twine wheel conda-build anaconda-client conda-verify --yes --quiet
+          mamba env config vars set RELEASE_VER=${{ inputs.package_version }}
           
       - name: Building package for Linux&MacOS
         shell: bash -el {0}
         run: |
-          conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
-          conda convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
+          mamba build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
+          mamba convert --platform osx-64 ./conda_dist/linux-64/*.tar.bz2 -o ./conda_dist
         if: matrix.os == 'ubuntu-latest'
 
       - name: Building package for Windows only
         shell: bash -el {0}
         run: |
-          conda build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
+          mamba build --quiet -c bfxcss -c conda-forge conda-recipe --python=${{ matrix.python-version }} --output-folder conda_dist
         if: matrix.os == 'windows-latest'
 
       - name: Publishing package
