@@ -3,22 +3,13 @@ name: Build and Deploy all
 on: [push]
 
 jobs:
-  Docker:
-    name: Docker CI
-    uses: ./.github/workflows/docker_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  Pypi:
-    name: Pypi CI
-    uses: ./.github/workflows/pypi_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        pypi_token: ${{ secrets.PYPI_TOKEN }}
+#   Pypi:
+#     name: Pypi CI
+#     uses: ./.github/workflows/pypi_reusable.yml
+#     with:
+#         package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+#     secrets:
+#         pypi_token: ${{ secrets.PYPI_TOKEN }}
         
   Conda:
     name: Conda CI
@@ -27,3 +18,14 @@ jobs:
         package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
     secrets:
         conda_token: ${{ secrets.CONDA_TOKEN }}
+
+  Docker:
+    name: Docker CI
+    uses: ./.github/workflows/docker_reusable.yml
+    with:
+        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+    secrets:
+        dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    needs: Conda
+    
