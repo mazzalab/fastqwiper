@@ -31,7 +31,7 @@ jobs:
       
     - name: Run tests and collect coverage
       shell: bash -el {0}
-      run: pytest --pyargs fastq_wiper --cov
+      run: pytest --pyargs ./tests --cov
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
