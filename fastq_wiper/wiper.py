@@ -47,7 +47,6 @@ def open_fastq_file(file_path: str):
             fastq_file_handler = codecs.open(
                 file_path, encoding="utf-8", errors="ignore"
             )
-            # fastq_file_handler = open(file_path, 'rt', encoding="utf8", errors='strict')
 
     return fastq_file_handler
 
@@ -55,7 +54,7 @@ def open_fastq_file(file_path: str):
 def write_fastq_file(file_path: str):
     fastq_file_handler = None
 
-    if "/" not in file_path and "\\" not in file_path:
+    if "/" not in file_path or "\\" not in file_path:
         parent_folder = os.getcwd()
     else:
         parent_folder = os.path.abspath(os.path.join(file_path, os.pardir))

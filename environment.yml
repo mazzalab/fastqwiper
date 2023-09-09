@@ -6,3 +6,4 @@ dependencies:
   - colorama
   - click
   - setuptools
+  - pytest
