@@ -13,7 +13,7 @@ jobs:
         OS: ${{ matrix.os }}
         PYTHON: '3.10'
 
-    name: Test python API
+    name: Test FastqWiper
     steps:
     - uses: actions/checkout@v1
       name: Clone repository
