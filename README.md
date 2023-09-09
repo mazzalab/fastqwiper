@@ -17,9 +17,9 @@
 
 
 ## USAGE
-- <u>**Case 1**</u>. You have one or a couple (R1&R2) of **computer readable** FASTQ files which contain pesky, unformatted, uncompliant lines: Use <u>FastWiper only</u> to clean them;
-- <u>**Case 2**</u>. You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the <u>FastqWiper's Snakemake workflows</u>;
-- <u>**Case 3**</u>. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted and you want to recover healthy reads and reformat them: Use the <u>FastqWiper's Snakemake workflows</u>;
+- **Case 1**. You have one or a couple (R1&R2) of **computer readable** FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
+- **Case 2**. You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the FastqWiper's *Snakemake workflows*;
+- **Case 3**. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
 
 
 ## Installation
@@ -112,7 +112,7 @@ cd fastqwiper
 ```
 
 It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing the released pipelines and a folder `fastq_wiper` with the source files of `FastqWiper`. <br/>
-Input files to be processed should be copied into the **data** folder. All software packages not fetched from `Conda` and used by the pipelines should be copied, even if it is not strictly mandatory, in the root directory of the cloned repository. 
+Input files to be processed should be copied into the **data** folder.
 
 Currently, to run the `FastqWiper` pipelines, the following packages need to be installed manually:
 
@@ -121,13 +121,13 @@ Currently, to run the `FastqWiper` pipelines, the following packages need to be 
 
 [BBTools](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/) (install [instructions](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/installation-guide/))
 
-Both packages need to be downloaded and installed in the root folder of FastqWiper, as the image below
+If installed from source, `gzrt` scripts need to be put on PATH. `bbmap` must be installed in the root folder of FastqWiper, as the image below
 
 ![FastqWiper folder yierarchy](assets/hierarchy.png)
 
 ### Commands:
 Copy the fastq files you want to fix in the `data` folder.
-**N.b.**: In all commands above, you will pass to the workflow the name of the sample to be analyzed through the config argument: `sample_name`. Remember that your fastq files' names must finish with `_R1.fastq.gz` and `_R2.fastq.gz`, for paired fastq files, and with `.fastq.gz`, for individual fastq files, and, therefore, the text to be assigned to the variable `sample_name` must be everything <u>before</u> them. E.g., if your files are `my_sample_R1.fastq.gz` and `my_sample_Re.fastq.gz`, then `--config sample_name=my_sample`.
+**N.b.**: In all commands above, you will pass to the workflow the name of the sample to be analyzed through the config argument: `sample_name`. Remember that your fastq files' names must finish with `_R1.fastq.gz` and `_R2.fastq.gz`, for paired fastq files, and with `.fastq.gz`, for individual fastq files, and, therefore, the text to be assigned to the variable `sample_name` must be everything <u>before</u> them. E.g., if your files are `my_sample_R1.fastq.gz` and `my_sample_R2.fastq.gz`, then `--config sample_name=my_sample`.
 
 #### Paired-end files
 
@@ -142,7 +142,7 @@ Copy the fastq files you want to fix in the `data` folder.
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
 
 Fixed files will be copied in the `data` folder and will be suffixed with the string `_fixed_wiped_paired_interleaving`.
-We remind that the `fix_wipe_pairs_reads.smk` pipeline performs the following actions:
+We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_reads_parallel.smk` pipelines perform the following actions:
 - execute `gzrt` on corrupted fastq.gz files (i.e., that cannot be unzipped because of errors) and recover readable reads;
 - execute `fastqwiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
 - execute `Trimmomatic` on wiped reads to remove residual unpaired reads
@@ -158,8 +158,7 @@ We remind that the `fix_wipe_pairs_reads.smk` pipeline performs the following ac
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_single_reads.png?raw=true" width="200">
 
-- **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote 
-  packages and may take longer). The number of computing cores can be tuned accordingly:<br />
+- **Run the pipeline** (n.b., The number of computing cores can be tuned accordingly):<br />
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
 
 # Author

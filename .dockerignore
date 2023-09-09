@@ -1,12 +1,15 @@
 .snakemake
 .vscode
 .gitignore
+.devcontainer
+.github
+.pytest_cache
+.coveragerc
 
 __pycache__
 
-conda-recipe
-appveyor.yml
 environment.yml
-# README.md
 requirements.txt
 setup.py
+conda-recipe/
+logs/
