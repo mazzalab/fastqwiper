@@ -38,7 +38,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: OS,PYTHON
-        files: ./coverage1.xml,./coverage2.xml,!./cache # optional
+        files: ./coverage.xml # optional
         flags: pytest # optional
         name: codecov-umbrella # optional
         fail_ci_if_error: true # optional (default = false)
