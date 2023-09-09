@@ -30,6 +30,7 @@ jobs:
           miniforge-variant: Mambaforge
       
     - name: Run tests and collect coverage
+      shell: bash -el {0}
       run: pytest --pyargs fastq_wiper --cov
 
     - name: Upload coverage reports to Codecov
