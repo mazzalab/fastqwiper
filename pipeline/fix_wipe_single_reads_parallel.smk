@@ -33,7 +33,7 @@ checkpoint split_fastq:
         "Splitting {input} into chunks."
     shell:'''
         mkdir data/{wildcards.sample}_chunks
-        split -l 2000 --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
+        split -l 500000000 --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
         '''
     
 
