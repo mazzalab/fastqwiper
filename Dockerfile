@@ -31,16 +31,10 @@ COPY run_wiping.sh run_wiping.sh
 RUN chmod +x run_wiping.sh
 
 
-## PAIRED
-# file names like: "sample_R1.fastq.gz" and "sample_R2.fastq.gz"
-# Then, keep the "_R1.fastq.gz" and ""_R2.fastq.gz"" parts of the file names fixed and vary only the prepending text
-
-## SINGLE
-# file names like: "excerpt_R1_001.fastq.gz"
-# Then, keep the ".fastq.gz" part of the file name fixed and vary only the prepending text (i.e., "excerpt_R1_001")
 ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
-CMD ["paired", "4", "sample"]
+# paired mode, 4 cores, sample name, #rows-per-chunk
+CMD ["paired", "4", "sample", "50000000"]
 
 # docker build -t test .
-# docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 8 sample
+# docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 8 sample 50000000
 # docker exec -ti test /bin/bash

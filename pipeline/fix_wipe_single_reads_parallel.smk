@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample_R1 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample_R1 --config chunk_size=50000000 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -29,11 +29,13 @@ checkpoint split_fastq:
         "data/{sample}_fixed.fastq"
     output:
         directory("data/{sample}_chunks")
+    params:
+        chunk_size=config["chunk_size"]
     message: 
         "Splitting {input} into chunks."
     shell:'''
         mkdir data/{wildcards.sample}_chunks
-        split -l 500000000 --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
+        split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
         '''
     
 

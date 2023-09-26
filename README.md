@@ -26,7 +26,7 @@
 ### Case 1
 This requires you to install FastqWiper and therefore does not require you to configure *workflows* also. You can do it for all OSs:
 
-#### <u>Use Conda</u>
+#### Use Conda
 
 ```
 conda create -n fastqwiper python=3.10
@@ -38,7 +38,7 @@ fastqwiper --help
 *Hint: for an healthier experience, use* **mamba**
 
 
-#### <u>Use Pypi</u>
+#### Use Pypi
 ```
 pip install fastqwiper
 
@@ -62,25 +62,26 @@ It  accepts in input and outputs **readable** `*.fastq` or `*.fastq.gz` files.
 There is a <b>QUICK</b> and a <b>SLOW</b> method to configure `FastqWiper`'s workflows.
 
 
-#### <u>The quick way</u> (Docker, all OS)
+#### The quick way (Docker, all OS)
 1. Pull the Docker image from DockerHub:
 
 `docker pull mazzalab/fastqwiper`
 
 2. Once downloaded the image, type:
 
-`docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample`
+CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000`
 
 where:
 
 - `YOUR_LOCAL_PATH_TO_DATA_FOLDER` is the path of the folder where the fastq.gz files to be wiped are located;
 - `paired` triggers the cleaning of R1 and R2. Alternatively, `single` will trigger the wipe of individual FASTQ files;
 - `8` is the number of your choice of computing cores to be spawned;
-- `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything <u>before</u> these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. E.g., 
+- `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything before these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. 
+- `50000000` is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4)
 
-`docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper single 8 excerpt_R1_001`
+CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper single 8 excerpt_R1_001 50000000`
 
-#### <u>The slow way</u> (Linux & Mac OS)
+#### The slow way (Linux & Mac OS)
 To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The recommended way to install Snakemake is via Conda, because it enables **Snakemake** to [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
 However, the default conda solver is slow and often hangs. Therefore, we recommend installing [Mamba](https://github.com/mamba-org/mamba) as a drop-in replacement via
 
@@ -103,7 +104,7 @@ $ mamba install colorama click
 ```
 
 
-#### <u>Usage</u>
+#### Usage
 Clone the FastqWiper repository in a folder of your choice and enter it:
 
 ```
@@ -127,7 +128,7 @@ If installed from source, `gzrt` scripts need to be put on PATH. `bbmap` must be
 
 ### Commands:
 Copy the fastq files you want to fix in the `data` folder.
-**N.b.**: In all commands above, you will pass to the workflow the name of the sample to be analyzed through the config argument: `sample_name`. Remember that your fastq files' names must finish with `_R1.fastq.gz` and `_R2.fastq.gz`, for paired fastq files, and with `.fastq.gz`, for individual fastq files, and, therefore, the text to be assigned to the variable `sample_name` must be everything <u>before</u> them. E.g., if your files are `my_sample_R1.fastq.gz` and `my_sample_R2.fastq.gz`, then `--config sample_name=my_sample`.
+**N.b.**: In all commands above, you will pass to the workflow the name of the sample to be analyzed through the config argument: `sample_name`. Remember that your fastq files' names must finish with `_R1.fastq.gz` and `_R2.fastq.gz`, for paired fastq files, and with `.fastq.gz`, for individual fastq files, and, therefore, the text to be assigned to the variable `sample_name` must be everything before them. E.g., if your files are `my_sample_R1.fastq.gz` and `my_sample_R2.fastq.gz`, then `--config sample_name=my_sample`.
 
 #### Paired-end files
 
@@ -135,7 +136,7 @@ Copy the fastq files you want to fix in the `data` folder.
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4`
 
 - **Generate the planned DAG**:<br />
-`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br />
+`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /> <br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="400">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:<br />
@@ -144,7 +145,7 @@ Copy the fastq files you want to fix in the `data` folder.
 Fixed files will be copied in the `data` folder and will be suffixed with the string `_fixed_wiped_paired_interleaving`.
 We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_reads_parallel.smk` pipelines perform the following actions:
 - execute `gzrt` on corrupted fastq.gz files (i.e., that cannot be unzipped because of errors) and recover readable reads;
-- execute `fastqwiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
+- execute `FastqWiper` on recovered reads to make them compliant with the FASTQ format (source: [Wipipedia](https://en.wikipedia.org/wiki/FASTQ_format))
 - execute `Trimmomatic` on wiped reads to remove residual unpaired reads
 - execute `BBmap (repair.sh)` on paired reads to fix the correct interleaving and sort fastq files.  
 
@@ -155,7 +156,7 @@ We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_rea
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2 -np`
 
 - **Generate the planned DAG**:<br />
-`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br />
+`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /><br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_single_reads.png?raw=true" width="200">
 
 - **Run the pipeline** (n.b., The number of computing cores can be tuned accordingly):<br />

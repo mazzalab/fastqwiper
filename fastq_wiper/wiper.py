@@ -69,16 +69,20 @@ def write_fastq_file(file_path: str):
 
 
 def fix_header_line(line: str, checkpoint_flags: dict) -> str:
-    checkpoint_flags["at"] = True
+    header: str = line.rstrip()
 
     # Drop all character preceding the last @ character of the header
-    if line.rfind("@") > 0:
-        line = line[line.rfind("@") :]
+    if header.rfind("@") > 0:
+        header = header[header.rfind("@") :]
 
+    if header == "@":
+        checkpoint_flags["at"] = False
+    else:
+        checkpoint_flags["at"] = True
+        
         global head_at
         head_at += 1
-
-    header: str = line.rstrip()
+    
     return header
 
 
