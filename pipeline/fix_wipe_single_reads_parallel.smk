@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample_R1 --config chunk_size=50000000 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample_R1 chunk_size=50000000 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
