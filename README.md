@@ -31,7 +31,7 @@ This requires you to install FastqWiper and therefore does not require you to co
 ```
 conda create -n fastqwiper python=3.10
 conda activate fastqwiper
-conda install -c bfxcss fastqwiper
+conda install -c bfxcss -c conda-forge fastqwiper
 
 fastqwiper --help
 ```
