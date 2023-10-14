@@ -8,8 +8,8 @@ From: condaforge/mambaforge
     run_wiping.sh /fastqwiper
 
 %environment
-    export BBMAP_VER=39.01
-    export PATH="$PATH:/tmp/jre1.8.0_161/bin/"
+    BBMAP_VER=39.01
+    PATH="$PATH:/tmp/jre1.8.0_161/bin/"
 
 %post
     mamba config --set channel_priority strict
