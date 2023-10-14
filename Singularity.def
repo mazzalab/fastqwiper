@@ -7,6 +7,10 @@ From: condaforge/mambaforge
     pipeline /fastqwiper
     run_wiping.sh /fastqwiper
 
+%environment
+    export BBMAP_VER=39.01
+    export PATH="$PATH:/tmp/jre1.8.0_161/bin/"
+
 %post
     mamba config --set channel_priority strict
     mamba install python=3.10
@@ -22,20 +26,16 @@ From: condaforge/mambaforge
     apt-get update -y
     apt-get install gzrt -y
 
-    wget -c https://sourceforge.net/projects/bbmap/files/BBMap_${bbmap_version}.tar.gz/download -O /fastqwiper/BBMap_${bbmap_version}.tar.gz
+    wget -c https://sourceforge.net/projects/bbmap/files/BBMap_$BBMAP_VER.tar.gz/download -O /fastqwiper/BBMap_$BBMAP_VER.tar.gz
     cd fastqwiper
-    tar -xvzf BBMap_${bbmap_version}.tar.gz
-    rm BBMap_${bbmap_version}.tar.gz 
+    tar -xvzf BBMap_${BBMAP_VER}.tar.gz
+    rm BBMap_${BBMAP_VER}.tar.gz 
 
     wget -c http://javadl.oracle.com/webapps/download/AutoDL?BundleId=230532_2f38c3b165be4555a1fa6e98c45e0808 -O /tmp/java.tar.gz
     cd /tmp/
 	tar xvzf java.tar.gz
 
     chmod 777 run_wiping.sh
-
-%environment
-    export bbmap_version=39.01
-    export PATH="$PATH:/tmp/jre1.8.0_161/bin/"
 
 %runscript
     if [ $# -ne 4 ]; then
