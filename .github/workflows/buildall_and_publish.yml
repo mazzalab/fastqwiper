@@ -34,8 +34,8 @@ jobs:
     uses: ./.github/workflows/singularity_reusable.yml
     # with:
     #     package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    # secrets:
-    #     dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+    secrets:
+        sylabs_token: ${{ secrets.SYLABS_TOKEN }}
     #     dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
     # needs: Conda
     
