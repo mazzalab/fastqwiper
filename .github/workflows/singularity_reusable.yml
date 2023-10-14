@@ -6,11 +6,9 @@ on:
 #       package_version:
 #         required: true
 #         type: string
-    # secrets:
-    #   dockerhub_username:
-    #     required: true
-    #   dockerhub_token:
-    #     required: true
+    secrets:
+      sylabs_token:
+        required: true
 
 jobs:
   docker_build_publish:
@@ -29,7 +27,8 @@ jobs:
             name: fqwsif-artifact
             path: Singularity.def
         - name: Push artifacts to Library
-          run: singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:latest
+          run: singularity remote login ${{ secrets.sylabs_token }} |
+               singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:latest
 
     #   -
     #     name: Checkout

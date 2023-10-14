@@ -31,7 +31,7 @@ From: condaforge/mambaforge
     cd /tmp/
 	tar xvzf java.tar.gz
 
-    chmod +x run_wiping.sh
+    chmod 777 run_wiping.sh
 
 %environment
     export bbmap_version=39.01
