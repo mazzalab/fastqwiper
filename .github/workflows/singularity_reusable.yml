@@ -24,6 +24,10 @@ jobs:
           run: singularity build --fakeroot fqw.sif Singularity.def
         - name: Run a singularity container
           run: singularity run fqw.sif w e r
+        - uses: actions/upload-artifact@v3
+          with:
+            name: fqwsif-artifact
+            path: Singularity.def
 
     #   -
     #     name: Checkout
