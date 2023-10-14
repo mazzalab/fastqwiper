@@ -1,0 +1,49 @@
+name: Singularity
+
+on: 
+  workflow_call:
+#     inputs:
+#       package_version:
+#         required: true
+#         type: string
+    # secrets:
+    #   dockerhub_username:
+    #     required: true
+    #   dockerhub_token:
+    #     required: true
+
+jobs:
+  docker_build_publish:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v3
+        - uses: eWaterCycle/setup-singularity@v7
+          with:
+            singularity-version: 3.8.3
+        - name: Build a singularity container
+          run: singularity build fqw.sif Singularity.def
+        - name: Run a singularity container
+          run: singularity run fqw.sif w e r
+
+    #   -
+    #     name: Checkout
+    #     uses: actions/checkout@v3
+    #   -
+    #     name: Set up QEMU
+    #     uses: docker/setup-qemu-action@v2
+    #   -
+    #     name: Set up Docker Buildx
+    #     uses: docker/setup-buildx-action@v2
+    #   -
+    #     name: Login to Docker Hub
+    #     uses: docker/login-action@v2
+    #     with:
+    #       username: ${{ secrets.dockerhub_username }}
+    #       password: ${{ secrets.dockerhub_token }}
+    #   -
+    #     name: Build and push
+    #     uses: docker/build-push-action@v4
+    #     with:
+    #       context: .
+    #       push: true
+    #       tags: mazzalab/fastqwiper:latest , mazzalab/fastqwiper:${{ inputs.package_version }}
