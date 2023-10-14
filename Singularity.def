@@ -16,8 +16,8 @@ From: condaforge/mambaforge
 
     mamba install -y -c bfxcss -c conda-forge fastqwiper
 
-    apt-config dump | grep Sandbox::User
-    cat <<EOF > /etc/apt/apt.conf.d/sandbox-disable
+    # apt-config dump | grep Sandbox::User
+    # cat <<EOF > /etc/apt/apt.conf.d/sandbox-disable
 
     apt-get update -y
     apt-get install gzrt -y
