@@ -4,7 +4,7 @@ Bootstrap: docker
 From: condaforge/mambaforge
 
 %files
-    pipeline /fastqwiper
+    pipeline/* /fastqwiper/pipeline/
     run_wiping.sh /fastqwiper
 
 %environment

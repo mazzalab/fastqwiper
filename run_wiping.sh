@@ -5,7 +5,7 @@ cores=$(($2))
 sample_name=$3
 chunk_size=$(($4))
 
-echo "PASSED: \n"
+echo "PASSED:"
 echo $mode
 echo $cores
 echo $sample_name
