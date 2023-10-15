@@ -37,7 +37,8 @@ From: condaforge/mambaforge
     cd /tmp/
 	tar xvzf java.tar.gz
 
-    chmod 777 run_wiping.sh
+    ls -l
+    chmod 777 /fastqwiper/run_wiping.sh
 
 %runscript
     if [ $# -ne 4 ]; then
