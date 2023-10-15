@@ -5,7 +5,14 @@ cores=$(($2))
 sample_name=$3
 chunk_size=$(($4))
 
+echo "PASSED: \n"
+echo $mode
+echo $cores
+echo $sample_name
+echo $chunk_size
+
 cd /fastqwiper
+ls -lR
 
 if [ $mode == "paired" ]
 then
