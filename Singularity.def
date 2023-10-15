@@ -44,7 +44,7 @@ From: condaforge/mambaforge
     if [ $# -eq 4 ]; then
         exec /fastqwiper/run_wiping.sh $@
     elif [ $# -eq 1 ]; then
-        exec singularity --help
+        exec /fastqwiper/run_wiping.sh $@
     else
         echo "You must provide four arguments"
         exit 1
