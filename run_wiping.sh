@@ -12,7 +12,7 @@ echo $sample_name
 echo $chunk_size
 
 cd /fastqwiper
-ls -lR
+ls -l
 
 if [ $mode == "paired" ]
 then

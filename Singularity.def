@@ -5,6 +5,7 @@ From: condaforge/mambaforge
 
 %files
     pipeline/* /fastqwiper/pipeline/
+    data/* /fastqwiper/data/
     run_wiping.sh /fastqwiper
 
 %environment
