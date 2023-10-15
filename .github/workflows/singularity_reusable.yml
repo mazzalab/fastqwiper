@@ -28,7 +28,7 @@ jobs:
             path: Singularity.def
         - name: Push artifacts to Library
           run: |
-            singularity remote login ${{ secrets.sylabs_token }} |
+            singularity remote login mazzalab --tokenfile ${{ secrets.sylabs_token }} |
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
 
     #   -
