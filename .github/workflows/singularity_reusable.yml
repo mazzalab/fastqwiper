@@ -10,10 +10,11 @@ on:
       sylabs_token:
         required: true
 
+env: SYLABS-TOKEN="${{ secrets.sylabs_token }}"
+
 jobs:
   docker_build_publish:
     runs-on: ubuntu-latest
-    env: SYLABS-TOKEN="${{ secrets.sylabs_token }}"
     steps:
         - uses: actions/checkout@v3
         - uses: eWaterCycle/setup-singularity@v7
