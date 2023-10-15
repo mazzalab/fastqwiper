@@ -25,6 +25,7 @@ then
     snakemake --config sample_name=$sample_name -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores $cores
   fi
 elif [ $mode == "single" ]
+then
   if [ $cores -gt 1 ]
   then
     echo "Processing single-end file in parallel"
