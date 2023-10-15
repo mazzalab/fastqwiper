@@ -31,8 +31,6 @@ jobs:
             FILE_NAME: "token.txt"
             FILE_DATA: "${{ secrets.sylabs_token }}"
         - name: Push artifacts to Library
-          shell: bash
           run: |
-            echo "TOKEN: $SYLABS-TOKEN"
             singularity remote login --username mazzalab --tokenfile token.txt
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
