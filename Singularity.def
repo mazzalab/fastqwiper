@@ -41,14 +41,18 @@ From: condaforge/mambaforge
     chmod 777 /fastqwiper/run_wiping.sh
 
 %runscript
-    if [ $# -ne 4 ]; then
+    if [ $# -eq 4 ]; then
+        exec /fastqwiper/run_wiping.sh $@
+    elif [ $# -eq 1 ]; then
+        exec singularity --help
+    else
         echo "You must provide four arguments"
         exit 1
     fi
 
-    mode="$1"
-    cores="$2"
-    sample_name="$3"
-    chunk_size="$4"
+    # mode="$1"
+    # cores="$2"
+    # sample_name="$3"
+    # chunk_size="$4"
 
-    exec /fastqwiper/run_wiping.sh $@
+    # exec /fastqwiper/run_wiping.sh $@
