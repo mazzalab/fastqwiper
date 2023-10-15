@@ -10,8 +10,6 @@ on:
       sylabs_token:
         required: true
 
-env: SYLABS-TOKEN="${{ secrets.sylabs_token }}"
-
 jobs:
   docker_build_publish:
     runs-on: ubuntu-latest
@@ -28,9 +26,13 @@ jobs:
         #   with:
         #     name: fqwsif-artifact.sif
         #     path: fqw.sif
+        - uses: "finnp/create-file-action@master"
+          env:
+            FILE_NAME: "token.txt"
+            FILE_DATA: "${{ secrets.sylabs_token }}"
         - name: Push artifacts to Library
           shell: bash
           run: |
             echo "TOKEN: $SYLABS-TOKEN"
-            singularity remote login --username mazzalab
+            singularity remote login --username mazzalab --tokenfile token.txt
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
