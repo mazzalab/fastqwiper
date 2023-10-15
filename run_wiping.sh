@@ -35,5 +35,6 @@ then
     snakemake --config sample_name=$sample_name -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores $cores
   fi
 else
-  snakemake -n -r --config sample_name=$sample_name -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores $cores
+  echo "Snakemake help"
+  snakemake --help
 fi

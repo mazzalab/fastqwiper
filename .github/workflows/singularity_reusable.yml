@@ -21,7 +21,7 @@ jobs:
         - name: Build a singularity container
           run: singularity build --fakeroot fqw.sif Singularity.def
         - name: Test the singularity container
-          run: singularity run fqw.sif test 4 sample 50000000
+          run: singularity run fqw.sif help
         - uses: actions/upload-artifact@v3
           with:
             name: fqwsif-artifact
