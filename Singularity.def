@@ -37,7 +37,6 @@ From: condaforge/mambaforge
     cd /tmp/
 	tar xvzf java.tar.gz
 
-    ls -l
     chmod 777 /fastqwiper/run_wiping.sh
 
 %runscript
@@ -51,4 +50,5 @@ From: condaforge/mambaforge
     sample_name="$3"
     chunk_size="$4"
 
-    exec "/fastqwiper/run_wiping.sh" $@
+    cd /fastqwiper
+    exec run_wiping.sh $@
