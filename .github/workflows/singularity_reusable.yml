@@ -13,6 +13,7 @@ on:
 jobs:
   docker_build_publish:
     runs-on: ubuntu-latest
+    env: SYLABS-TOKEN="${{ secrets.sylabs_token }}"
     steps:
         - uses: actions/checkout@v3
         - uses: eWaterCycle/setup-singularity@v7
@@ -29,7 +30,6 @@ jobs:
         - name: Push artifacts to Library
           shell: bash
           run: |
-            SYLABS-TOKEN="${{ secrets.sylabs_token }}"
             echo "TOKEN: $SYLABS-TOKEN"
             singularity remote login --username mazzalab
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
