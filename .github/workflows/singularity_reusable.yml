@@ -24,11 +24,11 @@ jobs:
           run: singularity run fqw.sif help
         - uses: actions/upload-artifact@v3
           with:
-            name: fqwsif-artifact
-            path: Singularity.def
+            name: fqwsif-artifact,sif
+            path: fqw.sif
         - name: Push artifacts to Library
           run: |
-            singularity remote login mazzalab --tokenfile ${{ secrets.sylabs_token }} |
+            singularity remote login --username mazzalab --password ${{ secrets.sylabs_token }} |
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
 
     #   -
