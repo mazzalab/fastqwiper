@@ -27,6 +27,7 @@ jobs:
         #     name: fqwsif-artifact.sif
         #     path: fqw.sif
         - name: Push artifacts to Library
+          shell: bash
           run: |
             SYLABS-TOKEN="${{ secrets.sylabs_token }}"
             echo "TOKEN: $SYLABS-TOKEN"
