@@ -5,6 +5,8 @@ cores=$(($2))
 sample_name=$3
 chunk_size=$(($4))
 
+cd /fastqwiper
+
 if [ $mode == "paired" ]
 then
   if [ $cores > 1 ]
