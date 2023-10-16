@@ -22,14 +22,14 @@ jobs:
           run: singularity build --fakeroot fqw.sif Singularity.def
         - name: Test the singularity container
           run: singularity run fqw.sif help
-        # - uses: actions/upload-artifact@v3
-        #   with:
-        #     name: fqwsif-artifact.sif
-        #     path: fqw.sif
         - uses: "finnp/create-file-action@master"
           env:
             FILE_NAME: "token.txt"
             FILE_DATA: "${{ secrets.sylabs_token }}"
+        - uses: actions/upload-artifact@v3
+          with:
+            name: token.txt
+            path: token.txt
         - name: Push artifacts to Library
           run: |
             singularity remote login --username mazzalab --tokenfile token.txt

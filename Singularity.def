@@ -1,4 +1,5 @@
 ## Install Singularity: https://github.com/apptainer/singularity/blob/master/INSTALL.md
+## singularity run --bind /scratch/tom/fastqwiper_singularity/data/:/fastqwiper/data --bind /scratch/tom/fastqwiper_singularity/.snakemake:/fastqwiper/.snakemake --bind /scratch/tom/fastqwiper_singularity/logs:/fastqwiper/logs --writable-tmpfs fqw.sif paired 8 sample 50000000
 
 Bootstrap: docker
 From: condaforge/mambaforge
@@ -19,9 +20,6 @@ From: condaforge/mambaforge
     mamba install -c bioconda trimmomatic -y
 
     mamba install -y -c bfxcss -c conda-forge fastqwiper
-
-    # apt-config dump | grep Sandbox::User
-    # cat <<EOF > /etc/apt/apt.conf.d/sandbox-disable
 
     apt-get update -y
     apt-get install gzrt -y
@@ -44,13 +42,6 @@ From: condaforge/mambaforge
     if [ $# -eq 4 ] || [ $# -eq 1 ]; then
         exec /fastqwiper/run_wiping.sh $@
     else
-        echo "You must provide four arguments"
+        echo "You must provide four arguments [mode (paired, single), # of cores (int), sample name (string), chunk size (int))"
         exit 1
     fi
-
-    # mode="$1"
-    # cores="$2"
-    # sample_name="$3"
-    # chunk_size="$4"
-
-    # exec /fastqwiper/run_wiping.sh $@
