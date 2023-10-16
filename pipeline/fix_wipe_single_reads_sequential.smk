@@ -29,6 +29,6 @@ rule wipe_fastq:
     message: 
         "Running FastqWiper on {input}."
     shell:
-        "fastqwiper --fastq_in {input} --fastq_out {output} 2> {log}"
+        "fastqwiper --fastq_in {input} --fastq_out {output} --log_out ./data/{sample}_final_summary.txt 2> {log}"
 
 

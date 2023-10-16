@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample chunk_size=50000000 -s pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample chunk_size=50000000 -s ./pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -47,7 +47,7 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:
-        "fastqwiper --fastq_in {input} --fastq_out {output} --log_out final_summary.txt --log_frequency 300 2> {log}"
+        "fastqwiper --fastq_in {input} --fastq_out {output} --log_out ./data/{sample}_chunks/{sample}_final_summary.txt --log_frequency 300 2> {log}"
 
 def aggregate_input(wildcards):
     checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
