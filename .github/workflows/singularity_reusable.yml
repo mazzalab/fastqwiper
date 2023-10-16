@@ -26,11 +26,11 @@ jobs:
           env:
             FILE_NAME: "token.txt"
             FILE_DATA: "${{ secrets.sylabs_token }}"
-        - uses: actions/upload-artifact@v3
-          with:
-            name: token.txt
-            path: token.txt
+        # - uses: actions/upload-artifact@v3
+        #   with:
+        #     name: token.txt
+        #     path: token.txt
         - name: Push artifacts to Library
           run: |
-            singularity remote login --username mazzalab --tokenfile token.txt
+            singularity remote login --tokenfile token.txt
             singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
