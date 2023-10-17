@@ -29,8 +29,9 @@ rule wipe_fastq:
         "logs/wipe_fastq/wipe_fastq.{sample}.log"
     message: 
         "Running FastqWiper on {input}."
-    shell:
-        "fastqwiper --fastq_in {input} --fastq_out {output} --log_out ./data/{sample}_final_summary.txt 2> {log}"
+    shell:'''
+    fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt 2> {log}
+    ''''
 
 rule drop_unpaired:
     input:

@@ -21,9 +21,9 @@ jobs:
           with:
             singularity-version: 3.8.3
         - name: Build a singularity container
-          run: singularity build --fakeroot fqw.sif Singularity.def
+          run: singularity build --fakeroot fastqwiper.sif Singularity.def
         - name: Test the singularity container
-          run: singularity run fqw.sif help
+          run: singularity run fastqwiper.sif help
         - uses: "finnp/create-file-action@master"
           env:
             FILE_NAME: "token.txt"
@@ -36,5 +36,5 @@ jobs:
           run: |
             singularity remote login --tokenfile token.txt
             singularity key newpair --password= --name="Tommaso Mazza" --comment="Deployment keys" --email=t.mazza@css-mendel.it --push=false
-            singularity sign fqw.sif
-            singularity push fqw.sif library://mazzalab/fastqwiper/fqw.sif:${{ inputs.package_version }}
+            singularity sign fastqwiper.sif
+            singularity push fastqwiper.sif library://mazzalab/fastqwiper/fastqwiper.sif:${{ inputs.package_version }}
