@@ -36,6 +36,5 @@ jobs:
         package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
     secrets:
         sylabs_token: ${{ secrets.SYLABS_TOKEN }}
-    #     dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    # needs: Conda
+        sylabs_fingerprint: ${{ secrets.SYLABS_FINGERPRINT }}
     
