@@ -48,7 +48,7 @@ rule wipe_fastq_parallel:
         "Running FastqWiper on {input}."
     shell:'''
         fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --log_frequency 300 2> {log}
-        ''''
+        '''
 
 def aggregate_input(wildcards):
     checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
