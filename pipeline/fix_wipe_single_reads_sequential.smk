@@ -30,6 +30,6 @@ rule wipe_fastq:
         "Running FastqWiper on {input}."
     shell:'''
     fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt 2> {log}
-    ''''
+    '''
 
 

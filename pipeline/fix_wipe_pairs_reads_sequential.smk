@@ -31,7 +31,7 @@ rule wipe_fastq:
         "Running FastqWiper on {input}."
     shell:'''
     fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt 2> {log}
-    ''''
+    '''
 
 rule drop_unpaired:
     input:
@@ -57,13 +57,14 @@ rule fix_interleaving:
         in2 = "data/{sample}_R2_fixed_wiped_paired.fastq.gz"
     output:
         out1 = "data/{sample}_R1_fixed_wiped_paired_interleaving.fastq.gz",
-        out2 = "data/{sample}_R2_fixed_wiped_paired_interleaving.fastq.gz"
+        out2 = "data/{sample}_R2_fixed_wiped_paired_interleaving.fastq.gz",
+        out3 = temp("data/{sample}_singletons.fastq.gz")
     log:
-        "logs/pairing/pairing.{sample}.log"
+        "logs/interleaving/interleaving.{sample}.log"
     message:
         "Repair reads interleaving from {input}."
     threads:
         1
     cache: False
     shell:
-        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle=singletons.fastq.gz 2> {log}"
+        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
