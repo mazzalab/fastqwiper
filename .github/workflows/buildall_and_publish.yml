@@ -1,6 +1,6 @@
 name: Build and Deploy all
 
-on: [release]
+on: [release]  # , push
 
 jobs:
   Pypi:
@@ -28,4 +28,13 @@ jobs:
         dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
     needs: Conda
-    
+
+  Singularity:
+    name: Singularity CI
+    uses: ./.github/workflows/singularity_reusable.yml
+    with:
+        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+    secrets:
+        sylabs_token: ${{ secrets.SYLABS_TOKEN }}
+
+        

@@ -1,0 +1,47 @@
+## Install Singularity: https://github.com/apptainer/singularity/blob/master/INSTALL.md
+## singularity run --bind /scratch/tom/fastqwiper_singularity/data/:/fastqwiper/data --bind /scratch/tom/fastqwiper_singularity/.snakemake:/fastqwiper/.snakemake --bind /scratch/tom/fastqwiper_singularity/logs:/fastqwiper/logs --writable-tmpfs fqw.sif paired 8 sample 50000000
+
+Bootstrap: docker
+From: condaforge/mambaforge
+
+%files
+    pipeline/* /fastqwiper/pipeline/
+    data/* /fastqwiper/data/
+    run_wiping.sh /fastqwiper/run_wiping.sh
+
+%environment
+    PATH=$PATH:/tmp/jre1.8.0_161/bin/
+
+%post
+    mamba config --set channel_priority strict
+    mamba install python=3.10
+    mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
+    mamba install -c conda-forge colorama click -y
+    mamba install -c bioconda trimmomatic -y
+
+    mamba install -y -c bfxcss -c conda-forge fastqwiper
+
+    apt-get update -y
+    apt-get install gzrt -y
+
+    # Software versions
+    BBMAP_VER="39.01"
+
+    wget -c https://sourceforge.net/projects/bbmap/files/BBMap_$BBMAP_VER.tar.gz/download -O /fastqwiper/BBMap_$BBMAP_VER.tar.gz
+    cd fastqwiper
+    tar -xvzf BBMap_${BBMAP_VER}.tar.gz
+    rm BBMap_${BBMAP_VER}.tar.gz 
+
+    wget -c http://javadl.oracle.com/webapps/download/AutoDL?BundleId=230532_2f38c3b165be4555a1fa6e98c45e0808 -O /tmp/java.tar.gz
+    cd /tmp/
+	tar xvzf java.tar.gz
+
+    chmod 777 /fastqwiper/run_wiping.sh
+
+%runscript
+    if [ $# -eq 4 ] || [ $# -eq 1 ]; then
+        exec /fastqwiper/run_wiping.sh $@
+    else
+        echo "You must provide four arguments [mode (paired, single), # of cores (int), sample name (string), chunk size (int))"
+        exit 1
+    fi

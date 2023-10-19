@@ -13,13 +13,14 @@
 * OS: Windows, Linux, Mac OS (Snakemake workflows through Docker for Windows)
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
+* Singularity: https://cloud.sylabs.io/library/mazzalab/fastqwiper/fastqwiper.sif
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
 
 ## USAGE
 - **Case 1**. You have one or a couple (R1&R2) of **computer readable** FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
 - **Case 2**. You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the FastqWiper's *Snakemake workflows*;
-- **Case 3**. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
+- **Case 3**. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted (**unreadable**) and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
 
 
 ## Installation
@@ -59,10 +60,10 @@ It  accepts in input and outputs **readable** `*.fastq` or `*.fastq.gz` files.
 
 
 ### Cases 2 & 3
-There is a <b>QUICK</b> and a <b>SLOW</b> method to configure `FastqWiper`'s workflows.
+There are <b>QUICK</b> and a <b>SLOW</b> methods to configure `FastqWiper`'s workflows.
 
 
-#### The quick way (Docker, all OS)
+#### One quick way (Docker)
 1. Pull the Docker image from DockerHub:
 
 `docker pull mazzalab/fastqwiper`
@@ -71,7 +72,20 @@ There is a <b>QUICK</b> and a <b>SLOW</b> method to configure `FastqWiper`'s wor
 
 CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000`
 
-where:
+#### Another quick way (Singularity)
+1. Pull the Singularity image from the Cloud Library:
+
+`singularity pull library://mazzalab/fastqwiper/fastqwiper.sif`
+
+2. Once downloaded the image (e.g., fastqwiper.sif_2023.2.70.sif), type:
+
+CMD `singularity run --bind /scratch/tom/fastqwiper_singularity/data:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2023.2.70.sif paired 8 sample 50000000`
+
+If you want to bind the `.singularity` cache folder and the `logs` folder, you can omit `--writable-tmpfs`, create the folders `.singularity` and `logs` (`mkdir .singularity logs`) on the host system, and use this command instead:
+
+CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.singularity_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2023.2.70.sif paired 8 sample 50000000`
+
+For both **Docker** and **Singularity**:
 
 - `YOUR_LOCAL_PATH_TO_DATA_FOLDER` is the path of the folder where the fastq.gz files to be wiped are located;
 - `paired` triggers the cleaning of R1 and R2. Alternatively, `single` will trigger the wipe of individual FASTQ files;
@@ -79,7 +93,6 @@ where:
 - `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything before these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. 
 - `50000000` is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4)
 
-CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper single 8 excerpt_R1_001 50000000`
 
 #### The slow way (Linux & Mac OS)
 To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The recommended way to install Snakemake is via Conda, because it enables **Snakemake** to [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).

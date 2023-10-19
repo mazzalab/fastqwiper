@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample chunk_size=50000000 -s pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample chunk_size=50000000 -s ./pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -46,8 +46,9 @@ rule wipe_fastq_parallel:
         "logs/wipe_fastq/wipe_fastq.{sample}.chunk{i}.fastq.log"
     message: 
         "Running FastqWiper on {input}."
-    shell:
-        "fastqwiper --fastq_in {input} --fastq_out {output} --log_out final_summary.txt --log_frequency 300 2> {log}"
+    shell:'''
+        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --log_frequency 300 2> {log}
+        '''
 
 def aggregate_input(wildcards):
     checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
@@ -92,16 +93,17 @@ rule fix_interleaving:
         in2 = "data/{sample}_R2_fixed_wiped_paired.fastq.gz"
     output:
         out1 = "data/{sample}_R1_fixed_wiped_paired_interleaving.fastq.gz",
-        out2 = "data/{sample}_R2_fixed_wiped_paired_interleaving.fastq.gz"
+        out2 = "data/{sample}_R2_fixed_wiped_paired_interleaving.fastq.gz",
+        out3 = temp("data/{sample}_singletons.fastq.gz")
     log:
-        "logs/pairing/pairing.{sample}.log"
+        "logs/interleaving/interleaving.{sample}.log"
     message:
         "Repair reads interleaving from {input}."
     threads:
         1
     cache: False
     shell:
-        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle=singletons.fastq.gz 2> {log}"
+        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
 
 onsuccess:
     print("Workflow finished, no error. Clean-up and shutdown")
