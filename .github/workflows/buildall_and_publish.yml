@@ -1,6 +1,8 @@
 name: Build and Deploy all
 
-on: [release]
+on:
+    release:
+      types: [published]
 
 jobs:
   Pypi:
