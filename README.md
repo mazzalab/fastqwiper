@@ -13,13 +13,14 @@
 * OS: Windows, Linux, Mac OS (Snakemake workflows through Docker for Windows)
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
+* Singularity: https://cloud.sylabs.io/library/mazzalab/fastqwiper/fastqwiper.sif
 * Bug report: [https://github.com/mazzalab/fastqwiper/issues](https://github.com/mazzalab/fastqwiper/issues)
 
 
 ## USAGE
 - **Case 1**. You have one or a couple (R1&R2) of **computer readable** FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
 - **Case 2**. You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the FastqWiper's *Snakemake workflows*;
-- **Case 3**. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
+- **Case 3**. You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted (**unreadable**) and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
 
 
 ## Installation
@@ -59,10 +60,10 @@ It  accepts in input and outputs **readable** `*.fastq` or `*.fastq.gz` files.
 
 
 ### Cases 2 & 3
-There is a <b>QUICK</b> and a <b>SLOW</b> method to configure `FastqWiper`'s workflows.
+There are <b>QUICK</b> and a <b>SLOW</b> methods to configure `FastqWiper`'s workflows.
 
 
-#### The quick way (Docker, all OS)
+#### One quick way (Docker)
 1. Pull the Docker image from DockerHub:
 
 `docker pull mazzalab/fastqwiper`
@@ -70,6 +71,18 @@ There is a <b>QUICK</b> and a <b>SLOW</b> method to configure `FastqWiper`'s wor
 2. Once downloaded the image, type:
 
 CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000`
+
+#### Another quick way (Singularity)
+1. Pull the Singularity image from the Cloud Library:
+
+`singularity pull library://mazzalab/fastqwiper/fastqwiper.sif`
+
+2. Once downloaded the image, type:
+
+CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind /scratch/tom/fastqwiper_singularity/.snakemake:/fastqwiper/.snakemake --bind /scratch/tom/fastqwiper_singularity/logs:/fastqwiper/logs --writable-tmpfs fastqwiper.sif paired 8 sample 50000000`
+
+
+
 
 where:
 

@@ -9,8 +9,6 @@ on:
     secrets:
       sylabs_token:
         required: true
-      sylabs_fingerprint:
-        required: true
 
 jobs:
   docker_build_publish:
