@@ -2,7 +2,7 @@ name: Build and Deploy all
 
 on:
     release:
-      types: [published]
+      types: [released]
 
 jobs:
   Pypi:

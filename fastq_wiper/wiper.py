@@ -112,14 +112,15 @@ def fix_plus_line(line: str, checkpoint_flags: dict) -> str:
 def fix_qual_line(line: str, checkpoint_flags: dict) -> str:
     qual: str = ""
 
-    min_ascii = min(ord(c) for c in line)
-    max_ascii = max(ord(c) for c in line)
-    if min_ascii >= 33 and max_ascii <= 126:
-        checkpoint_flags["qual"] = True
-        qual: str = line
-    else:
-        global qual_out_range
-        qual_out_range += 1
+    if(line):
+        min_ascii = min(ord(c) for c in line)
+        max_ascii = max(ord(c) for c in line)
+        if min_ascii >= 33 and max_ascii <= 126:
+            checkpoint_flags["qual"] = True
+            qual: str = line
+        else:
+            global qual_out_range
+            qual_out_range += 1
 
     return qual
 
@@ -362,6 +363,7 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
             ):
                 qual = fix_qual_line(line, checkpoint_flags)
 
+                # Eventually print to file
                 if len(raw_seq) == len(qual) and len(qual) != 0:
                     print_to_file(header, raw_seq, head_qual_sep, qual, fout)
                     clean_reads += 1
