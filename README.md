@@ -145,11 +145,11 @@ Copy the fastq files you want to fix in the `data` folder.
 
 #### Paired-end files
 
-- **Get a dry run** of a pipeline (e.g., `fix_wipe_single_reads_sequential.smk`):<br />
+- **Get a dry run** of a pipeline (e.g., `fix_wipe_pairs_reads_sequential.smk`):<br />
 `snakemake --config sample_name=my_sample -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4`
 
 - **Generate the planned DAG**:<br />
-`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /> <br />
+`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_pairs_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /> <br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="400">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:<br />
