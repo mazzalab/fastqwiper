@@ -91,7 +91,7 @@ For both **Docker** and **Singularity**:
 - `paired` triggers the cleaning of R1 and R2. Alternatively, `single` will trigger the wipe of individual FASTQ files;
 - `8` is the number of your choice of computing cores to be spawned;
 - `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything before these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. 
-- `50000000` is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4)
+- `50000000` is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4). Increasing this number too much would reduce the parallelism advantage. Decreasing this number too much would increase the number of chunks more than the number of available cpus, making parallelism unefficient. Choose this number wisely depending on the total number of reads in your starting file.
 
 
 #### The slow way (Linux & Mac OS)
