@@ -4,7 +4,7 @@ LABEL maintainer="mazza.tommaso@gmail.com"
 ENV bbmap_version 39.01
 ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
-RUN mamba config --set channel_priority strict
+# RUN mamba config --set channel_priority strict
 RUN mamba install python=3.10
 RUN mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
 RUN mamba install -c conda-forge colorama click -y
@@ -32,8 +32,8 @@ RUN chmod +x run_wiping.sh
 
 
 ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
-# paired mode, 4 cores, sample name, #rows-per-chunk
-CMD ["paired", "4", "sample", "50000000"]
+# paired mode, 4 cores, sample name, #rows-per-chunk, ASCII offset (33=Sanger, 64=old Solexa)
+CMD ["paired", "4", "sample", "50000000", "33"]
 
 # docker build -t test .
 # docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 8 sample 50000000
