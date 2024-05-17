@@ -3,6 +3,7 @@
 from snakemake.io import expand, temp
 
 SAMPLES=config["sample_name"]
+QIN=config["qin"]
 
 rule all:
     input: 

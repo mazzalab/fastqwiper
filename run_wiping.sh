@@ -10,6 +10,7 @@ if [ "$chunk_size" -eq "0" ]; then
   chunk_size=50000000
 fi
 
+# Optional
 qin=$(($5))
 if [ "$qin" -eq "0" ]; then
   qin=33
@@ -33,10 +34,10 @@ then
   if [ "$cores" -gt 1 ]
   then
     echo "Processing single-end file in parallel"
-    snakemake --config sample_name=$sample_name chunk_size=$chunk_size qin=$qin -s ./pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores $cores
+    snakemake --config sample_name=$sample_name chunk_size=$chunk_size -s ./pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores $cores
   else
     echo "Processing single-end file sequentially"
-    snakemake --config sample_name=$sample_name qin=$qin -s ./pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores $cores
+    snakemake --config sample_name=$sample_name -s ./pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores $cores
   fi
 else
   echo "Snakemake help"
