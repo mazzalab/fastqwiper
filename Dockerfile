@@ -28,6 +28,7 @@ WORKDIR /fastqwiper
 
 COPY pipeline pipeline
 COPY run_wiping.sh run_wiping.sh
+COPY data data
 RUN chmod +x run_wiping.sh
 
 
@@ -36,5 +37,5 @@ ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
 CMD ["paired", "4", "sample", "50000000", "33"]
 
 # docker build -t test .
-# docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 8 sample 50000000
+# docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 4 sample 50000000 33
 # docker exec -ti test /bin/bash

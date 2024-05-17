@@ -17,6 +17,6 @@
 		  "backend" : "PyCharm"
 		}
 	},
-    workspaceFolder: "/fastqwiper",
+//    workspaceFolder: "/fastqwiper",
 //    workspaceMount: "source=${localWorkspaceFolder},target=/fastqwiper,type=bind"
 }

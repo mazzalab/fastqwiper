@@ -62,9 +62,9 @@ rule fix_interleaving:
     log:
         "logs/interleaving/interleaving.{sample}.log"
     message:
-        "Repair reads interleaving from {input}."
+        "Repair reads interleaving from {input} (qin={QIN})."
     threads:
         1
     cache: False
     shell:
-        "bbmap/repair.sh in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
+        "bbmap/repair.sh qin={QIN} in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
