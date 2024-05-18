@@ -8,31 +8,15 @@
 		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 		"dockerfile": "../Dockerfile"
 	},
-	// "mounts": [
-	// 	"source=${localWorkspaceFolder},target=/fastqwiper,type=bind,consistency=cached"
-	//   ],
-	"customizations": {
-		"vscode": {
-		  "extensions": [
-			"ms-python.vscode-pylance",
-			"ms-python.black-formatter",
-			"snakemake.snakemake-lang"
-		]
-		}
-	  }
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "cat /etc/os-release",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
+	"features": {
+       "ghcr.io/devcontainers/features/git:1": {}
+    },
+	"customizations" : {
+		"jetbrains" : {
+		  "backend" : "PyCharm"
+		}
+	},
+    workspaceFolder: "/fastqwiper",
+    workspaceMount: "source=${localWorkspaceFolder},target=/fastqwiper,type=bind"
 }
