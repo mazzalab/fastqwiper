@@ -13,7 +13,6 @@ From: condaforge/mambaforge
     PATH=$PATH:/tmp/jre1.8.0_161/bin/
 
 %post
-    mamba config --set channel_priority strict
     mamba install python=3.10
     mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
     mamba install -c conda-forge colorama click -y
