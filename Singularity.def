@@ -38,7 +38,7 @@ From: condaforge/mambaforge
     chmod 777 /fastqwiper/run_wiping.sh
 
 %runscript
-    if [ $# -eq 5 ] || [ $# -eq 3 ] || [ $# -eq 1 ]; then
+    if [ $# -eq 5 ] || [ $# -eq 3 ] || [ $# -eq 0 ]; then
         exec /fastqwiper/run_wiping.sh $@
     else
         echo "You must provide three + 2 optional arguments [computing mode ('paired' or 'single'), # of cores (int), sample name (string), chunk size (optional, int), ASCII offset (optional, 33 or 64)]"
