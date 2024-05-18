@@ -1,8 +1,9 @@
 name: Build and Deploy all
 
-on:
-    release:
-      types: [push]
+on: [pull_request, push]
+
+#on:
+#    release:
 #      types: [released]
 
 jobs:
