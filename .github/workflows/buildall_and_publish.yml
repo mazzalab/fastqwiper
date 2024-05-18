@@ -1,6 +1,6 @@
 name: Build and Deploy all
 
-on: [pull_request, push]
+on: [push]
 
 #on:
 #    release:
@@ -40,5 +40,5 @@ jobs:
         package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
     secrets:
         sylabs_token: ${{ secrets.SYLABS_TOKEN }}
-    needs: Conda
+#    needs: Conda
         
