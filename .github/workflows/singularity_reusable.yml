@@ -21,7 +21,7 @@ jobs:
         - name: Build a singularity container
           run: singularity build --fakeroot fastqwiper.sif Singularity.def
         - name: Test the singularity container
-          run: singularity run fastqwiper.sif help
+          run: singularity run fastqwiper.sif
         - uses: "finnp/create-file-action@master"
           env:
             FILE_NAME: "token.txt"
@@ -33,6 +33,6 @@ jobs:
         - name: Push artifacts to Library
           run: |
             singularity remote login --tokenfile token.txt
-            singularity key newpair --password= --name="Tommaso Mazza" --comment="Deployment keys" --email=t.mazza@css-mendel.it --push=false
+            singularity key newpair --password= --name="Tommaso Mazza" --comment="Deployment keys" --email=t.mazza@operapadrepio.it --push=false
             singularity sign fastqwiper.sif
             singularity push fastqwiper.sif library://mazzalab/fastqwiper/fastqwiper.sif:${{ inputs.package_version }}
