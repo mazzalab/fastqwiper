@@ -37,5 +37,5 @@ ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
 CMD ["paired", "4", "sample", "50000000", "33"]
 
 # docker build -t test .
-# docker run --rm -ti --name test -v "D:\desktop_links\CSS-Bioinformatics\FastqWiper\FastqWiper\data:/fastqwiper/data" test paired 4 sample 50000000 33
+# docker run --rm -ti --name test -v "D:\Projects\fastqwiper\data:/fastqwiper/data" test paired 4 sample 50000000 33
 # docker exec -ti test /bin/bash
