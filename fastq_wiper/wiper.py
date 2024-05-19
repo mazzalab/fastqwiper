@@ -3,15 +3,13 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from colorama import init
-
-init(convert=True)
-import click
 import gzip
 import re
 import codecs
-from fastq_wiper import log
+import argparse
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 # region Variables for final report
 tot_lines: int = 0
@@ -71,18 +69,23 @@ def write_fastq_file(file_path: str):
 def fix_header_line(line: str, checkpoint_flags: dict) -> str:
     header: str = line.rstrip()
 
-    # Drop all character preceding the last @ character of the header
-    if header.rfind("@") > 0:
-        header = header[header.rfind("@") :]
-
-    if header == "@":
-        checkpoint_flags["at"] = False
-    else:
+    # TODO: FIX this method
+    if header.startswith("@") and len(header) > 1:
         checkpoint_flags["at"] = True
-        
-        global head_at
-        head_at += 1
-    
+    else:
+        if header.startswith("@") and len(header) == 1:
+            checkpoint_flags["at"] = False
+        else:
+            # Drop all character preceding the last @ character of the header
+            if header.rfind("@") > 0:
+                header = header[header.rfind("@"):]
+                checkpoint_flags["at"] = True
+
+                global head_at
+                head_at += 1
+            else:
+                checkpoint_flags["at"] = False
+
     return header
 
 
@@ -141,7 +144,7 @@ def skip_empty_lines(line: str, fin) -> str:
 
 def print_log_during_reading(lines, log_frequency):
     if lines % log_frequency == 0:
-        log.info(f"Cleaned {lines} reads")
+        logging.info(f"Cleaned {lines} reads")
 
 
 def print_to_file(header, raw_seq, head_qual_sep, qual, fout):
@@ -166,9 +169,7 @@ def print_log_to_file(log_out):
     flog.write(f"BAD QUAL lines: {qual_out_range}/{tot_lines}" + "\n")
     flog.write(f"BAD '+' lines: {plus_row}/{tot_lines}" + "\n")
     flog.write(f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}" + "\n")
-    flog.write(
-        f"Not printable or uncompliant header lines: {head_print}/{tot_lines}" + "\n"
-    )
+    flog.write(f"Not printable or uncompliant header lines: {head_print}/{tot_lines}" + "\n")
     flog.write(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}" + "\n")
     flog.write(f"Fixed header lines: {head_at}/{tot_lines}" + "\n")
     flog.write(f"Fixed + lines: {head_plus}/{tot_lines}" + "\n")
@@ -181,72 +182,60 @@ def print_log_to_file(log_out):
 def print_log_to_screen():
     global tot_lines, clean_reads, seq_len_neq_qual_len, head_print, seq_odd_chars, plus_row, qual_odd_chars, unexpected_line
 
-    click.echo(
-        click.style(
-            f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)",
-            fg="blue" if tot_lines == clean_reads else "yellow",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}",
-            fg="blue" if seq_len_neq_qual_len == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"BAD QUAL lines: {qual_out_range}/{tot_lines}",
-            fg="blue" if qual_out_range == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"BAD '+' lines: {plus_row}/{tot_lines}",
-            fg="blue" if plus_row == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}",
-            fg="blue" if seq_odd_chars == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Not printable or uncompliant header lines: {head_print}/{tot_lines}",
-            fg="blue" if head_print == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Not printable qual lines: {qual_odd_chars}/{tot_lines}",
-            fg="blue" if qual_odd_chars == 0 else "red",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Fixed header lines: {head_at}/{tot_lines}",
-            fg="blue" if head_at == 0 else "yellow",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Fixed + lines: {head_plus}/{tot_lines}",
-            fg="blue" if head_plus == 0 else "yellow",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Blank lines: {blank}/{tot_lines}",
-            fg="blue" if blank == 0 else "yellow",
-        )
-    )
-    click.echo(
-        click.style(
-            f"Missplaced lines: {unexpected_line}/{tot_lines}",
-            fg="blue" if unexpected_line == 0 else "yellow",
-        )
-    )
+    if tot_lines == clean_reads:
+        logging.info(f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)")
+    else:
+        logging.warning(f"Clean lines: {clean_reads * 4}/{tot_lines} ({round((clean_reads * 4 / tot_lines) * 100, 2)}%)")
+
+    if seq_len_neq_qual_len == 0:
+        logging.info(f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}")
+    else:
+        logging.warning(f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}")
+
+    if qual_out_range == 0:
+        logging.info(f"BAD QUAL lines: {qual_out_range}/{tot_lines}")
+    else:
+        logging.warning(f"BAD QUAL lines: {qual_out_range}/{tot_lines}")
+
+    if plus_row == 0:
+        logging.info(f"BAD '+' lines: {plus_row}/{tot_lines}")
+    else:
+        logging.warning(f"BAD '+' lines: {plus_row}/{tot_lines}")
+
+    if seq_odd_chars == 0:
+        logging.info(f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}")
+    else:
+        logging.warning(f"BAD SEQ lines: {seq_odd_chars}/{tot_lines}")
+
+    if head_print == 0:
+        logging.info(f"Not printable or uncompliant header lines: {head_print}/{tot_lines}")
+    else:
+        logging.warning(f"Not printable or uncompliant header lines: {head_print}/{tot_lines}")
+
+    if qual_odd_chars == 0:
+        logging.info(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}")
+    else:
+        logging.warning(f"Not printable qual lines: {qual_odd_chars}/{tot_lines}")
+
+    if head_at == 0:
+        logging.info(f"Fixed header lines: {head_at}/{tot_lines}")
+    else:
+        logging.warning(f"Fixed header lines: {head_at}/{tot_lines}")
+
+    if head_plus == 0:
+        logging.info(f"Fixed + lines: {head_plus}/{tot_lines}")
+    else:
+        logging.warning(f"Fixed + lines: {head_plus}/{tot_lines}")
+
+    if blank == 0:
+        logging.info(f"Blank lines: {blank}/{tot_lines}")
+    else:
+        logging.warning(f"Blank lines: {blank}/{tot_lines}")
+
+    if unexpected_line == 0:
+        logging.info(f"Missplaced lines: {unexpected_line}/{tot_lines}")
+    else:
+        logging.warning(f"Missplaced lines: {unexpected_line}/{tot_lines}")
 
 
 def reset_flags(checkpoint_flags: dict):
@@ -261,43 +250,19 @@ def count_remainder():
     return tot_lines % 4
 
 
-@click.command()
-@click.option(
-    "--fastq_in", type=click.STRING, required=True, help="The input FASTQ file"
-)
-@click.option(
-    "--fastq_out", type=click.STRING, required=True, help="The wiped FASTQ file"
-)
-@click.option(
-    "--log_out",
-    type=click.STRING,
-    required=False,
-    help="The file name of the final quality report summary",
-)
-@click.option(
-    "--log_frequency",
-    type=click.INT,
-    default=500000,
-    help="The number of reads you want to print a status message",
-)
 def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
     # MIN_HEADER_LEN = 10
 
     fin = open_fastq_file(fastq_in)
     if not fin:
-        click.echo(
-            click.style(
-                "The input FASTQ file does not exist or bad extension (.gz or .fastq.gz)",
-                fg="red",
-            )
-        )
+        logging.critical("The input FASTQ file does not exist or bad extension (.gz or .fastq.gz)")
     else:
-        click.echo(click.style(f"Start wiping {fastq_in}", fg="blue"))
+        logging.info(f"Start wiping {fastq_in}")
 
         # Open file out stream
         fout = write_fastq_file(fastq_out)
 
-        # change if a lines is parsed succesfully
+        # change if a lines is parsed successfully
         checkpoint_flags = {
             "at": False,
             "seq": False,
@@ -423,7 +388,7 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
         fin.close()
 
         # Print short report
-        click.echo(click.style("Successfully terminated\n", fg="blue"))
+        logging.info("Successfully terminated\n")
 
         if log_out:
             print_log_to_file(log_out)
@@ -432,4 +397,11 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
 
 
 if __name__ == "__main__":
-    wipe_fastq()
+    parser = argparse.ArgumentParser(description='FastqWiper entrypoint')
+    parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
+    parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
+    parser.add_argument("-l", '--log_out', nargs='?', help='The file name of the final quality report summary')
+    parser.add_argument("-f", '--log_frequency', type=int, nargs='?', const=500000, help='The number of reads you want to print a status message')
+    args = parser.parse_args()
+
+    wipe_fastq(args.fastq_in, args.fastq_out,args.log_out, args.log_frequency)

@@ -1,4 +1,0 @@
-colorama=0.4.4
-click=7.1.2
-setuptools~=51.0.0
-mamba=0.12.2
