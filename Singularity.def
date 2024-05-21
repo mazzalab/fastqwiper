@@ -13,9 +13,8 @@ From: condaforge/mambaforge
     PATH=$PATH:/tmp/jre1.8.0_161/bin/
 
 %post
-    mamba install python=3.10
-    mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
-    mamba install -c conda-forge colorama click -y
+    mamba install python=3.11
+    mamba install -c conda-forge -c bioconda snakemake=8.11.3 -y
     mamba install -c bioconda trimmomatic -y
 
     mamba install -y -c bfxcss -c conda-forge fastqwiper
@@ -24,7 +23,7 @@ From: condaforge/mambaforge
     apt-get install gzrt -y
 
     # Software versions
-    BBMAP_VER="39.01"
+    BBMAP_VER="39.06"
 
     wget -c https://sourceforge.net/projects/bbmap/files/BBMap_$BBMAP_VER.tar.gz/download -O /fastqwiper/BBMap_$BBMAP_VER.tar.gz
     cd fastqwiper

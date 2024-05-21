@@ -9,7 +9,7 @@
 
 `FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. Additionally, the available and pre-designed Snakemake [workflows](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **fixing** reads interleaving.
 
-* Compatibility: Python ≥3.7, <3.11
+* Compatibility: Python ≥3.7, <3.13
 * OS: Windows, Linux, Mac OS (Snakemake workflows through Docker for Windows)
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
@@ -30,7 +30,7 @@ This requires you to install FastqWiper and therefore does not require you to co
 #### Use Conda
 
 ```
-conda create -n fastqwiper python=3.10
+conda create -n fastqwiper python=3.11
 conda activate fastqwiper
 conda install -c bfxcss -c conda-forge fastqwiper
 
@@ -77,13 +77,13 @@ CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/
 
 `singularity pull library://mazzalab/fastqwiper/fastqwiper.sif`
 
-2. Once downloaded the image (e.g., fastqwiper.sif_2023.2.70.sif), type:
+2. Once downloaded the image (e.g., fastqwiper.sif_2024.1.89.sif), type:
 
-CMD `singularity run --bind /scratch/tom/fastqwiper_singularity/data:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2023.2.70.sif paired 8 sample 50000000 33`
+CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33`
 
 If you want to bind the `.singularity` cache folder and the `logs` folder, you can omit `--writable-tmpfs`, create the folders `.singularity` and `logs` (`mkdir .singularity logs`) on the host system, and use this command instead:
 
-CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.singularity_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2023.2.70.sif paired 8 sample 50000000 33`
+CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.SNAKEMAKE_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33`
 
 For both **Docker** and **Singularity**:
 
@@ -106,14 +106,13 @@ if you have anaconda/miniconda already installed, or directly installing `Mambaf
 Then, create and activate a clean environment as above:
 
 ```
-mamba create -n fastqwiper python=3.10
+mamba create -n fastqwiper python=3.11
 mamba activate fastqwiper
 ```
-Finally, install a few dependencies:
+Finally, install the Snakemake dependency:
 
 ```
 $ mamba install -c bioconda snakemake
-$ mamba install colorama click
 ```
 
 
@@ -153,7 +152,7 @@ Copy the fastq files you want to fix in the `data` folder.
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="400">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:<br />
-`snakemake --config sample_name=my_sample qin=33 -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
+`snakemake --config sample_name=my_sample -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
 
 Fixed files will be copied in the `data` folder and will be suffixed with the string `_fixed_wiped_paired_interleaving`.
 We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_reads_parallel.smk` pipelines perform the following actions:
@@ -177,12 +176,12 @@ We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_rea
 
 # Author
 **Tommaso Mazza**  
-[![Tweeting](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/irongraft)
+[![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white)](https://twitter.com/irongraft) [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tommasomazza/)
 
 Laboratory of Bioinformatics</br>
 Fondazione IRCCS Casa Sollievo della Sofferenza</br>
 Viale Regina Margherita 261 - 00198 Roma IT</br>
 Tel: +39 06 44160526 - Fax: +39 06 44160548</br>
-E-mail: t.mazza@css-mendel.it</br>
+E-mail: t.mazza@operapadrepio.it</br>
 Web page: http://www.css-mendel.it</br>
 Web page: http://bioinformatics.css-mendel.it</br>

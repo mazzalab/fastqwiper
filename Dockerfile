@@ -1,13 +1,12 @@
 FROM condaforge/mambaforge
 LABEL maintainer="mazza.tommaso@gmail.com"
 
-ENV bbmap_version 39.01
+ENV bbmap_version 39.06
 ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
 # RUN mamba config --set channel_priority strict
-RUN mamba install python=3.10
-RUN mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
-RUN mamba install -c conda-forge colorama click -y
+RUN mamba install python=3.11
+RUN mamba install -c conda-forge -c bioconda snakemake=8.11.3 -y
 RUN mamba install -c bioconda trimmomatic -y
 
 # Install fastqwiper from conda
