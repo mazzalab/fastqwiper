@@ -6,6 +6,8 @@ from snakemake.io import expand, temp
 
 SAMPLE=config["sample_name"]
 QIN=config["qin"]
+ALPHABET=config["alphabet"]
+LOG_FREQ=config["log_freq"]
 
 rule all:
     input: 
@@ -48,7 +50,7 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --log_frequency 300 2> {log}
+        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
         '''
 
 def aggregate_input(wildcards):

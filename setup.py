@@ -21,10 +21,8 @@ if util.find_spec("setuptools") is None:
 from setuptools import setup, find_packages
 
 print(sys.version_info)
-if sys.version_info.major != 3 and (
-    sys.version_info.minor < 7 or sys.version_info.minor > 10
-):
-    sys.exit("Sorry, Python < 3.7 and > 3.10 are not supported")
+if sys.version_info.major != 3 or sys.version_info.minor < 7:
+    sys.exit("Sorry, Python < 3.7 is not supported")
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -41,7 +39,8 @@ setup(
     version=VERSION,
     author="Tommaso Mazza",
     author_email="bioinformatics@css-mendel.it",
-    description="An ensamble method to recover corrupted FASTQ files, drop or fix pesky lines, remove unpaired reads, and fix reads interleaving",
+    description="An ensemble method to recover corrupted FASTQ files, drop or fix pesky lines, remove unpaired reads, "
+                "and fix reads interleaving",
     url="https://github.com/mazzalab/fastqwiper",
     packages=find_packages(),
     include_package_data=True,
@@ -49,7 +48,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     entry_points={"console_scripts": ["fastqwiper = fastq_wiper.wiper:wipe_fastq"]},
-    install_requires=["setuptools", "colorama", "click"],
+    install_requires=["setuptools"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
@@ -57,6 +56,8 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
@@ -67,5 +68,5 @@ setup(
         "Developmental plan": "https://github.com/mazzalab/fastqwiper/projects",
     },
     keywords="genomics, ngs, fastq, bioinformatics",
-    python_requires=">=3.7,<3.11",
+    python_requires=">=3.7,<3.13",
 )

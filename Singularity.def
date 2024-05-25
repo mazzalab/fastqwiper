@@ -13,9 +13,8 @@ From: condaforge/mambaforge
     PATH=$PATH:/tmp/jre1.8.0_161/bin/
 
 %post
-    mamba install python=3.10
-    mamba install -c conda-forge -c bioconda snakemake=7.32.3 -y
-    mamba install -c conda-forge colorama click -y
+    mamba install python=3.11
+    mamba install -c conda-forge -c bioconda snakemake=8.11.3 -y
     mamba install -c bioconda trimmomatic -y
 
     mamba install -y -c bfxcss -c conda-forge fastqwiper
@@ -24,7 +23,7 @@ From: condaforge/mambaforge
     apt-get install gzrt -y
 
     # Software versions
-    BBMAP_VER="39.01"
+    BBMAP_VER="39.06"
 
     wget -c https://sourceforge.net/projects/bbmap/files/BBMap_$BBMAP_VER.tar.gz/download -O /fastqwiper/BBMap_$BBMAP_VER.tar.gz
     cd fastqwiper
@@ -38,9 +37,9 @@ From: condaforge/mambaforge
     chmod 777 /fastqwiper/run_wiping.sh
 
 %runscript
-    if [ $# -eq 5 ] || [ $# -eq 3 ] || [ $# -eq 0 ]; then
+    if [ $# -eq 7 ] || [ $# -eq 3 ] || [ $# -eq 0 ]; then
         exec /fastqwiper/run_wiping.sh $@
     else
-        echo "You must provide three + 2 optional arguments [computing mode ('paired' or 'single'), # of cores (int), sample name (string), chunk size (optional, int), ASCII offset (optional, 33 or 64)]"
+        echo "You must provide three + 4 optional arguments [computing mode ('paired' or 'single'), # of cores (int), sample name (string), chunk size (optional, int), ASCII offset (optional, 33 or 64), allowed SEQ alphabet (optional, e.g., ACGTN), log frequency (optional, "500000")]"
         exit 1
     fi
