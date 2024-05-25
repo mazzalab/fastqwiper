@@ -1,6 +1,8 @@
 # cmd: snakemake -s fix_wipe_single_reads.smk --use-conda --cores 2
 
 SAMPLES=config["sample_name"]
+ALPHABET=config["alphabet"]
+LOG_FREQ=config["log_freq"]
 
 rule all:
     input:
@@ -29,7 +31,5 @@ rule wipe_fastq:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-    fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt 2> {log}
+    fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
     '''
-
-

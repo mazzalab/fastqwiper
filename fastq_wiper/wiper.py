@@ -303,8 +303,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FastqWiper entrypoint')
     parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
     parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
-    parser.add_argument("-l", '--log_out', nargs='?', help='The file name of the final quality report summary')
-    parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000, help='The number of reads you want to print a status message')
+    parser.add_argument("-l", '--log_out', nargs='?',
+                        help='The file name of the final quality report summary. Print on the screen if not specified')
+    parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
+                        help='The number of reads you want to print a status message. Default: 500000')
     parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
                         help='Allowed character in the SEQ line. Default: ACGTN')
     args = parser.parse_args()

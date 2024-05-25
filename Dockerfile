@@ -32,9 +32,9 @@ RUN chmod +x run_wiping.sh
 
 
 ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
-# paired mode, 4 cores, sample name, #rows-per-chunk, ASCII offset (33=Sanger, 64=old Solexa)
-CMD ["paired", "4", "sample", "50000000", "33"]
+# paired mode, 4 cores, sample name, #rows-per-chunk, ASCII offset (33=Sanger, 64=old Solexa), alphabet (e.g., ACGTN), log frequency (500000)
+CMD ["paired", "4", "sample", "50000000", "33", "ACGTN", "500000"]
 
 # docker build -t test .
-# docker run --rm -ti --name test -v "D:\Projects\fastqwiper\data:/fastqwiper/data" test paired 4 sample 50000000 33
+# docker run --rm -ti --name test -v "D:\Projects\fastqwiper\data:/fastqwiper/data" test paired 4 sample 50000000 33 ACGTN 500000
 # docker exec -ti test /bin/bash
