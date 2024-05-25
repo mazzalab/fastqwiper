@@ -32,7 +32,7 @@ if os.getenv('RELEASE_VER'):
     VERSION = os.getenv('RELEASE_VER')
 
 print("Passing version {} to setup.py".format(VERSION))
-assert re.match("^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
+assert re.match(r"^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
 
 setup(
     name="fastqwiper",
