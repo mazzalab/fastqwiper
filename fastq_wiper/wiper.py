@@ -299,7 +299,7 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
             print_log_to_screen()
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description='FastqWiper entrypoint')
     parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
     parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
@@ -314,4 +314,8 @@ if __name__ == "__main__":
     # Allowed character of the SEQ line
     reg = re.compile(f"^[{args.alphabet}]+$")
 
-    wipe_fastq(args.fastq_in, args.fastq_out,args.log_out, args.log_frequency)
+    wipe_fastq(args.fastq_in, args.fastq_out, args.log_out, args.log_frequency)
+
+
+if __name__ == "__main__":
+    main()

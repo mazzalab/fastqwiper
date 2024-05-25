@@ -6,13 +6,13 @@ on: [pull_request, push]
 #      types: [released]
 
 jobs:
-  Pypi:
-    name: Pypi CI
-    uses: ./.github/workflows/pypi_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        pypi_token: ${{ secrets.PYPI_TOKEN }}
+#  Pypi:
+#    name: Pypi CI
+#    uses: ./.github/workflows/pypi_reusable.yml
+#    with:
+#        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+#    secrets:
+#        pypi_token: ${{ secrets.PYPI_TOKEN }}
 
   Conda:
     name: Conda CI
