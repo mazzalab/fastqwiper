@@ -71,7 +71,7 @@ There are <b>QUICK</b> and a <b>SLOW</b> methods to configure `FastqWiper`'s wor
 
 2. Once downloaded the image, type:
 
-CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000 33 ACGTN`
+CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000 33 ACGTN 500000`
 
 #### Another quick way (Singularity)
 1. Pull the Singularity image from the Cloud Library:
@@ -80,7 +80,7 @@ CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/
 
 2. Once downloaded the image (e.g., fastqwiper.sif_2024.1.89.sif), type:
 
-CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33 ACGTN`
+CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33 ACGTN 500000`
 
 If you want to bind the `.singularity` cache folder and the `logs` folder, you can omit `--writable-tmpfs`, create the folders `.singularity` and `logs` (`mkdir .singularity logs`) on the host system, and use this command instead:
 
@@ -95,6 +95,7 @@ For both **Docker** and **Singularity**:
 - `50000000` (optional) is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4). Increasing this number too much would reduce the parallelism advantage. Decreasing this number too much would increase the number of chunks more than the number of available cpus, making parallelism unefficient. Choose this number wisely depending on the total number of reads in your starting file.
 - `33` (optional) is the ASCII offset (33=Sanger, 64=old Solexa)
 - `ACGTN` (optional) is the allowed alphabet in the SEQ line of the FASTQ file
+- `500000` (optional) is the log frequency (# reads)
 
 ### <code style="color : red">The slow way (Linux & Mac OS)</code>
 To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The recommended way to install Snakemake is via Conda, because it enables **Snakemake** to [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
@@ -149,14 +150,14 @@ Copy the fastq files you want to fix in the `data` folder.
 #### Paired-end files
 
 - **Get a dry run** of a pipeline (e.g., `fix_wipe_pairs_reads_sequential.smk`):<br />
-`snakemake --config sample_name=my_sample qin=33 alphabet=ACGTN -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4`
+`snakemake --config sample_name=my_sample qin=33 alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4 -np`
 
 - **Generate the planned DAG**:<br />
-`snakemake --config sample_name=my_sample qin=33 alphabet=ACGTN -s pipeline/fix_wipe_pairs_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /> <br />
+`snakemake --config sample_name=my_sample qin=33 alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_pairs_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /> <br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_pairs_reads.png?raw=true" width="400">
 
 - **Run the pipeline** (n.b., during the first execution, Snakemake will download and install some required remote packages and may take longer). The number of computing cores can be tuned accordingly:<br />
-`snakemake --config sample_name=my_sample alphabet=ACGTN -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
+`snakemake --config sample_name=my_sample alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 2`
 
 Fixed files will be copied in the `data` folder and will be suffixed with the string `_fixed_wiped_paired_interleaving`.
 We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_reads_parallel.smk` pipelines perform the following actions:
@@ -169,14 +170,14 @@ We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_rea
 `fix_wipe_single_reads_parallel.smk` and `fix_wipe_single_reads_sequential.smk` will not execute `trimmomatic` and BBmap's `repair.sh`.
 
 - **Get a dry run** of a pipeline (e.g., `fix_wipe_single_reads_sequential.smk`):<br />
-`snakemake --config sample_name=my_sample alphabet=ACGTN -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2 -np`
+`snakemake --config sample_name=my_sample alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2 -np`
 
 - **Generate the planned DAG**:<br />
-`snakemake --config sample_name=my_sample alphabet=ACGTN -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /><br />
+`snakemake --config sample_name=my_sample alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_sequential.smk --dag | dot -Tpdf > dag.pdf`<br /><br />
 <img src="https://github.com/mazzalab/fastqwiper/blob/main/pipeline/fix_wipe_single_reads.png?raw=true" width="200">
 
 - **Run the pipeline** (n.b., The number of computing cores can be tuned accordingly):<br />
-`snakemake --config sample_name=my_sample alphabet=ACGTN -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
+`snakemake --config sample_name=my_sample alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
 
 # Author
 **Tommaso Mazza**  

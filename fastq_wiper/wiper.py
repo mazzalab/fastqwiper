@@ -10,6 +10,7 @@ import argparse
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+reg = None
 
 # region Variables for final report
 blank: int = 0
@@ -94,7 +95,7 @@ def check_header_line(line: str) -> str:
     return header
 
 
-def check_seq_line(line: str) -> str:
+def check_seq_line(line: str, reg: str) -> str:
     global bad_seq
     raw_seq: str = ""
 
@@ -233,7 +234,7 @@ def print_log_to_screen():
         logging.warning(f"Blank lines: {blank}/{tot_lines}")
 
 
-def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
+def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int, alphabet: str):
     # MIN_HEADER_LEN = 10
 
     fin = open_fastq_file(fastq_in)
@@ -247,6 +248,8 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
 
         # global variables anchor
         global tot_lines, clean_reads, seq_len_neq_qual_len
+        # Allowed characters of the SEQ line
+        reg = re.compile(f"^[{alphabet}]+$")
 
         # Loop through 4-line reads
         for line in fin:
@@ -264,7 +267,7 @@ def wipe_fastq(fastq_in: str, fastq_out: str, log_out: str, log_frequency: int):
 
             # PROCESS THE SEQ LINE
             line = read_next_line(fin, log_frequency)
-            raw_seq: str = check_seq_line(line.rstrip())
+            raw_seq: str = check_seq_line(line.rstrip(), reg)
             if not raw_seq:
                 continue
 
@@ -311,10 +314,7 @@ def main():
                         help='Allowed character in the SEQ line. Default: ACGTN')
     args = parser.parse_args()
 
-    # Allowed character of the SEQ line
-    reg = re.compile(f"^[{args.alphabet}]+$")
-
-    wipe_fastq(args.fastq_in, args.fastq_out, args.log_out, args.log_frequency)
+    wipe_fastq(args.fastq_in, args.fastq_out, args.log_out, args.log_frequency, args.alphabet)
 
 
 if __name__ == "__main__":

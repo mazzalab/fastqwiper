@@ -40,6 +40,8 @@ checkpoint split_fastq:
         split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
         '''
 
+ruleorder: wipe_fastq_parallel > aggregate
+
 rule wipe_fastq_parallel:
     input:
         "data/{sample}_chunks/chunk{i}.fastq"
