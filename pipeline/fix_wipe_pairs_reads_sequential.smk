@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample_R1 -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4
+# cmd: snakemake --config sample_name=sample qin=33 alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_pairs_reads_sequential.smk --use-conda --cores 4
 
 from snakemake.io import expand, temp
 
