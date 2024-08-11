@@ -26,11 +26,16 @@ clean_reads: int = 0
 seq_len_neq_qual_len: int = 0
 # endregion
 
-# region CONST String for output
+# region CONST strings for output
 NOTPRINT_HEADER: str = "Not printable or uncompliant header lines"
-FIXED_HEADER_LINES: str = "Fixed header lines"
+FIXED_HEADER: str = "Fixed header lines"
 BAD_SEQ: str = "BAD SEQ lines"
-
+BAD_PLUS: str = "BAD '+' lines"
+FIXED_PLUS: str = "Fixed + lines"
+BAD_QUAL: str = "BAD QUAL lines"
+QUAL_OUT_RANGE: str = "QUAL out of range lines"
+LENGTH_SEQ_QUAL: str = "Len(SEQ) neq Len(QUAL)"
+BLANKS: str = "Blank lines"
 # endregion
 
 
@@ -173,14 +178,14 @@ def print_log_to_file(log_out):
         + "\n"
     )
     flog.write(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}" + "\n")
-    flog.write(f"{FIXED_HEADER_LINES}: {fixed_header}/{tot_lines}" + "\n")
+    flog.write(f"{FIXED_HEADER}: {fixed_header}/{tot_lines}" + "\n")
     flog.write(f"{BAD_SEQ}: {bad_seq}/{tot_lines}" + "\n")
-    flog.write(f"BAD '+' lines: {bad_plus}/{tot_lines}" + "\n")
-    flog.write(f"Fixed + lines: {fixed_plus}/{tot_lines}" + "\n")
-    flog.write(f"BAD QUAL lines: {bad_qual}/{tot_lines}" + "\n")
-    flog.write(f"QUAL out of range lines: {qual_out_of_range}/{tot_lines}" + "\n")
-    flog.write(f"Len(SEQ) neq Len(QUAL): {seq_len_neq_qual_len}/{tot_lines}" + "\n")
-    flog.write(f"Blank lines: {blank}/{tot_lines}" + "\n")
+    flog.write(f"{BAD_PLUS}: {bad_plus}/{tot_lines}" + "\n")
+    flog.write(f"{FIXED_PLUS}: {fixed_plus}/{tot_lines}" + "\n")
+    flog.write(f"{BAD_QUAL}: {bad_qual}/{tot_lines}" + "\n")
+    flog.write(f"{QUAL_OUT_RANGE}: {qual_out_of_range}/{tot_lines}" + "\n")
+    flog.write(f"{LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}/{tot_lines}" + "\n")
+    flog.write(f"{BLANKS}: {blank}/{tot_lines}" + "\n")
 
     flog.close()
 
