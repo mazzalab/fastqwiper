@@ -1,4 +1,4 @@
-# cmd: snakemake -s fix_wipe_single_reads.smk --use-conda --cores 2
+#cmd: snakemake --config sample_name=sample_R1 qin=33 alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 4
 
 SAMPLES=config["sample_name"]
 ALPHABET=config["alphabet"]

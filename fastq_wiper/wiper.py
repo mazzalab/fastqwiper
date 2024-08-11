@@ -160,7 +160,7 @@ def print_log_to_file(log_out):
     # Open file out summary log
     flog = open(log_out, "wt", encoding="utf-8")
 
-    flog.write("SUMMARY:" + "\n" + "\n")
+    flog.write("FASTQWIPER SUMMARY:" + "\n" + "\n")
     flog.write(
         f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)"
         + "\n"
