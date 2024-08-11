@@ -1,7 +1,7 @@
 FROM condaforge/mambaforge
 LABEL maintainer="mazza.tommaso@gmail.com"
 
-ENV bbmap_version 39.06
+ENV bbmap_version 39.08
 ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
 # RUN mamba config --set channel_priority strict
