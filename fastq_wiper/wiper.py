@@ -26,6 +26,13 @@ clean_reads: int = 0
 seq_len_neq_qual_len: int = 0
 # endregion
 
+# region CONST String for output
+NOTPRINT_HEADER: str = "Not printable or uncompliant header lines"
+FIXED_HEADER_LINES: str = "Fixed header lines"
+BAD_SEQ: str = "BAD SEQ lines"
+
+# endregion
+
 
 def open_fastq_file(file_path: str):
     fastq_file_handler = None
@@ -165,9 +172,9 @@ def print_log_to_file(log_out):
         f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)"
         + "\n"
     )
-    flog.write(f"Not printable or uncompliant header lines: {bad_header}/{tot_lines}" + "\n")
-    flog.write(f"Fixed header lines: {fixed_header}/{tot_lines}" + "\n")
-    flog.write(f"BAD SEQ lines: {bad_seq}/{tot_lines}" + "\n")
+    flog.write(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}" + "\n")
+    flog.write(f"{FIXED_HEADER_LINES}: {fixed_header}/{tot_lines}" + "\n")
+    flog.write(f"{BAD_SEQ}: {bad_seq}/{tot_lines}" + "\n")
     flog.write(f"BAD '+' lines: {bad_plus}/{tot_lines}" + "\n")
     flog.write(f"Fixed + lines: {fixed_plus}/{tot_lines}" + "\n")
     flog.write(f"BAD QUAL lines: {bad_qual}/{tot_lines}" + "\n")

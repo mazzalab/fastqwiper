@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample_R1 chunk_size=50000000 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample_R1 qin=33 alphabet=ACGTN log_freq=1000 chunk_size=500 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -9,7 +9,8 @@ LOG_FREQ=config["log_freq"]
 
 rule all:
     input:
-        expand("data/{s}_fixed_wiped.fastq.gz", s=SAMPLE)
+        expand("data/{s}_fixed_wiped.fastq.gz", s=SAMPLE),
+        expand("data/{s}_final_summary.txt", s=SAMPLE)
 
 
 rule fix_gzrt:
@@ -40,7 +41,7 @@ checkpoint split_fastq:
         split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
         '''
     
-ruleorder: wipe_fastq_parallel > aggregate
+ruleorder: wipe_fastq_parallel > aggregate > aggregate_summary
 
 rule wipe_fastq_parallel:
     input:
@@ -52,14 +53,20 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
+        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_{wildcards.i}_final_summary.txt --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
         '''
-    
 
 def aggregate_input(wildcards):
     checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
     
     return expand("data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz",
+        sample=wildcards.sample,
+        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
+
+def aggregate_summary(wildcards):
+    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
+
+    return expand("data/{sample}_chunks/{sample}_{i}_final_summary.txt",
         sample=wildcards.sample,
         i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
 
@@ -75,11 +82,22 @@ rule aggregate:
     shell:
         "cat {input} > {output}"
 
-onsuccess:
-    print("Workflow finished, no error. Clean-up and shutdown")
+# aggregation over all produced fastqwiper summaries
+rule aggregate_summary:
+    input:
+        aggregate_summary
+    output:
+        "data/{sample}_final_summary.txt"
+    message:
+        "Gathering FastqWiper summaries"
+    shell:
+        "python fastq_wiper/gather_summaries.py -s {input} -f {output}"
 
-    if os.path.isdir(f"data/{SAMPLE}_chunks"):
-        shutil.rmtree(f"data/{SAMPLE}_chunks")
+#onsuccess:
+#    print("Workflow finished, no error. Clean-up and shutdown")
+
+#    if os.path.isdir(f"data/{SAMPLE}_chunks"):
+#        shutil.rmtree(f"data/{SAMPLE}_chunks")
     
-    if os.path.isfile(f"data/{SAMPLE}_fixed.fastq"):
-        os.remove(f"data/{SAMPLE}_fixed.fastq")
+#    if os.path.isfile(f"data/{SAMPLE}_fixed.fastq"):
+#        os.remove(f"data/{SAMPLE}_fixed.fastq")
