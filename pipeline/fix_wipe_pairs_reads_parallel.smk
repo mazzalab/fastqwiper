@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample chunk_size=50000000 -s ./pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample qin=33 alphabet=ACGTN log_freq=1000 chunk_size=50000000 -s ./pipeline/fix_wipe_pairs_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -40,7 +40,7 @@ checkpoint split_fastq:
         split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
         '''
 
-ruleorder: wipe_fastq_parallel > aggregate
+ruleorder: wipe_fastq_parallel > aggregate > aggregate_summary
 
 rule wipe_fastq_parallel:
     input:
@@ -62,6 +62,12 @@ def aggregate_input(wildcards):
         sample=wildcards.sample,
         i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
 
+def aggregate_summary(wildcards):
+    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
+
+    return expand("data/{sample}_chunks/{sample}_{i}_final_summary.txt",
+        sample=wildcards.sample,
+        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
 
 # an aggregation over all produced clusters
 rule aggregate:
@@ -73,6 +79,17 @@ rule aggregate:
         "Gathering cleaned chunks."
     shell:
         "cat {input} > {output}"
+
+# aggregation over all produced fastqwiper summaries
+rule aggregate_summary:
+    input:
+        aggregate_summary
+    output:
+        "data/{sample}_final_summary.txt"
+    message:
+        "Gathering FastqWiper summaries"
+    shell:
+        "python fastq_wiper/gather_summaries.py -s {input} -f {output}"
 
 rule drop_unpaired:
     input:
@@ -110,17 +127,17 @@ rule fix_interleaving:
     shell:
         "bbmap/repair.sh qin={QIN} in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
 
-onsuccess:
-    print("Workflow finished, no error. Clean-up and shutdown")
+# onsuccess:
+#    print("Workflow finished, no error. Clean-up and shutdown")
 
-    if os.path.isdir(f"data/{SAMPLE}_R1_chunks"):
-        shutil.rmtree(f"data/{SAMPLE}_R1_chunks")
+#    if os.path.isdir(f"data/{SAMPLE}_R1_chunks"):
+#        shutil.rmtree(f"data/{SAMPLE}_R1_chunks")
     
-    if os.path.isdir(f"data/{SAMPLE}_R2_chunks"):
-        shutil.rmtree(f"data/{SAMPLE}_R2_chunks")
+#    if os.path.isdir(f"data/{SAMPLE}_R2_chunks"):
+#        shutil.rmtree(f"data/{SAMPLE}_R2_chunks")
 
-    if os.path.isfile(f"data/{SAMPLE}_R1_fixed.fastq"):
-        os.remove(f"data/{SAMPLE}_R1_fixed.fastq")
+#    if os.path.isfile(f"data/{SAMPLE}_R1_fixed.fastq"):
+#        os.remove(f"data/{SAMPLE}_R1_fixed.fastq")
     
-    if os.path.isfile(f"data/{SAMPLE}_R2_fixed.fastq"):
-        os.unlink(f"data/{SAMPLE}_R2_fixed.fastq")
+#    if os.path.isfile(f"data/{SAMPLE}_R2_fixed.fastq"):
+#        os.unlink(f"data/{SAMPLE}_R2_fixed.fastq")

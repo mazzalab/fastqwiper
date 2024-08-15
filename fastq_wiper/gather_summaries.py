@@ -7,25 +7,32 @@ def parse_summary_file(filepath):
     with open(filepath, 'r') as file:
         data = {}
         for line in file:
-            left, right = map(int, line.split()[-1].split('/'))
-
             if line.startswith(NOTPRINT_HEADER):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[NOTPRINT_HEADER] = (left, right)
             elif line.startswith(FIXED_HEADER):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[FIXED_HEADER] = (left, right)
             elif line.startswith(BAD_SEQ):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[BAD_SEQ] = (left, right)
             elif line.startswith(BAD_PLUS):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[BAD_PLUS] = (left, right)
             elif line.startswith(FIXED_PLUS):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[FIXED_PLUS] = (left, right)
             elif line.startswith(BAD_QUAL):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[BAD_QUAL] = (left, right)
             elif line.startswith(QUAL_OUT_RANGE):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[QUAL_OUT_RANGE] = (left, right)
             elif line.startswith(LENGTH_SEQ_QUAL):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[LENGTH_SEQ_QUAL] = (left, right)
             elif line.startswith(BLANKS):
+                left, right = map(int, line.split()[-1].split('/'))
                 data[BLANKS] = (left, right)
 
         return data
@@ -92,7 +99,7 @@ def main():
     all_parsed = parse_all_summary_file(args.summaries)
     final_summary = aggregate_results(all_parsed)
 
-    with open(args.final_summary) as file_out:
+    with open(args.final_summary, 'w') as file_out:
         file_out.write("FASTQWIPER SUMMARY:\n\n")
         file_out.write(f"{NOTPRINT_HEADER}: {final_summary[NOTPRINT_HEADER][0]}/{final_summary[NOTPRINT_HEADER][1]}\n")
         file_out.write(f"{FIXED_HEADER}: {final_summary[FIXED_HEADER][0]}/{final_summary[FIXED_HEADER][1]}\n")
