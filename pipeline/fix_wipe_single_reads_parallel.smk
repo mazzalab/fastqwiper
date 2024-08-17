@@ -7,10 +7,13 @@ SAMPLE=config["sample_name"]
 ALPHABET=config["alphabet"]
 LOG_FREQ=config["log_freq"]
 
+scattergather:
+    split=8
+
 rule all:
     input:
-        expand("data/{s}_fixed_wiped.fastq.gz", s=SAMPLE),
-        expand("data/{s}_final_summary.txt", s=SAMPLE)
+        expand("data/{s}_fixed_wiped.fastq.gz", s=SAMPLE) #,
+#        expand("data/{s}_final_summary.txt", s=SAMPLE)
 
 
 rule fix_gzrt:
@@ -27,71 +30,93 @@ rule fix_gzrt:
 
 
 # this shall trigger re-evaluation of the DAG
-checkpoint split_fastq:
+#checkpoint split_fastq:
+#    input:
+#        "data/{sample}_fixed.fastq"
+#    output:
+#        directory("data/{sample}_chunks")
+#    params:
+#        chunk_size=config["chunk_size"]
+#    message:
+#        "Splitting {input} into chunks."
+#    shell:'''
+#        mkdir data/{wildcards.sample}_chunks
+#        split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
+#        '''
+
+rule split_fastq:
     input:
         "data/{sample}_fixed.fastq"
     output:
-        directory("data/{sample}_chunks")
+        scatter.split("data/{{sample}}_chunks/chunk{scatteritem}.fastq")
     params:
-        chunk_size=config["chunk_size"]
-    message: 
+        split_total = workflow._scatter["split"]
+    message:
         "Splitting {input} into chunks."
     shell:'''
-        mkdir data/{wildcards.sample}_chunks
-        split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
-        '''
-    
-ruleorder: wipe_fastq_parallel > aggregate > aggregate_summary
+       python fastq_wiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sample}_chunks -p chunk -s .fastq
+       '''
+
+# ruleorder: wipe_fastq_parallel > aggregate
 
 rule wipe_fastq_parallel:
     input:
-        "data/{sample}_chunks/chunk{i}.fastq"
+        "data/{sample}_chunks/chunk{scatteritem}.fastq"
     output:
-        "data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz"
+        "data/{sample}_chunks/chunk{scatteritem}.fastq_fixed_wiped.fastq.gz"
     log:
-        "logs/wipe_fastq/wipe_fastq.{sample}.chunk{i}.fastq.log"
+        "logs/wipe_fastq/wipe_fastq.{sample}.chunk{scatteritem}.fastq.log"
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_{wildcards.i}_final_summary.txt --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
+        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_{wildcards.scatteritem}_summary.txt --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
         '''
 
-def aggregate_input(wildcards):
-    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
-    
-    return expand("data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz",
-        sample=wildcards.sample,
-        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
-
-def aggregate_summary(wildcards):
-    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
-
-    return expand("data/{sample}_chunks/{sample}_{i}_final_summary.txt",
-        sample=wildcards.sample,
-        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
-
-
-# an aggregation over all produced clusters
-rule aggregate:
+rule gather:
     input:
-        aggregate_input
+        gather.split("data/{{sample}}_chunks/chunk{scatteritem}.fastq_fixed_wiped.fastq.gz")
+#        gather.split("split/{scatteritem}.post.txt")
     output:
         "data/{sample}_fixed_wiped.fastq.gz"
-    message: 
-        "Gathering cleaned chunks."
     shell:
         "cat {input} > {output}"
 
+#def aggregate_temp_fastq(wildcards):
+#    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
+    
+#    return expand("data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz",
+#        sample=wildcards.sample,
+#        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
+
+#def aggregate_temp_summary(wildcards):
+#    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
+
+#    return expand("data/{sample}_chunks/{sample}_{i}_summary.txt",
+#        sample=wildcards.sample,
+#        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
+
+
+# an aggregation over all produced clusters
+#rule aggregate:
+#    input:
+#        aggregate_temp_fastq
+#    output:
+#        "data/{sample}_fixed_wiped.fastq.gz"
+#    message:
+#        "Gathering cleaned chunks."
+#    shell:
+#        "cat {input} > {output}"
+
 # aggregation over all produced fastqwiper summaries
-rule aggregate_summary:
-    input:
-        aggregate_summary
-    output:
-        "data/{sample}_final_summary.txt"
-    message:
-        "Gathering FastqWiper summaries"
-    shell:
-        "python fastq_wiper/gather_summaries.py -s {input} -f {output}"
+#rule aggregate_summary:
+#    input:
+#        aggregate_temp_summary
+#    output:
+#        "data/{sample}_final_summary.txt"
+#    message:
+#        "Gathering FastqWiper summaries"
+#    shell:
+#        "python fastq_wiper/gather_summaries.py -s {input} -f {output}"
 
 #onsuccess:
 #    print("Workflow finished, no error. Clean-up and shutdown")
