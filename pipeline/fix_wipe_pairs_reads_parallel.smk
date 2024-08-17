@@ -9,87 +9,75 @@ QIN=config["qin"]
 ALPHABET=config["alphabet"]
 LOG_FREQ=config["log_freq"]
 
+scattergather:
+    split=workflow.cores
+
 rule all:
     input: 
-        expand("data/{s}_R{r}_fixed_wiped_paired_interleaving.fastq.gz", s = SAMPLE, r = [1, 2])
+        expand("data/{s}_R{r}_fixed_wiped_paired_interleaving.fastq.gz", s = SAMPLE, r = [1, 2]),
+        expand("data/{s}_R{r}_final_summary.txt", s=SAMPLE, r = [1, 2])
 
 rule fix_gzrt:
     input:
-        "data/{sample}.fastq.gz"
+        "data/{sampleR}.fastq.gz"
     output:
-        temp("data/{sample}_fixed.fastq")
+        temp("data/{sampleR}_fixed.fastq")
     log:
-        "logs/fix_gzrt/fix_gzrt.{sample}.log"
+        "logs/fix_gzrt/fix_gzrt.{sampleR}.log"
     message: 
         "Dropping unreadable reads from {input}."
     shell:
         "gzrecover -o {output} {input} -v 2> {log}"
 
-# this shall trigger re-evaluation of the DAG
-checkpoint split_fastq:
+rule split_fastq:
     input:
-        "data/{sample}_fixed.fastq"
+        "data/{sampleR}_fixed.fastq"
     output:
-        directory("data/{sample}_chunks")
+        scatter.split("data/{{sampleR}}_chunks/chunk{scatteritem}.fastq")
     params:
-        chunk_size=config["chunk_size"]
-    message: 
+        split_total = workflow._scatter["split"]
+    message:
         "Splitting {input} into chunks."
     shell:'''
-        mkdir data/{wildcards.sample}_chunks
-        split -l {params.chunk_size} --numeric-suffixes {input} data/{wildcards.sample}_chunks/chunk --additional-suffix=.fastq
-        '''
-
-ruleorder: wipe_fastq_parallel > aggregate > aggregate_summary
+       mkdir -p data/{wildcards.sampleR}_chunks
+       python fastq_wiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sampleR}_chunks -p chunk -s .fastq
+       '''
 
 rule wipe_fastq_parallel:
     input:
-        "data/{sample}_chunks/chunk{i}.fastq"
+        "data/{sampleR}_chunks/chunk{scatteritem}.fastq"
     output:
-        "data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz"
+        wiped_out   = "data/{sampleR}_chunks/chunk{scatteritem}.fastq_fixed_wiped.fastq.gz",
+        summary_out = "data/{sampleR}_chunks/{sampleR}_{scatteritem}_summary.txt"
     log:
-        "logs/wipe_fastq/wipe_fastq.{sample}.chunk{i}.fastq.log"
+        "logs/wipe_fastq/wipe_fastq.{sampleR}.chunk{scatteritem}.fastq.log"
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_chunks/{wildcards.sample}_final_summary.txt --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
+        fastqwiper --fastq_in {input} --fastq_out {output.wiped_out} --log_out {output.summary_out} --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
         '''
 
-def aggregate_input(wildcards):
-    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
-    
-    return expand("data/{sample}_chunks/chunk{i}.fastq_fixed_wiped.fastq.gz",
-        sample=wildcards.sample,
-        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
-
-def aggregate_summary(wildcards):
-    checkpoint_output = checkpoints.split_fastq.get(**wildcards).output[0]
-
-    return expand("data/{sample}_chunks/{sample}_{i}_final_summary.txt",
-        sample=wildcards.sample,
-        i=glob_wildcards(os.path.join(checkpoint_output, "chunk{i}.fastq")).i)
-
-# an aggregation over all produced clusters
-rule aggregate:
+rule gather_fastq:
     input:
-        aggregate_input
+        chunks = gather.split("data/{{sampleR}}_chunks/chunk{scatteritem}.fastq_fixed_wiped.fastq.gz")
     output:
-        temp("data/{sample}_fixed_wiped.fastq.gz")
-    message: 
-        "Gathering cleaned chunks."
-    shell:
-        "cat {input} > {output}"
+        fastq_out = "data/{sampleR}_fixed_wiped.fastq.gz"
+    message:
+        "Merging healed fastq files"
+    shell:'''
+        cat {input.chunks} > {output.fastq_out}
+        '''
 
-# aggregation over all produced fastqwiper summaries
-rule aggregate_summary:
+rule gather_summary:
     input:
-        aggregate_summary
+        summaries = gather.split("data/{{sampleR}}_chunks/{{sampleR}}_{scatteritem}_summary.txt")
     output:
-        "data/{sample}_final_summary.txt"
+        summary_out = "data/{sampleR}_final_summary.txt"
     message:
         "Gathering FastqWiper summaries"
-    shell:
-        "python fastq_wiper/gather_summaries.py -s {input} -f {output}"
+    shell:'''
+        python fastq_wiper/gather_summaries.py -s {input.summaries} -f {output.summary_out}
+        '''
 
 rule drop_unpaired:
     input:
