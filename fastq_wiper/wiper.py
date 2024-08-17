@@ -27,6 +27,7 @@ seq_len_neq_qual_len: int = 0
 # endregion
 
 # region CONST strings for output
+CLEAN: str = "Clean lines"
 NOTPRINT_HEADER: str = "Not printable or uncompliant header lines"
 FIXED_HEADER: str = "Fixed header lines"
 BAD_SEQ: str = "BAD SEQ lines"
@@ -173,10 +174,7 @@ def print_log_to_file(log_out):
     flog = open(log_out, "wt", encoding="utf-8")
 
     flog.write("FASTQWIPER SUMMARY:" + "\n" + "\n")
-    flog.write(
-        f"Clean lines: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)"
-        + "\n"
-    )
+    flog.write(f"{CLEAN}: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)" + "\n")
     flog.write(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}" + "\n")
     flog.write(f"{FIXED_HEADER}: {fixed_header}/{tot_lines}" + "\n")
     flog.write(f"{BAD_SEQ}: {bad_seq}/{tot_lines}" + "\n")

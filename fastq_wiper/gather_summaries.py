@@ -1,5 +1,5 @@
 import argparse
-from wiper import (NOTPRINT_HEADER, FIXED_HEADER, BAD_SEQ, BAD_PLUS, FIXED_PLUS, BAD_QUAL, QUAL_OUT_RANGE,
+from wiper import (CLEAN, NOTPRINT_HEADER, FIXED_HEADER, BAD_SEQ, BAD_PLUS, FIXED_PLUS, BAD_QUAL, QUAL_OUT_RANGE,
                    LENGTH_SEQ_QUAL, BLANKS)
 
 
@@ -7,7 +7,10 @@ def parse_summary_file(filepath):
     with open(filepath, 'r') as file:
         data = {}
         for line in file:
-            if line.startswith(NOTPRINT_HEADER):
+            if line.startswith(CLEAN):
+                left, right = map(int, line.split()[-2].split('/'))
+                data[CLEAN] = (left, right)
+            elif line.startswith(NOTPRINT_HEADER):
                 left, right = map(int, line.split()[-1].split('/'))
                 data[NOTPRINT_HEADER] = (left, right)
             elif line.startswith(FIXED_HEADER):
@@ -47,6 +50,7 @@ def parse_all_summary_file(summaries):
 
 
 def aggregate_results(results):
+    total_clean = (0, 0)
     total_not_printable = (0, 0)
     total_fixed_headers = (0, 0)
     total_bad_seq = (0, 0)
@@ -58,6 +62,8 @@ def aggregate_results(results):
     total_blanks = (0, 0)
 
     for result in results:
+        total_clean = (total_clean[0] + result[CLEAN][0],
+                               total_clean[1] + result[CLEAN][1])
         total_not_printable = (total_not_printable[0] + result[NOTPRINT_HEADER][0],
                                total_not_printable[1] + result[NOTPRINT_HEADER][1])
         total_fixed_headers = (total_fixed_headers[0] + result[FIXED_HEADER][0],
@@ -78,6 +84,7 @@ def aggregate_results(results):
                         total_blanks[1] + result[BLANKS][1])
 
     return {
+        CLEAN: total_clean,
         NOTPRINT_HEADER: total_not_printable,
         FIXED_HEADER: total_fixed_headers,
         BAD_SEQ: total_bad_seq,
@@ -101,6 +108,7 @@ def main():
 
     with open(args.final_summary, 'w') as file_out:
         file_out.write("FASTQWIPER SUMMARY:\n\n")
+        file_out.write(f"{CLEAN}: {final_summary[CLEAN][0]}/{final_summary[CLEAN][1]} ({round((final_summary[CLEAN][0] / final_summary[CLEAN][1]) * 100, 2)}%)\n")
         file_out.write(f"{NOTPRINT_HEADER}: {final_summary[NOTPRINT_HEADER][0]}/{final_summary[NOTPRINT_HEADER][1]}\n")
         file_out.write(f"{FIXED_HEADER}: {final_summary[FIXED_HEADER][0]}/{final_summary[FIXED_HEADER][1]}\n")
         file_out.write(f"{BAD_SEQ}: {final_summary[BAD_SEQ][0]}/{final_summary[BAD_SEQ][1]}\n")
