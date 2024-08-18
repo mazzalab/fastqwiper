@@ -4,7 +4,7 @@ from wipertool_abstract import WiperTool
 
 
 class SplitFastq(WiperTool):
-    def set_parser(self, parser):
+    def set_parser(self, parser: argparse.ArgumentParser):
         parser.add_argument("-f", '--fastq', help='The FASTQ file to be split', required=True)
         parser.add_argument("-n", '--num_splits', type=int, help='The number of splits', required=True)
         parser.add_argument("-o", '--out_folder', help='The folder where to put the splits', required=True)
@@ -18,8 +18,8 @@ class SplitFastq(WiperTool):
         suffix: str = argv.prefix
         out_folder: str = argv.suffix
 
-        rows = self.line_count(fastq)
-        # rows = line_count2(args.fastq) TODO: to be benchmarked
+        # rows = self.line_count(fastq) TODO: to be benchmarked
+        rows = self.line_count2(args.fastq)
 
         # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
         # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
@@ -34,12 +34,12 @@ class SplitFastq(WiperTool):
                         i = i + 1
 
     @staticmethod
-    def line_count2(file_path):
+    def line_count2(file_path: str):
         with open(file_path, "r") as f:
             return sum(1 for _ in f)
 
     @staticmethod
-    def line_count(file_path):
+    def line_count(file_path: str):
         return int(os.popen(f'wc -l {file_path}').read().split()[0])
 
 

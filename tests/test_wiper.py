@@ -1,6 +1,6 @@
 from io import TextIOWrapper
 from codecs import StreamReaderWriter
-from fastq_wiper.wiper import open_fastq_file, write_fastq_file
+from fastqwiper.wiper import open_fastq_file, write_fastq_file
 
 
 class TestClass:

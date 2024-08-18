@@ -40,7 +40,7 @@ rule split_fastq:
         "Splitting {input} into chunks."
     shell:'''
        mkdir -p data/{wildcards.sampleR}_chunks
-       python fastq_wiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sampleR}_chunks -p chunk -s .fastq
+       python fastqwiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sampleR}_chunks -p chunk -s .fastq
        '''
 
 rule wipe_fastq_parallel:
@@ -76,7 +76,7 @@ rule gather_summary:
     message:
         "Gathering FastqWiper summaries"
     shell:'''
-        python fastq_wiper/gather_summaries.py -s {input.summaries} -f {output.summary_out}
+        python fastqwiper/gather_summaries.py -s {input.summaries} -f {output.summary_out}
         '''
 
 rule drop_unpaired:

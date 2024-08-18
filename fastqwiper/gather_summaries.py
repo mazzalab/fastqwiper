@@ -5,7 +5,7 @@ from fastq_wiper import (CLEAN, NOTPRINT_HEADER, FIXED_HEADER, BAD_SEQ, BAD_PLUS
 
 
 class GatherSummaries(WiperTool):
-    def set_parser(self, parser):
+    def set_parser(self, parser: argparse.ArgumentParser):
         parser.add_argument("-s", '--summaries', nargs='+', help='List of summary files', required=True)
         parser.add_argument("-f", '--final_summary', help='The final summary file', required=True)
 

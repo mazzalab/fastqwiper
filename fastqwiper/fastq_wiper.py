@@ -42,7 +42,7 @@ class FastqWiper(WiperTool):
         self.reg = None
         logging.basicConfig(level=logging.DEBUG)
 
-    def set_parser(self, parser):
+    def set_parser(self, parser: argparse.ArgumentParser):
         parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
         parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
         parser.add_argument("-l", '--log_out', nargs='?',
@@ -143,7 +143,7 @@ class FastqWiper(WiperTool):
 
         return fastq_file_handler
 
-    def read_next_line(self, fin, log_frequency: int):
+    def read_next_line(self, fin: TextIO, log_frequency: int):
         global tot_lines
 
         line = fin.readline()
@@ -272,7 +272,7 @@ class FastqWiper(WiperTool):
         flog.close()
 
     @staticmethod
-    def print_log_to_screen():
+    def print_log_to_screen() -> None:
         global tot_lines, clean_reads, seq_len_neq_qual_len, bad_qual, qual_out_of_range, bad_plus, \
             bad_seq, bad_header, fixed_header, fixed_plus, blank
 

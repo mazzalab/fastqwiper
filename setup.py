@@ -30,8 +30,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # RELEASE_VER comes from the CONDA & Pypi actions files
 if os.getenv('RELEASE_VER'):
     VERSION = os.getenv('RELEASE_VER')
+else:
+    # Manually set, otherwise
+    VERSION = "v2024.2.1"
 
-print("Passing version {} to setup.py".format(VERSION))
+print(f"Passing version {VERSION} to setup.py")
 assert re.match(r"^[0-9]+\.[0-9]+\.[0-9]+$", VERSION), "Invalid version number"
 
 setup(
@@ -47,7 +50,7 @@ setup(
     license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    entry_points={"console_scripts": ["fastqwiper = fastq_wiper.wiper:main"]},
+    entry_points={"console_scripts": ["fastqwiper = fastqwiper.wipertools:main"]},
     install_requires=["setuptools"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
