@@ -1,24 +1,27 @@
 from io import TextIOWrapper
 from codecs import StreamReaderWriter
-from fastqwiper.wiper import open_fastq_file, write_fastq_file
+from fastqwiper.fastq_wiper import FastqWiper
 
 
 class TestClass:
+    def __init__(self):
+        self.fw = FastqWiper()
+
     def test_open_fastq(self):
-        fin = open_fastq_file("./testdata/")
+        fin = self.fw.open_fastq_file("./testdata/")
         assert fin == None
     
     def test_open_fastq2(self):
-        fin = open_fastq_file("./tests/testdata/test.fastq")
+        fin = self.fw.open_fastq_file("./tests/testdata/test.fastq")
         assert isinstance(fin, StreamReaderWriter)
 
     def test_open_fastq3(self):
-        fin = open_fastq_file("./tests/testdata/test.fastq.gz")
+        fin = self.fw.open_fastq_file("./tests/testdata/test.fastq.gz")
         assert isinstance(fin, TextIOWrapper)
 
     def test_write_clean_fastq(self, tmp_path):
         d = str(tmp_path) + "/test_fastq.fastq"
-        fout = write_fastq_file(d)
+        fout = self.fw.write_fastq_file(d)
         assert isinstance(fout, TextIOWrapper)
 
     ########################################################################
