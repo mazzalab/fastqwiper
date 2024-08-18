@@ -15,7 +15,7 @@ build:
   script_env:
       - RELEASE_VER
   entry_points:
-    - fastqwiper = fastq_wiper.wiper:main
+    - fastqwiper = fastqwiper.wipertools:main
  
 requirements:
   build:
@@ -31,9 +31,9 @@ requirements:
 
 test:
   imports:
-    - fastq_wiper
+    - fastqwiper
   commands:
-    - fastqwiper --help
+    - wipertools --help
     
 about:
   home: https://github.com/mazzalab/fastqwiper
