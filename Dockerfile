@@ -6,7 +6,7 @@ ENV PATH "$PATH:/tmp/jre1.8.0_161/bin/"
 
 # RUN mamba config --set channel_priority strict
 RUN mamba install python=3.11
-RUN mamba install -c conda-forge -c bioconda snakemake=8.11.3 -y
+RUN mamba install -c conda-forge -c bioconda snakemake -y
 RUN mamba install -c bioconda trimmomatic -y
 
 # Install fastqwiper from conda
@@ -32,9 +32,9 @@ RUN chmod +x run_wiping.sh
 
 
 ENTRYPOINT ["/fastqwiper/run_wiping.sh"]
-# paired mode, 4 cores, sample name, #rows-per-chunk, ASCII offset (33=Sanger, 64=old Solexa), alphabet (e.g., ACGTN), log frequency (500000)
-CMD ["paired", "4", "sample", "50000000", "33", "ACGTN", "500000"]
+# paired mode, 4 cores, sample name, ASCII offset (33=Sanger, 64=old Solexa), alphabet (e.g., ACGTN), log frequency (500000)
+CMD ["paired", "4", "sample", "33", "ACGTN", "500000"]
 
 # docker build -t test .
-# docker run --rm -ti --name test -v "D:\Projects\fastqwiper\data:/fastqwiper/data" test paired 4 sample 50000000 33 ACGTN 500000
+# docker run --rm -ti --name test -v "D:\Projects\fastqwiper\data:/fastqwiper/data" test paired 4 sample 33 ACGTN 500000
 # docker exec -ti test /bin/bash
