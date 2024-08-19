@@ -61,7 +61,7 @@ rule gather_fastq:
     input:
         chunks = gather.split("data/{{sampleR}}_chunks/chunk{scatteritem}.fastq_fixed_wiped.fastq.gz")
     output:
-        fastq_out = "data/{sampleR}_fixed_wiped.fastq.gz"
+        fastq_out = temp("data/{sampleR}_fixed_wiped.fastq.gz")
     message:
         "Merging healed fastq files"
     shell:'''

@@ -9,7 +9,7 @@
 
 `FastqWiper` is a Snakemake-enabled application that wipes out bad reads from broken FASTQ files. Additionally, the available and pre-designed Snakemake [workflows](https://github.com/mazzalab/fastqwiper/tree/main/pipeline) allows **recovering** corrupted `fastq.gz`, **dropping** or **fixing** pesky lines, **removing** unpaired reads, and **settling** reads interleaving.
 
-* Compatibility: Python ≥3.7, <3.13
+* Compatibility: Python ≥3.10, <3.13
 * OS: Windows, Linux, Mac OS (Snakemake workflows only through Docker for Windows)
 * Contributions: [bioinformatics@css-mendel.it](bioinformatics@css-mendel.it)
 * Docker: https://hub.docker.com/r/mazzalab/fastqwiper
@@ -18,7 +18,7 @@
 
 
 ## USAGE
-- <code style="color : greenyellow">**Case 1.**</code>You have one or a couple (R1&R2) of **computer readable** (meaning that the .gz files can be successfully decompressed or that the .fa/.fasta files can be viewed from the beginning to the EOF) FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
+- <code style="color : greenyellow">**|Case 1.**</code>You have one or a couple (R1&R2) of **computer readable** (meaning that the .gz files can be successfully decompressed or that the .fa/.fasta files can be viewed from the beginning to the EOF) FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
 - <code style="color : darkorange">**Case 2.**</code>You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the FastqWiper's *Snakemake workflows*;
 - <code style="color : orangered">**Case 3.**</code>You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted (**unreadable**, meaning that the .gz files cannot be successfully decompressed) and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
 
@@ -42,13 +42,24 @@ fastqwiper --help
 #### Use Pypi
 ```
 pip install fastqwiper
-
-fastqwiper --help
 ```
 <br/>
 
-`fastqwiper  <options>`
+#### Usage
+
+`usage: wipertools [-h] {fastqwiper,splitfastq,summarygather} ...`
 ```
+positional arguments:
+    fastqwiper          FastqWiper program
+    splitfastq          FASTQ splitter program
+    summarygather       Gatherer of the FastqWiper summaries
+
+options:
+  -h, --help            show this help message and exit
+```
+```
+usage: wipertools fastqwiper [-h] -i FASTQ_IN -o FASTQ_OUT [-l [LOG_OUT]] [-f [LOG_FREQUENCY]] [-a [ALPHABET]]
+
 options:
   -i, --fastq_in TEXT          The input FASTQ file to be cleaned  [required]
   -o, --fastq_out TEXT         The wiped FASTQ file                [required]
@@ -57,7 +68,8 @@ options:
   -a, --alphabet               Allowed character in the SEQ line. Default: ACGTN
   -h, --help                   Show this message and exit.
 ```
-It accepts strictly **readable** `*.fastq` or `*.fastq.gz` files in input.
+<br/>
+FastqWiper accepts <b>strictly readable</b> `*.fastq` or `*.fastq.gz` files in input.
 
 
 ### <code style="color : darkorange">Case 2</code> & <code style="color : orangered">Case 3</code>
@@ -71,28 +83,27 @@ There are <b>QUICK</b> and a <b>SLOW</b> methods to configure `FastqWiper`'s wor
 
 2. Once downloaded the image, type:
 
-CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 50000000 33 ACGTN 500000`
+CMD: `docker run --rm -ti --name fastqwiper -v "YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data" mazzalab/fastqwiper paired 8 sample 33 ACGTN 500000`
 
 #### Another quick way (Singularity)
 1. Pull the Singularity image from the Cloud Library:
 
 `singularity pull library://mazzalab/fastqwiper/fastqwiper.sif`
 
-2. Once downloaded the image (e.g., fastqwiper.sif_2024.1.89.sif), type:
+2. Once downloaded the image (e.g., fastqwiper.sif_2024.2.104.sif), type:
 
-CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33 ACGTN 500000`
+CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --writable-tmpfs fastqwiper.sif_2024.2.104.sif paired 8 sample 33 ACGTN 500000`
 
 If you want to bind the `.singularity` cache folder and the `logs` folder, you can omit `--writable-tmpfs`, create the folders `.singularity` and `logs` (`mkdir .singularity logs`) on the host system, and use this command instead:
 
-CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.SNAKEMAKE_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2024.1.89.sif paired 8 sample 50000000 33 ACGTN`
+CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.SNAKEMAKE_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2024.2.103.sif paired 8 sample 33 ACGTN 500000`
 
 For both **Docker** and **Singularity**:
 
 - `YOUR_LOCAL_PATH_TO_DATA_FOLDER` is the path of the folder where the fastq.gz files to be wiped are located;
 - `paired` triggers the cleaning of R1 and R2. Alternatively, `single` will trigger the wipe of individual FASTQ files;
-- `8` is the number of your choice of computing cores to be spawned;
+- `8` is the number of your choice of computing cores to be spawned (1 = triggers sequential execution; >1 triggers parallel execution)
 - `sample` is part of the names of the FASTQ files to be wiped. <b>Be aware</b> that: for <b>paired-end</b> files (e.g., "sample_R1.fastq.gz" and "sample_R2.fastq.gz"), your files must finish with `_R1.fastq.gz` and `_R2.fastq.gz`. Therefore, the argument to pass is everything before these texts: `sample` in this case. For <b>single end</b>/individual files (e.g., "excerpt_R1_001.fastq.gz"), your file must end with the string `.fastq.gz`; the preceding text, i.e., "excerpt_R1_001" in this case, will be the text to be passed to the command as an argument. 
-- `50000000` (optional) is the number of rows-per-chunk (used when cores>1. It must be a number multiple of 4). Increasing this number too much would reduce the parallelism advantage. Decreasing this number too much would increase the number of chunks more than the number of available cpus, making parallelism unefficient. Choose this number wisely depending on the total number of reads in your starting file.
 - `33` (optional) is the ASCII offset (33=Sanger, 64=old Solexa)
 - `ACGTN` (optional) is the allowed alphabet in the SEQ line of the FASTQ file
 - `500000` (optional) is the log frequency (# reads)
@@ -127,7 +138,7 @@ git clone https://github.com/mazzalab/fastqwiper.git
 cd fastqwiper
 ```
 
-It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing the released pipelines and a folder `fastq_wiper` with the source files of `FastqWiper`. <br/>
+It contains, in particular, a folder `data` containing the fastq files to be processed, a folder `pipeline` containing the released pipelines and a folder `fastqwiper` with the source files of `FastqWiper`. <br/>
 Input files to be processed must be copied into the **data** folder.
 
 Currently, to run the `FastqWiper` pipelines, the following packages need to be installed manually:
@@ -178,7 +189,7 @@ We remind that the `fix_wipe_pairs_reads_sequential.smk` and `fix_wipe_pairs_rea
 
 - **Run the pipeline** (n.b., The number of computing cores can be tuned accordingly):<br />
 `snakemake --config sample_name=my_sample alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_sequential.smk --use-conda --cores 2`
-
+  
 # Author
 **Tommaso Mazza**  
 [![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white)](https://twitter.com/irongraft) [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/tommasomazza/)
