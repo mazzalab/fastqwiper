@@ -21,8 +21,8 @@ if util.find_spec("setuptools") is None:
 from setuptools import setup, find_packages
 
 print(sys.version_info)
-if sys.version_info.major != 3 or sys.version_info.minor < 7:
-    sys.exit("Sorry, Python < 3.7 is not supported")
+if sys.version_info.major != 3 or sys.version_info.minor < 10:
+    sys.exit("Sorry, Python < 3.10 is not supported")
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -55,9 +55,6 @@ setup(
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -71,5 +68,5 @@ setup(
         "Developmental plan": "https://github.com/mazzalab/fastqwiper/projects",
     },
     keywords="genomics, ngs, fastq, bioinformatics",
-    python_requires=">=3.7,<3.13",
+    python_requires=">=3.10,<3.13",
 )
