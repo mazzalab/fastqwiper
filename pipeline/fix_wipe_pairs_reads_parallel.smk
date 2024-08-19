@@ -40,7 +40,7 @@ rule split_fastq:
         "Splitting {input} into chunks."
     shell:'''
        mkdir -p data/{wildcards.sampleR}_chunks
-       python fastqwiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sampleR}_chunks -p chunk -s .fastq
+       wipertools splitfastq -f {input} -n {params.split_total} -o data/{wildcards.sampleR}_chunks -p chunk -s .fastq
        '''
 
 rule wipe_fastq_parallel:
@@ -54,7 +54,7 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output.wiped_out} --log_out {output.summary_out} --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
+        wipertools fastqwiper --fastq_in {input} --fastq_out {output.wiped_out} --log_out {output.summary_out} --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
         '''
 
 rule gather_fastq:
@@ -76,7 +76,7 @@ rule gather_summary:
     message:
         "Gathering FastqWiper summaries"
     shell:'''
-        python fastqwiper/gather_summaries.py -s {input.summaries} -f {output.summary_out}
+        wipertools summarygather -s {input.summaries} -f {output.summary_out}
         '''
 
 rule drop_unpaired:
@@ -115,17 +115,17 @@ rule fix_interleaving:
     shell:
         "bbmap/repair.sh qin={QIN} in={input.in1} in2={input.in2} out={output.out1} out2={output.out2} outsingle={output.out3} 2> {log}"
 
-# onsuccess:
-#    print("Workflow finished, no error. Clean-up and shutdown")
+onsuccess:
+   print("Workflow finished, no error. Clean-up and shutdown")
 
-#    if os.path.isdir(f"data/{SAMPLE}_R1_chunks"):
-#        shutil.rmtree(f"data/{SAMPLE}_R1_chunks")
+   if os.path.isdir(f"data/{SAMPLE}_R1_chunks"):
+       shutil.rmtree(f"data/{SAMPLE}_R1_chunks")
     
-#    if os.path.isdir(f"data/{SAMPLE}_R2_chunks"):
-#        shutil.rmtree(f"data/{SAMPLE}_R2_chunks")
+   if os.path.isdir(f"data/{SAMPLE}_R2_chunks"):
+       shutil.rmtree(f"data/{SAMPLE}_R2_chunks")
 
-#    if os.path.isfile(f"data/{SAMPLE}_R1_fixed.fastq"):
-#        os.remove(f"data/{SAMPLE}_R1_fixed.fastq")
+   if os.path.isfile(f"data/{SAMPLE}_R1_fixed.fastq"):
+       os.remove(f"data/{SAMPLE}_R1_fixed.fastq")
     
-#    if os.path.isfile(f"data/{SAMPLE}_R2_fixed.fastq"):
-#        os.unlink(f"data/{SAMPLE}_R2_fixed.fastq")
+   if os.path.isfile(f"data/{SAMPLE}_R2_fixed.fastq"):
+       os.unlink(f"data/{SAMPLE}_R2_fixed.fastq")

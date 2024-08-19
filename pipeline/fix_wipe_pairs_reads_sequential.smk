@@ -33,7 +33,7 @@ rule wipe_fastq:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-    fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
+    wipertools fastqwiper --fastq_in {input} --fastq_out {output} --log_out data/{wildcards.sample}_final_summary.txt --log_frequency {LOG_FREQ} --alphabet {ALPHABET} 2> {log}
     '''
 
 rule drop_unpaired:

@@ -1,4 +1,4 @@
-#cmd: snakemake --config sample_name=sample_R1 qin=33 alphabet=ACGTN log_freq=1000 chunk_size=500 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
+#cmd: snakemake --config sample_name=sample_R1 qin=33 alphabet=ACGTN log_freq=1000 -s pipeline/fix_wipe_single_reads_parallel.smk --use-conda --cores 4
 
 import os
 import shutil
@@ -39,7 +39,7 @@ rule split_fastq:
         "Splitting {input} into chunks."
     shell:'''
        mkdir -p data/{wildcards.sample}_chunks
-       python fastqwiper/split_fastq.py -f {input} -n {params.split_total} -o data/{wildcards.sample}_chunks -p chunk -s .fastq
+       wipertools splitfastq -f {input} -n {params.split_total} -o data/{wildcards.sample}_chunks -p chunk -s .fastq
        '''
 
 rule wipe_fastq_parallel:
@@ -53,7 +53,7 @@ rule wipe_fastq_parallel:
     message: 
         "Running FastqWiper on {input}."
     shell:'''
-        fastqwiper --fastq_in {input} --fastq_out {output.wiped_out} --log_out {output.summary_out} --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
+        wipertools fastqwiper --fastq_in {input} --fastq_out {output.wiped_out} --log_out {output.summary_out} --alphabet {ALPHABET} --log_frequency {LOG_FREQ} 2> {log}
         '''
 
 rule gather_fastq:
@@ -75,14 +75,14 @@ rule gather_summary:
     message:
         "Gathering FastqWiper summaries"
     shell:'''
-        python fastqwiper/gather_summaries.py -s {input.summaries} -f {output.summary_out}
+        wipertools summarygather -s {input.summaries} -f {output.summary_out}
         '''
 
-#onsuccess:
-#    print("Workflow finished, no error. Clean-up and shutdown")
+onsuccess:
+    print("Workflow finished, no error. Clean-up and shutdown")
 
-#    if os.path.isdir(f"data/{SAMPLE}_chunks"):
-#        shutil.rmtree(f"data/{SAMPLE}_chunks")
+    if os.path.isdir(f"data/{SAMPLE}_chunks"):
+        shutil.rmtree(f"data/{SAMPLE}_chunks")
     
-#    if os.path.isfile(f"data/{SAMPLE}_fixed.fastq"):
-#        os.remove(f"data/{SAMPLE}_fixed.fastq")
+    if os.path.isfile(f"data/{SAMPLE}_fixed.fastq"):
+        os.remove(f"data/{SAMPLE}_fixed.fastq")
