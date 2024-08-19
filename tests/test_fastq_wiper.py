@@ -1,10 +1,12 @@
+import pytest
 from io import TextIOWrapper
 from codecs import StreamReaderWriter
 from fastqwiper.fastq_wiper import FastqWiper
 
 
 class TestClass:
-    def __init__(self):
+    # pytest-specific method to initialize FastqWiper class before each method test
+    def setup_method(self):
         self.fw = FastqWiper()
 
     def test_open_fastq(self):
