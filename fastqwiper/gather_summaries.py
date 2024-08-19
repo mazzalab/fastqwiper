@@ -1,7 +1,7 @@
 import argparse
 from fastqwiper.wipertool_abstract import WiperTool
-from fastq_wiper import (CLEAN, NOTPRINT_HEADER, FIXED_HEADER, BAD_SEQ, BAD_PLUS, FIXED_PLUS, BAD_QUAL, QUAL_OUT_RANGE,
-                         LENGTH_SEQ_QUAL, BLANKS)
+from fastqwiper.fastq_wiper import (CLEAN, NOTPRINT_HEADER, FIXED_HEADER, BAD_SEQ, BAD_PLUS, FIXED_PLUS, BAD_QUAL,
+                                    QUAL_OUT_RANGE, LENGTH_SEQ_QUAL, BLANKS)
 
 
 class GatherSummaries(WiperTool):
