@@ -1,18 +1,18 @@
 name: Build and Deploy all
 
-#on: [push]
-on:
-    release:
-      types: [released]
+on: [push]
+#on:
+#    release:
+#      types: [released]
 
 jobs:
-  Pypi:
-    name: Pypi CI
-    uses: ./.github/workflows/pypi_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        pypi_token: ${{ secrets.PYPI_TOKEN }}
+#  Pypi:
+#    name: Pypi CI
+#    uses: ./.github/workflows/pypi_reusable.yml
+#    with:
+#        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+#    secrets:
+#        pypi_token: ${{ secrets.PYPI_TOKEN }}
 
   Conda:
     name: Conda CI
@@ -22,22 +22,22 @@ jobs:
     secrets:
         conda_token: ${{ secrets.CONDA_TOKEN }}
 
-  Docker:
-    name: Docker CI
-    uses: ./.github/workflows/docker_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    needs: Conda
+#  Docker:
+#    name: Docker CI
+#    uses: ./.github/workflows/docker_reusable.yml
+#    with:
+#        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+#    secrets:
+#        dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+#    needs: Conda
 
-  Singularity:
-    name: Singularity CI
-    uses: ./.github/workflows/singularity_reusable.yml
-    with:
-        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
-    secrets:
-        sylabs_token: ${{ secrets.SYLABS_TOKEN }}
-    needs: Conda
+#  Singularity:
+#    name: Singularity CI
+#    uses: ./.github/workflows/singularity_reusable.yml
+#    with:
+#        package_version: ${{vars.FASTQWIPER_VER}}${{github.run_number}}
+#    secrets:
+#        sylabs_token: ${{ secrets.SYLABS_TOKEN }}
+#    needs: Conda
         

@@ -15,7 +15,7 @@ build:
   script_env:
       - RELEASE_VER
   entry_points:
-    - fastqwiper = fastqwiper.wipertools:main
+    - wipertools = fastqwiper.wipertools:main
  
 requirements:
   build:
