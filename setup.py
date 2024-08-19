@@ -50,7 +50,7 @@ setup(
     license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    entry_points={"console_scripts": ["fastqwiper = fastqwiper.wipertools:main"]},
+    entry_points={"console_scripts": ["wipertools = fastqwiper.wipertools:main"]},
     install_requires=["setuptools"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

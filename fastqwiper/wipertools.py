@@ -2,9 +2,9 @@ import sys, os.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import argparse
-from gather_summaries import GatherSummaries
-from split_fastq import SplitFastq
-from fastq_wiper import FastqWiper
+from fastqwiper.gather_summaries import GatherSummaries
+from fastqwiper.split_fastq import SplitFastq
+from fastqwiper.fastq_wiper import FastqWiper
 
 
 def main():
