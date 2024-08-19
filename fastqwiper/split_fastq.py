@@ -1,6 +1,6 @@
 import os
 import argparse
-from wipertool_abstract import WiperTool
+from fastqwiper.wipertool_abstract import WiperTool
 
 
 class SplitFastq(WiperTool):
