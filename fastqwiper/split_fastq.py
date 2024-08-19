@@ -19,7 +19,7 @@ class SplitFastq(WiperTool):
         out_folder: str = argv.suffix
 
         # rows = self.line_count(fastq) TODO: to be benchmarked
-        rows = self.line_count2(args.fastq)
+        rows = self.line_count2(fastq)
 
         # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
         # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
