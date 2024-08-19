@@ -14,9 +14,9 @@ class SplitFastq(WiperTool):
     def run(self, argv: argparse.Namespace):
         fastq: str = argv.fastq
         splits: int = argv.num_splits
-        prefix: str = argv.out_folder
-        suffix: str = argv.prefix
-        out_folder: str = argv.suffix
+        prefix: str = argv.prefix
+        suffix: str = argv.suffix
+        out_folder: str = argv.out_folder
 
         # rows = self.line_count(fastq) TODO: to be benchmarked
         rows = self.line_count2(fastq)
