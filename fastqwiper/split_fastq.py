@@ -35,7 +35,7 @@ class SplitFastq(WiperTool):
 
     @staticmethod
     def line_count2(file_path: str):
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding='ISO-8859-1') as f:
             return sum(1 for _ in f)
 
     @staticmethod
