@@ -5,7 +5,7 @@ import codecs
 import logging
 import argparse
 from typing import Pattern, TextIO, BinaryIO
-from .wipertool_abstract import WiperTool
+from fastqwiper.wipertool_abstract import WiperTool
 
 
 # region Variables for final report
