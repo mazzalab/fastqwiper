@@ -97,7 +97,7 @@ CMD `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER:/fastqwiper/data --wr
 
 If you want to bind the `.singularity` cache folder and the `logs` folder, you can omit `--writable-tmpfs`, create the folders `.singularity` and `logs` (`mkdir .singularity logs`) on the host system, and use this command instead:
 
-CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.SNAKEMAKE_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2024.2.103.sif paired 8 sample 33 ACGTN 500000`
+CMD: `singularity run --bind YOUR_LOCAL_PATH_TO_DATA_FOLDER/:/fastqwiper/data --bind YOUR_LOCAL_PATH_TO_.SNAKEMAKE_FOLDER/:/fastqwiper/.snakemake --bind YOUR_LOCAL_PATH_TO_LOGS_FOLDER/:/fastqwiper/logs fastqwiper.sif_2024.2.104.sif paired 8 sample 33 ACGTN 500000`
 
 For both **Docker** and **Singularity**:
 
