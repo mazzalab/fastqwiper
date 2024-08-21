@@ -18,6 +18,7 @@
 
 
 ## USAGE
+![fw_use_cases](assets/fw_choice.png)
 - <code style="color : greenyellow">**Case 1.**</code>You have one or a couple (R1&R2) of **computer readable** (meaning that the .gz files can be successfully decompressed or that the .fa/.fasta files can be viewed from the beginning to the EOF) FASTQ files which contain pesky, unformatted, uncompliant lines: Use *FastWiper* to clean them;
 - <code style="color : darkorange">**Case 2.**</code>You have one or a couple (R1&R2) of **computer readable** FASTQ files that you want to drop unpaired reads from or fix reads interleaving: Use the FastqWiper's *Snakemake workflows*;
 - <code style="color : orangered">**Case 3.**</code>You have one `fastq.gz` file or a couple (R1&R2) of `fastq.gz` files which are corrupted (**unreadable**, meaning that the .gz files cannot be successfully decompressed) and you want to recover healthy reads and reformat them: Use the FastqWiper's *Snakemake workflows*;
@@ -34,7 +35,7 @@ conda create -n fastqwiper python=3.11
 conda activate fastqwiper
 conda install -c bfxcss -c conda-forge fastqwiper
 
-fastqwiper --help
+wipertools --help
 ```
 *Hint: for an healthier experience, use* **mamba**
 
