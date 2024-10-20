@@ -113,7 +113,7 @@ For both **Docker** and **Singularity**:
 To enable the use of preconfigured [pipelines](https://github.com/mazzalab/fastqwiper/tree/main/pipeline), you need to install **Snakemake**. The recommended way to install Snakemake is via Conda, because it enables **Snakemake** to [handle software dependencies of your workflow](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management).
 However, the default conda solver is slow and often hangs. Therefore, we recommend installing [Mamba](https://github.com/mamba-org/mamba) as a drop-in replacement via
 
-`$ conda install -c conda-forge mamba`
+`conda install -c conda-forge mamba`
 
 if you have anaconda/miniconda already installed, or directly installing `Mambaforge` as described [here](https://github.com/conda-forge/miniforge#mambaforge).
 
@@ -127,7 +127,7 @@ mamba activate fastqwiper
 Finally, install the Snakemake dependency:
 
 ```
-$ mamba install -c bioconda snakemake
+mamba install -c bioconda snakemake
 ```
 
 
