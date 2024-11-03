@@ -1,22 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		// Sets the run context to one level up instead of the .devcontainer folder.
-		"context": "..",
-		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-		"dockerfile": "../Dockerfile"
-	},
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {
-       "ghcr.io/devcontainers/features/git:1": {}
-    },
-	"customizations" : {
-		"jetbrains" : {
-		  "backend" : "PyCharm"
-		}
-	},
-    workspaceFolder: "/fastqwiper",
-    workspaceMount: "source=${localWorkspaceFolder},target=/fastqwiper,type=bind"
+  "name": "Dockerfile FastqWiper@BFX",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "workspaceFolder": "/fastqwiper",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/fastqwiper,type=bind"
 }

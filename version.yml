@@ -1,0 +1,7 @@
+wipertools:
+  - fastqwiper:
+      version: 1.0.1
+  - gather:
+      version: 1.0.0
+  - scatter:
+      version: 1.0.0

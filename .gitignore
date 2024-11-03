@@ -2,6 +2,7 @@
 bbmap/
 logs/
 bbmap
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
