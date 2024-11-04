@@ -1,0 +1,8 @@
+name: fastqwiper
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - setuptools
+  - pytest
+  - pytest-cov
