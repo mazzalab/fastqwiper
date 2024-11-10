@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debugger: fastqscatter",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqscatter",
+                "-f",
+                "data/abba1.fastq",
+                "-n",
+                "3",
+                "-o",
+                "./data/splits_win",
+                "-p",
+                "ff",
+                "-s",
+                "rr",
+                "-e",
+                "gz",
+                "-O",
+                "windows"
+            ]
+        }
+    ]
+}

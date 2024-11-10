@@ -23,6 +23,8 @@ RUN mamba install python=3.12
 # RUN cd /tmp/ &&\
 # 	tar xvzf java.tar.gz
 
+RUN git config --global core.autocrlf true
+
 WORKDIR /fastqwiper
 
 # COPY pipeline pipeline

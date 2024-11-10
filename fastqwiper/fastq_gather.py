@@ -17,17 +17,21 @@ class GatherFastq(WiperTool):
             WINDOWS = auto()
 
         parser.add_argument("-f", '--in_folder', help='Path of the folder containing the files to be joined', required=True)
-        parser.add_argument("-p", '--prefix', help='Prefix common to the files to be joined', required=True)
-        parser.add_argument("-o", '--out_fastq', help='The name of the resulting fastq file', required=True)
-        parser.add_argument("-O", '--os', help='The underlying OS (Default: %(default)s)', default='windows', choices=[e.name.lower() for e in OsEnum],  required=False)
+        parser.add_argument("-o", '--out_fastq', help='Name of the resulting fastq file', required=True)
+        parser.add_argument("-p", '--prefix', help='Prefix common to the files to be joined', required=False)
+        parser.add_argument("-O", '--os', help='Underlying OS (Default: %(default)s)', default='windows', choices=[e.name.lower() for e in OsEnum],  required=False)
         # Add a version flag that prints the version and exits
-        parser.add_argument('-v', '--version', action='version', version=self.version(), help='It prints the version and exists')
+        parser.add_argument('-v', '--version', action='version', version=self.version(), help='Print the version and exits')
 
     def run(self, argv: argparse.Namespace):
         in_folder: str  = argv.in_folder
         prefix: str     = argv.prefix
         out_fastq: str  = argv.out_fastq
         opsys: str      = argv.os
+
+        # Check if output file already exists and remove it
+        if os.path.exists(out_fastq):
+            os.remove(out_fastq)
 
         if opsys == "windows":
             self.concatenate_fastq_windows(in_folder, out_fastq, prefix)
@@ -39,7 +43,8 @@ class GatherFastq(WiperTool):
     @staticmethod
     def concatenate_fastq_unix(input_directory, output_file, prefix):
         # List all files in the directory with the given prefix
-        files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)]
+
+        files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)] if prefix else [os.path.join(input_directory, f) for f in os.listdir(input_directory)]
         
         if not files:
             print(f"No files found in {input_directory} with prefix {prefix}.")
@@ -67,7 +72,7 @@ class GatherFastq(WiperTool):
     @staticmethod
     def concatenate_fastq_windows(input_directory, output_file, prefix):
         # List all files in the directory with the given prefix
-        files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)]
+        files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)] if prefix else [os.path.join(input_directory, f) for f in os.listdir(input_directory)]
 
         if not files:
             print(f"No files found in {input_directory} with prefix {prefix}.")
@@ -119,6 +124,7 @@ class GatherFastq(WiperTool):
         for file_path in gz_files:
             with gzip.open(file_path, 'rb') as infile:
                 outfile.write(infile.read())
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='WiperTools FASTQ gather')

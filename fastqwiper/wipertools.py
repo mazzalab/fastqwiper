@@ -20,19 +20,19 @@ def main():
     fw.set_parser(fw_parser)
 
     # create the parser for the split_fastq program
-    sf_parser = subparsers.add_parser('fastqscatter', help='FASTQ splitter program')
-    sf = SplitFastq()
-    sf.set_parser(sf_parser)
+    fs_parser = subparsers.add_parser('fastqscatter', help='FASTQ splitter program')
+    fs = SplitFastq()
+    fs.set_parser(fs_parser)
 
     # create the parser for the gather_fastq program
-    sf_parser = subparsers.add_parser('fastqgather', help='FASTQ gather program')
-    sf = GatherFastq()
-    sf.set_parser(sf_parser)
+    fg_parser = subparsers.add_parser('fastqgather', help='FASTQ gather program')
+    fg = GatherFastq()
+    fg.set_parser(fg_parser)
 
     # create the parser for the gather_summaries program
-    gs_parser = subparsers.add_parser('summarygather', help='Gatherer of FastqWiper summary files')
-    gs = GatherSummaries()
-    gs.set_parser(gs_parser)
+    sg_parser = subparsers.add_parser('summarygather', help='Gatherer of FastqWiper summary files')
+    sg = GatherSummaries()
+    sg.set_parser(sg_parser)
 
     # Process command-line arguments and parse them
     args = parser.parse_args()
@@ -40,11 +40,11 @@ def main():
     if args.selected_subparser == 'fastqwiper':
         fw.run(args)
     elif args.selected_subparser == 'fastqscatter':
-        sf.run(args)
+        fs.run(args)
     elif args.selected_subparser == 'fastqgather':
-        sf.run(args)
+        fg.run(args)
     elif args.selected_subparser == 'summarygather':
-        gs.run(args)
+        sg.run(args)
     else:
         parser.print_help()
 
