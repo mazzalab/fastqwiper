@@ -5,9 +5,15 @@ from fastqwiper.fastq_wiper import (CLEAN, NOTPRINT_HEADER, FIXED_HEADER, BAD_SE
 
 
 class GatherSummaries(WiperTool):
+    def __init__(self):
+        super().__init__("summarygatherer")
+
+    # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
         parser.add_argument("-s", '--summaries', nargs='+', help='List of summary files', required=True)
         parser.add_argument("-f", '--final_summary', help='The final summary file', required=True)
+        # Add a version flag that prints the version and exits
+        parser.add_argument('-v', '--version', action='version', version=self.version(), help='It prints the version and exists')
 
     def run(self, argv: argparse.Namespace):
         summary_filepaths = argv.summaries
@@ -32,6 +38,7 @@ class GatherSummaries(WiperTool):
                 f"{LENGTH_SEQ_QUAL}: {final_summary[LENGTH_SEQ_QUAL][0]}/{final_summary[LENGTH_SEQ_QUAL][1]}\n")
             file_out.write(f"{BLANKS}: {final_summary[BLANKS][0]}/{final_summary[BLANKS][1]}\n")
 
+    # Utility methods and properties
     @staticmethod
     def parse_summary_file(filepath):
         with open(filepath, 'r') as file:

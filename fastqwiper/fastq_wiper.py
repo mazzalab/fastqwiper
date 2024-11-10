@@ -38,18 +38,23 @@ BLANKS: str = "Blank lines"
 
 class FastqWiper(WiperTool):
     def __init__(self):
+        super().__init__("fastqwiper")
+
         self.reg = None
         logging.basicConfig(level=logging.DEBUG)
 
+    # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
         parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
         parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
         parser.add_argument("-l", '--log_out', nargs='?',
-                            help='The file name of the final quality report summary. Print on the screen if not specified')
+                            help='The name of the final quality report summary file. Print on screen if not specified')
         parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
                             help='The number of reads you want to print a status message. Default: 500000')
         parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
                             help='Allowed characters set in the SEQ line. Default: ACGTN')
+        # Add a version flag that prints the version and exits
+        parser.add_argument('-v', '--version', action='version', version=self.version(), help='It prints the version and exists')
 
     def run(self, argv: argparse.Namespace):
         fastq_in: str = argv.fastq_in
@@ -123,6 +128,7 @@ class FastqWiper(WiperTool):
             else:
                 self.print_log_to_screen()
 
+    # Utility methods and properties
     @staticmethod
     def open_fastq_file(file_path: str):
         fastq_file_handler = None
@@ -326,7 +332,7 @@ class FastqWiper(WiperTool):
         else:
             logging.warning(f"{BLANKS}: {blank}/{tot_lines}")
 
-
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FastqWiper program help')
     fw = FastqWiper()

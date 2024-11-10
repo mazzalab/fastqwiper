@@ -1,0 +1,11 @@
+fastqwiper_version:
+  - 1.0.1
+
+fastqscatter_version:
+  - 1.0.0
+
+fastqgather_version:
+  - 1.0.0
+
+summarygather_version:
+  - 1.0.0
