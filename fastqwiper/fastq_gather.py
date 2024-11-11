@@ -33,17 +33,12 @@ class GatherFastq(WiperTool):
         if os.path.exists(out_fastq):
             os.remove(out_fastq)
 
-        if opsys == "windows":
-            self.concatenate_fastq_windows(in_folder, out_fastq, prefix)
-        else:
-            self.concatenate_fastq_unix(in_folder, out_fastq, prefix)
-
+        self.concatenate_fastq(in_folder, out_fastq, prefix, opsys)
 
     # Utility methods and properties
     @staticmethod
-    def concatenate_fastq_unix(input_directory, output_file, prefix):
+    def concatenate_fastq(input_directory, output_file, prefix, opsys):
         # List all files in the directory with the given prefix
-
         files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)] if prefix else [os.path.join(input_directory, f) for f in os.listdir(input_directory)]
         
         if not files:
@@ -55,75 +50,77 @@ class GatherFastq(WiperTool):
         regular_files = [f for f in files if f.endswith('.fastq')]
 
         try:
-            # Handle gzipped output
-            if output_file.endswith('.gz'):
-                with gzip.open(output_file, 'wb') as outfile:
-                    GatherFastq.__concat_unix(regular_files, gz_files, outfile)
-                        
+            if opsys == "windows":
+                GatherFastq.__concat_windows(regular_files, gz_files, output_file)
             else:
-                # Handle plain output file
-                with open(output_file, 'wb') as outfile:
-                    GatherFastq.__concat_unix(regular_files, gz_files, outfile)
-
-            print("Files concatenated successfully.")
-        except Exception as e:
-            print(f"Error while concatenating files: {e}")
-
-    @staticmethod
-    def concatenate_fastq_windows(input_directory, output_file, prefix):
-        # List all files in the directory with the given prefix
-        files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)] if prefix else [os.path.join(input_directory, f) for f in os.listdir(input_directory)]
-
-        if not files:
-            print(f"No files found in {input_directory} with prefix {prefix}.")
-            return
-
-        # Separate gzipped files from regular files
-        gz_files = [f for f in files if f.endswith('.gz')]
-        regular_files = [f for f in files if f.endswith('.fastq')]
-
-        try:
-            # Handle gzipped output
-            if output_file.endswith('.gz'):
-                with gzip.open(output_file, 'wb') as outfile:
-                    GatherFastq.__concat_windows(regular_files, gz_files, outfile)
-            else:
-                # Handle plain output file
-                with open(output_file, 'wb') as outfile:
-                    GatherFastq.__concat_windows(regular_files, gz_files, outfile)
+                GatherFastq.__concat_unix(' '.join(regular_files), ' '.join(gz_files), output_file)
 
             print("Files concatenated successfully.")
         except Exception as e:
             print(f"Error while concatenating files: {e}")
     
     @staticmethod
-    def __concat_unix(regular_files, gz_files, outfile):
-        # Concatenate regular fastq files
-        for file_path in regular_files:
-            with open(file_path, 'rb') as infile:
-                outfile.write(infile.read())
+    def __concat_unix(regular_files: str, gz_files: str, outfile: str):
+        if regular_files:
+            process_regular = subprocess.Popen(
+                f"cat {regular_files} > {outfile}",
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            # Wait for the command to complete and get output.
+            stdout, stderr = process_regular.communicate()
 
-        # Use zcat with subprocess for gz files
-        for file_path in gz_files:
-            process = subprocess.Popen(['zcat', file_path], stdout=subprocess.PIPE)
-            while True:
-                chunk = process.stdout.read(1024)
-                if not chunk:
-                    break
-                outfile.write(chunk)
-            process.stdout.close()
-            process.wait()
+            if process_regular.returncode != 0:
+                print(f"Error occurred: {stderr.decode()}")
 
-    def __concat_windows(regular_files, gz_files, outfile):
-        # Concatenate regular fastq files
-        for file_path in regular_files:
-            with open(file_path, 'rb') as infile:
-                outfile.write(infile.read())
+        if gz_files:
+            process_gzip = subprocess.Popen(
+                f"zcat {gz_files} >> {outfile}",
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            # Wait for the command to complete and get output.
+            stdout, stderr = process_gzip.communicate()
 
-        # Concatenate gzipped fastq files
-        for file_path in gz_files:
-            with gzip.open(file_path, 'rb') as infile:
-                outfile.write(infile.read())
+            if process_gzip.returncode != 0:
+                print(f"Error occurred: {stderr.decode()}")
+
+        if outfile.endswith('.gz'):
+            uncompressed_file = outfile.removesuffix('.gz')
+
+            process_compress = subprocess.Popen(
+                f"mv {outfile} {uncompressed_file} && gzip {uncompressed_file}",
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            # Wait for the command to complete and get output.
+            stdout, stderr = process_compress.communicate()
+
+            if process_compress.returncode != 0:
+                print(f"Error occurred: {stderr.decode()}")
+
+
+    def __concat_windows(regular_files, gz_files, outfile: str):
+        with gzip.open(outfile, 'wb') if outfile.endswith(".gz") else open(outfile, "w") as output_file:
+            for file_path in regular_files:
+                with open(file_path, 'r') as infile:
+                    data = infile.read()
+                    if isinstance(output_file, gzip.GzipFile):
+                        output_file.write(data.encode())  # Write as bytes for gzip
+                    else:
+                        output_file.write(data)  # Write as string for regular text file
+
+            # Concatenate gzipped fastq files
+            for file_path in gz_files:
+                with gzip.open(file_path, 'rb') as infile:
+                    data = infile.read()
+                    if isinstance(output_file, gzip.GzipFile):
+                        output_file.write(data)  # Write as bytes for gzip
+                    else:
+                        output_file.write(data.decode())  # Decode bytes to string for regular text file
 
 
 if __name__ == "__main__":

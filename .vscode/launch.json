@@ -12,20 +12,38 @@
             "console": "integratedTerminal",
             "args": [
                 "fastqscatter",
-                "-f",
-                "data/abba1.fastq",
-                "-n",
+                "--fastq",
+                "data/sample_R1.fastq.gz",
+                "--num_splits",
                 "3",
-                "-o",
-                "./data/splits_win",
-                "-p",
+                "--out_folder",
+                "./data/splits_unix",
+                "--prefix",
                 "ff",
-                "-s",
+                "--suffix",
                 "rr",
-                "-e",
-                "gz",
-                "-O",
-                "windows"
+                "--ext",
+                "fastq",
+                "--os",
+                "unix"
+            ]
+        },
+        {
+            "name": "Debugger: fastqgather",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqgather",
+                "--in_folder",
+                "data/splits_unix",
+                "--out_fastq",
+                "data/gathered_unix.fastq",
+                "--prefix",
+                "ff",
+                "--os",
+                "unix"
             ]
         }
     ]

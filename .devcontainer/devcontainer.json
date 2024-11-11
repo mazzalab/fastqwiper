@@ -11,5 +11,13 @@
     "ghcr.io/devcontainers/features/git:1": {}
   },
   "workspaceFolder": "/fastqwiper",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/fastqwiper,type=bind"
+  "workspaceMount": "source=${localWorkspaceFolder},target=/fastqwiper,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.debugpy"
+      ]
+    }
+  }
 }

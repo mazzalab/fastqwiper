@@ -45,26 +45,11 @@ class SplitFastq(WiperTool):
                 os.mkdir(out_folder)
 
                 if opsys == "windows":
-                    rows = self.line_count(fastq)
-                    # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
-                    # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
-                    rows_per_file = rows // splits + bool(rows % splits)
-
-                    with (gzip.open(fastq, 'r') if fastq.endswith('.gz') else open(fastq, 'r', encoding='ISO-8859-1')) as f:
-                        for split in range(1, splits + 1):
-                            split_file_name = f"{out_folder}/{prefix}_{split}-of-{splits}_{suffix}"
-                            if ext == 'fastq':
-                                split_file_name = f"{split_file_name}.{ext}"
-                            else:
-                                split_file_name = f"{split_file_name}.fastq.{ext}"
-
-                            with open(split_file_name, "w") if ext == "fastq" else gzip.open(split_file_name, 'wb') as split_file:
-                                i = 0
-                                while i < rows_per_file:
-                                    split_file.write(f"{f.readline()}")
-                                    i = i + 1
+                    self.split_on_windows(fastq, splits, prefix, suffix, ext, out_folder)
                 else:
                     self.split_on_unix(fastq, splits, prefix, suffix, ext, out_folder)
+            else:
+                print(f"The destination folder ({out_folder}) is not empty. Aborted!")    
                 
         except PermissionError:
             print(f"Permission denied: Unable to create '{out_folder}'.")
@@ -79,28 +64,42 @@ class SplitFastq(WiperTool):
 
     @staticmethod
     def split_on_unix(file_path: str, splits: int, prefix: str, suffix: str, ext: str, out_folder: str):
-        if file_path.endswith('.gz') and ext == 'gz':
-            command = (
-                f"gzip -dc {file_path} | "
-                f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
-                f"--filter='gzip > $FILE.gz' {out_folder}/{prefix}_"
-            )
-        elif file_path.endswith('.gz') and ext != 'gz':
-            command = (
-                f"gzip -dc {file_path} | "
-                f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
-                f"{out_folder}/{prefix}_"
-            )
-        elif not file_path.endswith('.gz') and ext == 'gz':
-            command = (
-                f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
-                f"--filter='gzip > $FILE.gz' {out_folder}/{prefix}_"
-            )
+        if file_path.endswith('.gz'):
+            cmd_total_lines = f"gzip -dc {file_path} | wc -l"
+            process = subprocess.Popen(cmd_total_lines, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+
+            if process.returncode != 0:
+                raise RuntimeError(f"Error calculating line count: {stderr.decode().strip()}")
+
+            total_lines = int(stdout.strip())
+            # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
+            # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
+            lines_per_split = total_lines // splits  + bool(total_lines % splits)
+
+            if ext == 'gz':
+                command = (
+                    f"gzip -dc {file_path} | "
+                    f"split -d -a3 -l {lines_per_split} --additional-suffix=_{suffix}.fastq "
+                    f"--filter='gzip > $FILE.gz' - {out_folder}/{prefix}_"
+                )
+            else:
+                command = (
+                    f"gzip -dc {file_path} | "
+                    f"split -d -a3 -l {lines_per_split} --additional-suffix=_{suffix}.fastq "
+                    f"- {out_folder}/{prefix}_"
+                )
         else:
-            command = (
-                f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
-                f"{out_folder}/{prefix}_"
-            )
+            if ext == 'gz':
+                command = (
+                    f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
+                    f"--filter='gzip > $FILE.gz' {file_path} {out_folder}/{prefix}_"
+                )
+            else:
+                command = (
+                    f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
+                    f"{file_path} {out_folder}/{prefix}_"
+                )
 
         try:
             # Run the split command with shell=True due to the variable expansion.
@@ -121,6 +120,39 @@ class SplitFastq(WiperTool):
 
         except Exception as e:
             print(f"Exception occurred: {e}")
+
+    @staticmethod
+    def split_on_windows(file_path: str, splits: int, prefix: str, suffix: str, ext: str, out_folder: str):
+        rows = SplitFastq.line_count(file_path)
+
+        # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
+        # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
+        rows_per_file = rows // splits + bool(rows % splits)
+
+        with (gzip.open(file_path, 'rb') if file_path.endswith('.gz') else open(file_path, 'r', encoding='ISO-8859-1')) as f:
+            for split in range(1, splits + 1):
+                split_file_name = f"{out_folder}/{prefix}_{split}-of-{splits}_{suffix}"
+                if ext == 'fastq':
+                    split_file_name = f"{split_file_name}.{ext}"
+                else:
+                    split_file_name = f"{split_file_name}.fastq.{ext}"
+
+                with open(split_file_name, "w") if ext == "fastq" else gzip.open(split_file_name, 'wb') as split_file:
+                    i = 0
+                    while i < rows_per_file:
+                        line = f.readline()
+                        # Handle the data based on whether it's bytes or string
+                        if isinstance(line, bytes):  # Case for gzip input files
+                            line = line.decode('ISO-8859-1')  # Convert bytes to string
+                            
+                        # Write as string for normal file, encode as bytes for gzip
+                        if isinstance(split_file, gzip.GzipFile):
+                            split_file.write(line.encode('ISO-8859-1'))  # Write as bytes
+                        else:
+                            split_file.write(line)  # Write as a string
+                        i += 1
+
+        print("Split operation completed successfully.")
 
 
 if __name__ == "__main__":
