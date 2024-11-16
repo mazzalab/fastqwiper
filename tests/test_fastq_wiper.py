@@ -9,7 +9,15 @@ from fastqwiper.fastq_wiper import FastqWiper
 
 @pytest.fixture
 def fw():
-	return FastqWiper()
+	f = FastqWiper()	
+	
+	yield f
+
+	print("\nTearing down resources...")
+	try:
+		os.remove("./tests/testdata/new.fastq")
+	except OSError:
+		pass
 
 @pytest.fixture
 def fw_fastq(fw):
@@ -45,7 +53,6 @@ def fw_run(fw):
 	print("\nTearing down resources...")
 	os.remove("./tests/testdata/bad_wiped.fastq")
 	os.remove("./tests/testdata/bad.log")
-	os.remove("./tests/testdata/new.fastq")
 
 def test_run(fw_run):
 	with open("./tests/testdata/bad_wiped_test.fastq", 'r') as file_test:
@@ -111,7 +118,7 @@ def test_check_wellformed_plus_line(fw, fw_bad_fastq):
 	fw.read_next_line(fw_bad_fastq, 100)
 	fw.read_next_line(fw_bad_fastq, 100)
 	assert fw.check_plus_line(fw.read_next_line(fw_bad_fastq, 100)) == '+'
-	  
+
 def test_check_malformed_plus_line(fw, fw_bad_fastq):
 	fw.read_next_line(fw_bad_fastq, 100)
 	fw.read_next_line(fw_bad_fastq, 100)
