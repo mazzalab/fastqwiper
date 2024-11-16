@@ -11,7 +11,7 @@ jobs:
 
     env:
       OS: ${{ matrix.os }}
-      PYTHON: "3.11"
+      PYTHON: "3.10"
 
     name: Test FastqWiper
     steps:
@@ -24,10 +24,9 @@ jobs:
           auto-update-conda: true
           auto-activate-base: true
           show-channel-urls: true
-          channels: conda-forge,defaults
+          channels: conda-forge,bioconda,defaults
           python-version: ${{ env.PYTHON }}
           environment-file: .devcontainer/environment.yml
-          miniforge-variant: Mambaforge
 
       - name: Run tests and collect coverage
         shell: bash -el {0}
