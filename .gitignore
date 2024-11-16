@@ -1,5 +1,7 @@
 #my custom
-logs/
+data/*
+!data/sample_R1.fastq.gz
+!data/sample_R2.fastq.gz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

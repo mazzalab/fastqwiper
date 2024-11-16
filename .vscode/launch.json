@@ -5,6 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debugger: summarygather",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "summarygather",
+                "--summaries",
+                "data/abba_full_wiped.fastq.log",
+                "data/abba_full_wiped.fastq2.log",
+                "--final_summary",
+                "data/abba_full_wiped.fastq.summary",
+            ]
+        },
+        {
+            "name": "Debugger: fastqwiper",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqwiper",
+                "--fastq_in",
+                "data/abba_full.fastq",
+                "--fastq_out",
+                "data/abba_full_wiped.fastq",
+                "-f",
+                "10",
+                "-l",
+                "data/abba_full_wiped.fastq.log",
+                "-a",
+                "TCGAN"
+            ]
+        },
+        {
             "name": "Debugger: fastqscatter",
             "type": "debugpy",
             "request": "launch",
