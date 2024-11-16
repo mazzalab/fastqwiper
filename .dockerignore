@@ -1,7 +1,6 @@
 .snakemake
 .vscode
 .gitignore
-.devcontainer
 .github
 .pytest_cache
 .coveragerc

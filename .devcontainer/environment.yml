@@ -1,10 +1,9 @@
-name: fastqwiper_light
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - setuptools
+  - python
   - pytest
   - pytest-cov
   - conda-build

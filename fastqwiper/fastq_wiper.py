@@ -65,11 +65,16 @@ class FastqWiper(WiperTool):
         fin = self.open_fastq_file(fastq_in)
         if not fin:
             logging.critical(" The input FASTQ file does not exist or bad extension (.gz or .fastq.gz)")
+            raise ValueError("Extension of the output file must be .fastq or .fastq.gz")
         else:
             logging.info(f" Start wiping {fastq_in}")
 
             # Open file out stream
-            fout : TextIO | BinaryIO = self.write_fastq_file(fastq_out)
+            fout : None | TextIO = self.create_fastq_write_file_handler(fastq_out)
+
+            if not fout:
+                logging.critical(f" Extension of {fastq_out} must be .fastq or .fastq.gz")
+                raise ValueError(f"Extension of {fastq_out} must be .fastq or .fastq.gz")
 
             # global variables anchor
             global tot_lines, clean_reads, seq_len_neq_qual_len, blank
@@ -127,8 +132,7 @@ class FastqWiper(WiperTool):
                 self.print_log_to_screen()
 
     # Utility methods and properties
-    @staticmethod
-    def open_fastq_file(file_path: str):
+    def open_fastq_file(self, file_path: str) -> None | TextIO:
         fastq_file_handler = None
 
         if "/" not in file_path and "\\" not in file_path:
@@ -146,9 +150,10 @@ class FastqWiper(WiperTool):
 
         return fastq_file_handler
 
-    def read_next_line(self, fin: TextIO, log_frequency: int):
+    def read_next_line(self, fin: TextIO, log_frequency: int) -> str:
         global tot_lines, blank
 
+        line: str = ''
         for line in fin:
             tot_lines += 1
             self.print_log_during_reading(tot_lines, log_frequency)
@@ -157,10 +162,12 @@ class FastqWiper(WiperTool):
             if not line:
                 blank += 1
             else:
-                return line        
+                return line
+        
+        return line
 
     @staticmethod
-    def write_fastq_file(file_path: str) -> TextIO | BinaryIO:
+    def create_fastq_write_file_handler(file_path: str) -> None | TextIO:
         fastq_file_handler = None
 
         if "/" not in file_path or "\\" not in file_path:
