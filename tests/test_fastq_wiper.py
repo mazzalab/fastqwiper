@@ -45,6 +45,7 @@ def fw_run(fw):
 	print("\nTearing down resources...")
 	os.remove("./tests/testdata/bad_wiped.fastq")
 	os.remove("./tests/testdata/bad.log")
+	os.remove("./tests/testdata/new.fastq")
 
 def test_run(fw_run):
 	with open("./tests/testdata/bad_wiped_test.fastq", 'r') as file_test:
