@@ -35,6 +35,7 @@ def fw_fastq_gz(fw):
 def fw_bad_fastq(fw):
     return fw.open_fastq_file("./tests/testdata/bad.fastq")
 
+
 @pytest.fixture
 def fw_parser():
     fastq_in: str = "./tests/testdata/bad.fastq"
@@ -42,7 +43,7 @@ def fw_parser():
     log_out: str = "./tests/testdata/bad.log"
     log_frequency: int = 100
     alphabet: str = "ACGTN"
-    
+
     return argparse.Namespace(
         fastq_in=fastq_in,
         fastq_out=fastq_out,
@@ -53,7 +54,6 @@ def fw_parser():
 
 @pytest.fixture
 def fw_run(fw, fw_parser):
-    
     fw.run(fw_parser)
 
     print("\nSetting up resources...")
@@ -71,10 +71,10 @@ def fw_run(fw, fw_parser):
 
 
 def test_set_parser(fw, fw_parser):
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError):
         fw.set_parser(fw_parser)
     # print(f"\n{excinfo.value}")
-    
+
 
 def test_run(fw_run):
     with open("./tests/testdata/bad_wiped_test.fastq", "r") as file_test:
@@ -85,16 +85,16 @@ def test_run(fw_run):
 
 def test_run_wrong_filein(fw, fw_parser):
     fw_parser.fastq_in = "wrong_file.txt"
-    
-    with pytest.raises(ValueError) as excinfo:
+
+    with pytest.raises(ValueError):
         fw.run(fw_parser)
     # print(f"\n{excinfo.value}")
 
 
 def test_run_wrong_fileout(fw, fw_parser):
     fw_parser.fastq_out = "wrong_file.txt"
-    
-    with pytest.raises(ValueError) as excinfo:
+
+    with pytest.raises(ValueError):
         fw.run(fw_parser)
     # print(f"\n{excinfo.value}")
 
@@ -126,7 +126,8 @@ def test_read_next_line(fw, fw_fastq):
 
 def test_create_fastq_write_file_handler(fw):
     assert isinstance(
-        fw.create_fastq_write_file_handler("./tests/testdata/new.fastq"), TextIOWrapper
+        fw.create_fastq_write_file_handler("./tests/testdata/new.fastq"),
+        TextIOWrapper,
     )
 
 
@@ -195,7 +196,8 @@ def test_check_wellformed_qual_line(fw, fw_bad_fastq):
 
     assert (
         fw.check_qual_line(fw.read_next_line(fw_bad_fastq, 100))
-        == "#A<AA/EEEEEEEEEEEEEAEEEEEEEEE#EEEE#EE#EEE#EE<###E#EEEE/EEEEEEE/EEEEEEAEEEAEE"
+        == "#A<AA/EEEEEEEEEEEEEAEEEEEEEEE#EEEE#EE#EEE#EE<###E#EEEE/"
+        "EEEEEEE/EEEEEEAEEEAEE"
     )
 
 
