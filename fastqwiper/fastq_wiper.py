@@ -4,7 +4,7 @@ import re
 import codecs
 import logging
 import argparse
-from typing import Pattern, TextIO, BinaryIO
+from typing import Pattern, TextIO
 from fastqwiper.wipertool_abstract import WiperTool
 
 
@@ -44,16 +44,20 @@ class FastqWiper(WiperTool):
 
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
-        parser.add_argument("-i", '--fastq_in', help='FASTQ file to be wiped', required=True)
-        parser.add_argument("-o", '--fastq_out', help='Wiped FASTQ file', required=True)
-        parser.add_argument("-l", '--log_out', nargs='?',
-                            help='File name of the final quality report summary. Print on screen if not specified')
-        parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
-                            help='The number of reads you want to print a status message. Default: 500000')
-        parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
-                            help='Allowed characters set in the SEQ line. Default: ACGTN')
-        # Add a version flag that prints the version and exits
-        parser.add_argument('-v', '--version', action='version', version=self.version(), help='Prints the version and exists')
+        if isinstance(parser, argparse.ArgumentParser):
+            parser.add_argument("-i", '--fastq_in', help='FASTQ file to be wiped', required=True)
+            parser.add_argument("-o", '--fastq_out', help='Wiped FASTQ file', required=True)
+            parser.add_argument("-l", '--log_out', nargs='?',
+                                help='File name of the final quality report summary. Print on screen if not specified')
+            parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
+                                help='The number of reads you want to print a status message. Default: 500000')
+            parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
+                                help='Allowed characters set in the SEQ line. Default: ACGTN')
+            # Add a version flag that prints the version and exits
+            parser.add_argument('-v', '--version', action='version', version=self.version(), help='Prints the version and exists')
+        else:
+            logging.critical(f" Incorrect parser. set_parser accepts an instance of argparse.Namespace. Passed: {parser}")
+            raise ValueError(f"Incorrect parser. set_parser accepts an instance of argparse.Namespace. Passed: {parser}")
 
     def run(self, argv: argparse.Namespace):
         fastq_in: str = argv.fastq_in
@@ -64,8 +68,8 @@ class FastqWiper(WiperTool):
         
         fin = self.open_fastq_file(fastq_in)
         if not fin:
-            logging.critical(" The input FASTQ file does not exist or bad extension (.gz or .fastq.gz)")
-            raise ValueError("Extension of the output file must be .fastq or .fastq.gz")
+            logging.critical(f" {fastq_in} does not exist or bad extension (.gz or .fastq.gz)")
+            raise ValueError(f"{fastq_in} does not exist or bad extension (.gz or .fastq.gz)")
         else:
             logging.info(f" Start wiping {fastq_in}")
 
@@ -73,8 +77,8 @@ class FastqWiper(WiperTool):
             fout : None | TextIO = self.create_fastq_write_file_handler(fastq_out)
 
             if not fout:
-                logging.critical(f" Extension of {fastq_out} must be .fastq or .fastq.gz")
-                raise ValueError(f"Extension of {fastq_out} must be .fastq or .fastq.gz")
+                logging.critical(f" {fastq_out} does not exist or bad extension (.gz or .fastq.gz)")
+                raise ValueError(f"{fastq_out} does not exist or bad extension (.gz or .fastq.gz)")
 
             # global variables anchor
             global tot_lines, clean_reads, seq_len_neq_qual_len, blank
@@ -305,5 +309,5 @@ if __name__ == "__main__":
     fw = FastqWiper()
     fw.set_parser(parser)
 
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
     fw.run(args)
