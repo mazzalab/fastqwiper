@@ -1,10 +1,13 @@
-import sys, os.path
+import sys
+import os.path
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import argparse
-from fastqwiper.gather_summaries import GatherSummaries
-from fastqwiper.split_fastq import SplitFastq
+from fastqwiper.summary_gather import GatherSummaries
+from fastqwiper.fastq_scatter import SplitFastq
 from fastqwiper.fastq_wiper import FastqWiper
+from fastqwiper.fastq_gather import GatherFastq
 
 
 def main():
@@ -17,24 +20,31 @@ def main():
     fw.set_parser(fw_parser)
 
     # create the parser for the split_fastq program
-    sf_parser = subparsers.add_parser('splitfastq', help='FASTQ splitter program')
-    sf = SplitFastq()
-    sf.set_parser(sf_parser)
+    fs_parser = subparsers.add_parser('fastqscatter', help='FASTQ splitter program')
+    fs = SplitFastq()
+    fs.set_parser(fs_parser)
+
+    # create the parser for the gather_fastq program
+    fg_parser = subparsers.add_parser('fastqgather', help='FASTQ gather program')
+    fg = GatherFastq()
+    fg.set_parser(fg_parser)
 
     # create the parser for the gather_summaries program
-    gs_parser = subparsers.add_parser('summarygather', help='Gatherer of the FastqWiper summaries')
-    gs = GatherSummaries()
-    gs.set_parser(gs_parser)
+    sg_parser = subparsers.add_parser('summarygather', help='Gatherer of FastqWiper summary files')
+    sg = GatherSummaries()
+    sg.set_parser(sg_parser)
 
     # Process command-line arguments and parse them
     args = parser.parse_args()
 
     if args.selected_subparser == 'fastqwiper':
         fw.run(args)
-    elif args.selected_subparser == 'splitfastq':
-        sf.run(args)
+    elif args.selected_subparser == 'fastqscatter':
+        fs.run(args)
+    elif args.selected_subparser == 'fastqgather':
+        fg.run(args)
     elif args.selected_subparser == 'summarygather':
-        gs.run(args)
+        sg.run(args)
     else:
         parser.print_help()
 

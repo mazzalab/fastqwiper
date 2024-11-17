@@ -1,0 +1,85 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debugger: summarygather",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "summarygather",
+                "--summaries",
+                "data/abba_full_wiped.fastq.log",
+                "data/abba_full_wiped.fastq2.log",
+                "--final_summary",
+                "data/abba_full_wiped.fastq.summary",
+            ]
+        },
+        {
+            "name": "Debugger: fastqwiper",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqwiper",
+                "--fastq_in",
+                "data/abba_full.fastq",
+                "--fastq_out",
+                "data/abba_full_wiped.fastq",
+                "-f",
+                "10",
+                "-l",
+                "data/abba_full_wiped.fastq.log",
+                "-a",
+                "TCGAN"
+            ]
+        },
+        {
+            "name": "Debugger: fastqscatter",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqscatter",
+                "--fastq",
+                "data/sample_R1.fastq.gz",
+                "--num_splits",
+                "3",
+                "--out_folder",
+                "./data/splits_unix",
+                "--prefix",
+                "ff",
+                "--suffix",
+                "rr",
+                "--ext",
+                "fastq",
+                "--os",
+                "unix"
+            ]
+        },
+        {
+            "name": "Debugger: fastqgather",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqgather",
+                "--in_folder",
+                "data/splits_unix",
+                "--out_fastq",
+                "data/gathered_unix.fastq",
+                "--prefix",
+                "ff",
+                "--os",
+                "unix"
+            ]
+        }
+    ]
+}

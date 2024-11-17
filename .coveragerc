@@ -3,4 +3,4 @@ omit = __init__.py
 
 [report]
 exclude_also =
-    def wipe_fastq
+    if __name__ == .__main__.:

@@ -4,7 +4,7 @@ import re
 import codecs
 import logging
 import argparse
-from typing import Pattern, TextIO, BinaryIO
+from typing import Pattern, TextIO
 from fastqwiper.wipertool_abstract import WiperTool
 
 
@@ -12,44 +12,52 @@ from fastqwiper.wipertool_abstract import WiperTool
 blank: int = 0
 tot_lines: int = 0
 bad_seq: int = 0
+header_length: int = 0
 fixed_header: int = 0
 bad_header: int = 0
 bad_plus: int = 0
-fixed_plus: int = 0
 bad_qual: int = 0
-qual_out_of_range: int = 0
 clean_reads: int = 0
 seq_len_neq_qual_len: int = 0
 # endregion
 
 # region CONST text for output
-CLEAN: str = "Clean lines"
-NOTPRINT_HEADER: str = "Not printable or uncompliant header lines"
+TOTAL_LINES: str = "Total lines"
+WELLFORMED: str = "Well-formed lines"
+CLEAN: str = "Clean reads"
+MISPLACED_HEADER: str = "Bad headers or misplaced lines"
 FIXED_HEADER: str = "Fixed header lines"
 BAD_SEQ: str = "BAD SEQ lines"
 BAD_PLUS: str = "BAD '+' lines"
-FIXED_PLUS: str = "Fixed + lines"
 BAD_QUAL: str = "BAD QUAL lines"
-QUAL_OUT_RANGE: str = "QUAL out of range lines"
-LENGTH_SEQ_QUAL: str = "Len(SEQ) neq Len(QUAL)"
+LENGTH_SEQ_QUAL: str = "Reads discarded because len(SEQ) neq len(QUAL)"
 BLANKS: str = "Blank lines"
 # endregion
 
 
 class FastqWiper(WiperTool):
     def __init__(self):
+        super().__init__("fastqwiper")
+
         self.reg = None
         logging.basicConfig(level=logging.DEBUG)
 
+    # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
-        parser.add_argument("-i", '--fastq_in', help='The corrupted FASTQ file', required=True)
-        parser.add_argument("-o", '--fastq_out', help='The wiped FASTQ file', required=True)
-        parser.add_argument("-l", '--log_out', nargs='?',
-                            help='The file name of the final quality report summary. Print on the screen if not specified')
-        parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
-                            help='The number of reads you want to print a status message. Default: 500000')
-        parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
-                            help='Allowed characters set in the SEQ line. Default: ACGTN')
+        if isinstance(parser, argparse.ArgumentParser):
+            parser.add_argument("-i", '--fastq_in', help='FASTQ file to be wiped', required=True)
+            parser.add_argument("-o", '--fastq_out', help='Wiped FASTQ file', required=True)
+            parser.add_argument("-l", '--log_out', nargs='?',
+                                help='File name of the final quality report summary. Print on screen if not specified')
+            parser.add_argument("-f", '--log_frequency', type=int, nargs='?', default=500000, const=500000,
+                                help='The number of reads you want to print a status message. Default: 500000')
+            parser.add_argument("-a", '--alphabet', type=str, nargs='?', default="ACGTN", const="ACGTN",
+                                help='Allowed characters set in the SEQ line. Default: ACGTN')
+            # Add a version flag that prints the version and exits
+            parser.add_argument('-v', '--version', action='version', version=self.version(), help='Prints the version and exists')
+        else:
+            logging.critical(f" Incorrect parser. set_parser accepts an instance of argparse.Namespace. Passed: {parser}")
+            raise ValueError(f"Incorrect parser. set_parser accepts an instance of argparse.Namespace. Passed: {parser}")
 
     def run(self, argv: argparse.Namespace):
         fastq_in: str = argv.fastq_in
@@ -57,31 +65,35 @@ class FastqWiper(WiperTool):
         log_out: str = argv.log_out
         log_frequency : int = argv.log_frequency
         alphabet: str = argv.alphabet
-        # MIN_HEADER_LEN = 10
-
+        
         fin = self.open_fastq_file(fastq_in)
         if not fin:
-            logging.critical("The input FASTQ file does not exist or bad extension (.gz or .fastq.gz)")
+            logging.critical(f" {fastq_in} does not exist or bad extension (.gz or .fastq.gz)")
+            raise ValueError(f"{fastq_in} does not exist or bad extension (.gz or .fastq.gz)")
         else:
-            logging.info(f"Start wiping {fastq_in}")
+            logging.info(f" Start wiping {fastq_in}")
 
             # Open file out stream
-            fout : TextIO | BinaryIO = self.write_fastq_file(fastq_out)
+            fout : None | TextIO = self.create_fastq_write_file_handler(fastq_out)
+
+            if not fout:
+                logging.critical(f" {fastq_out} does not exist or bad extension (.gz or .fastq.gz)")
+                raise ValueError(f"{fastq_out} does not exist or bad extension (.gz or .fastq.gz)")
 
             # global variables anchor
-            global tot_lines, clean_reads, seq_len_neq_qual_len
+            global tot_lines, clean_reads, seq_len_neq_qual_len, blank
             # Allowed characters of the SEQ line
             reg: Pattern[str] = re.compile(f"^[{alphabet}]+$")
 
             # Loop through 4-line reads
             for line in fin:
-                if not line.strip():
-                    # skip empty lines
-                    continue
-
                 tot_lines += 1
                 self.print_log_during_reading(tot_lines, log_frequency)
 
+                if not line.rstrip():
+                    blank += 1
+                    continue
+                
                 # PROCESS THE HEADER LINE
                 header: str = self.check_header_line(line.rstrip())
                 if not header:
@@ -89,19 +101,19 @@ class FastqWiper(WiperTool):
 
                 # PROCESS THE SEQ LINE
                 line = self.read_next_line(fin, log_frequency)
-                raw_seq: str = self.check_seq_line(line.rstrip(), reg)
+                raw_seq: str = self.check_seq_line(line, reg)
                 if not raw_seq:
                     continue
 
                 # PROCESS the + line
                 line = self.read_next_line(fin, log_frequency)
-                plus: str = self.check_plus_line(line.rstrip())
+                plus: str = self.check_plus_line(line)
                 if not plus:
                     continue
 
                 # PROCESS the QUAL line
                 line = self.read_next_line(fin, log_frequency)
-                qual: str = self.check_qual_line(line.rstrip())
+                qual: str = self.check_qual_line(line)
                 if not qual:
                     continue
 
@@ -116,15 +128,15 @@ class FastqWiper(WiperTool):
             fin.close()
 
             # Print short report
-            logging.info("Successfully terminated\n")
+            logging.info(" Successfully wiped\n")
 
             if log_out:
                 self.print_log_to_file(log_out)
             else:
                 self.print_log_to_screen()
 
-    @staticmethod
-    def open_fastq_file(file_path: str):
+    # Utility methods and properties
+    def open_fastq_file(self, file_path: str) -> None | TextIO:
         fastq_file_handler = None
 
         if "/" not in file_path and "\\" not in file_path:
@@ -142,19 +154,24 @@ class FastqWiper(WiperTool):
 
         return fastq_file_handler
 
-    def read_next_line(self, fin: TextIO, log_frequency: int):
-        global tot_lines
+    def read_next_line(self, fin: TextIO, log_frequency: int) -> str:
+        global tot_lines, blank
 
-        line = fin.readline()
-        if line:
-            # increment the total number of read not-empty lines
+        line: str = ''
+        for line in fin:
             tot_lines += 1
             self.print_log_during_reading(tot_lines, log_frequency)
 
+            line = line.rstrip()
+            if not line:
+                blank += 1
+            else:
+                return line
+        
         return line
 
     @staticmethod
-    def write_fastq_file(file_path: str) -> TextIO | BinaryIO:
+    def create_fastq_write_file_handler(file_path: str) -> None | TextIO:
         fastq_file_handler = None
 
         if "/" not in file_path or "\\" not in file_path:
@@ -172,18 +189,25 @@ class FastqWiper(WiperTool):
 
     @staticmethod
     def check_header_line(line: str) -> str:
-        global fixed_header, bad_header
+        global fixed_header, bad_header, header_length
         header: str = ""
 
         if line.isprintable() and line.rfind("@") == 0:
             header = line
+            header_length = len(header)
         elif not line.isprintable():
-            # This is a not printable header
             bad_header += 1
+
+            rescued_header = line[line.rfind("@"):]
+            if len(rescued_header) == header_length:
+                fixed_header += 1
+                header = rescued_header
         elif "@" not in line:
             # This is an uncompliant header line
             bad_header += 1
         else:  # elif header.rfind("@") > 0:
+            bad_header += 1
+            
             header = line
             header = header[header.rfind("@"):]
             fixed_header += 1
@@ -204,15 +228,11 @@ class FastqWiper(WiperTool):
 
     @staticmethod
     def check_plus_line(line: str) -> str:
-        global bad_plus, fixed_plus
+        global bad_plus
         plus: str = ""
 
-        if not line.isprintable() or line.find("+") == -1:
+        if not line.isprintable() or line.find("+") != 0:
             bad_plus += 1
-        elif line.find("+") > 0:
-            # Drop all characters except '+' character
-            plus = '+'
-            fixed_plus += 1
         else:
             plus = line
 
@@ -220,26 +240,20 @@ class FastqWiper(WiperTool):
 
     @staticmethod
     def check_qual_line(line: str) -> str:
-        global qual_out_of_range, bad_qual
+        global bad_qual
         qual: str = ""
 
         if not line.isprintable():
             bad_qual += 1
-
-        if line:
-            min_ascii = min(ord(c) for c in line)
-            max_ascii = max(ord(c) for c in line)
-            if min_ascii >= 33 and max_ascii <= 126:
-                qual = line
-            else:
-                qual_out_of_range += 1
+        else:
+            qual = line
 
         return qual
 
     @staticmethod
     def print_log_during_reading(lines: int, log_frequency: int) -> None:
         if lines % log_frequency == 0:
-            logging.info(f"Cleaned {lines} reads")
+            logging.info(f" Cleaned {lines} reads")
 
     @staticmethod
     def print_to_file(header: str, raw_seq: str, head_qual_sep: str, qual: str, fout: TextIO):
@@ -250,87 +264,50 @@ class FastqWiper(WiperTool):
 
     @staticmethod
     def print_log_to_file(log_out: str) -> None:
-        global tot_lines, clean_reads, seq_len_neq_qual_len, bad_qual, qual_out_of_range, bad_plus, \
-            bad_seq, bad_header, fixed_header, fixed_plus, blank
+        global tot_lines, clean_reads, seq_len_neq_qual_len, bad_qual, bad_plus, \
+            bad_seq, bad_header, fixed_header, blank
 
         # Open file out summary log
         flog: TextIO = open(log_out, "wt", encoding="utf-8")
 
         flog.write("FASTQWIPER SUMMARY:" + "\n" + "\n")
-        flog.write(f"{CLEAN}: {clean_reads*4}/{tot_lines} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)" + "\n")
-        flog.write(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}" + "\n")
-        flog.write(f"{FIXED_HEADER}: {fixed_header}/{tot_lines}" + "\n")
-        flog.write(f"{BAD_SEQ}: {bad_seq}/{tot_lines}" + "\n")
-        flog.write(f"{BAD_PLUS}: {bad_plus}/{tot_lines}" + "\n")
-        flog.write(f"{FIXED_PLUS}: {fixed_plus}/{tot_lines}" + "\n")
-        flog.write(f"{BAD_QUAL}: {bad_qual}/{tot_lines}" + "\n")
-        flog.write(f"{QUAL_OUT_RANGE}: {qual_out_of_range}/{tot_lines}" + "\n")
-        flog.write(f"{LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}/{tot_lines}" + "\n")
-        flog.write(f"{BLANKS}: {blank}/{tot_lines}" + "\n")
+        flog.write(f"{TOTAL_LINES}: {tot_lines}\n")
+        
+        flog.write(f"{WELLFORMED}: {clean_reads*4} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)" + "\n")
+        flog.write(f"{CLEAN}: {clean_reads}")
+
+        flog.write(f"{MISPLACED_HEADER}: {bad_header} ({round((bad_header / tot_lines) * 100, 2)}%) of which {fixed_header} fixed\n")
+        flog.write(f"{BAD_SEQ}: {bad_seq} ({round((bad_seq / tot_lines) * 100, 2)}%)" + "\n")
+        flog.write(f"{BAD_PLUS}: {bad_plus} ({round((bad_plus / tot_lines) * 100, 2)}%)" + "\n")
+        flog.write(f"{BAD_QUAL}: {bad_qual} ({round((bad_qual / tot_lines) * 100, 2)}%)" + "\n")
+        flog.write(f"{LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}" + "\n")
+        flog.write(f"{BLANKS}: {blank} ({round((blank / tot_lines) * 100, 2)}%)" + "\n")
 
         flog.close()
 
     @staticmethod
     def print_log_to_screen() -> None:
-        global tot_lines, clean_reads, seq_len_neq_qual_len, bad_qual, qual_out_of_range, bad_plus, \
-            bad_seq, bad_header, fixed_header, fixed_plus, blank
+        global tot_lines, clean_reads, seq_len_neq_qual_len, bad_qual, bad_plus, \
+            bad_seq, bad_header, fixed_header, blank
 
-        if tot_lines == (clean_reads*4):
-            logging.info(f"{CLEAN}: {clean_reads * 4}/{tot_lines} ({round((clean_reads * 4 / tot_lines) * 100, 2)}%)")
-        else:
-            logging.warning(
-                f"{CLEAN}: {clean_reads * 4}/{tot_lines} ({round((clean_reads * 4 / tot_lines) * 100, 2)}%)")
+        print("------------------------------")
+        logging.info(f" FASTQWIPER SUMMARY:" + "\n")
+        logging.info(f" {TOTAL_LINES}: {tot_lines}")
+        logging.info(f" {WELLFORMED}: {clean_reads*4} ({round((clean_reads*4 / tot_lines) * 100, 2)}%)")
+        logging.info(f" {CLEAN}: {clean_reads}\n")
+        
+        logging.warning(f" {MISPLACED_HEADER}: {bad_header} ({round((bad_header / tot_lines) * 100, 2)}%) of which {fixed_header} fixed")
+        logging.warning(f" {BAD_SEQ}: {bad_seq} ({round((bad_seq / tot_lines) * 100, 2)}%)")
+        logging.warning(f" {BAD_PLUS}: {bad_plus} ({round((bad_plus / tot_lines) * 100, 2)}%)")
+        logging.warning(f" {BAD_QUAL}: {bad_qual} ({round((bad_qual / tot_lines) * 100, 2)}%)")
+        logging.warning(f" {LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}")
+        logging.warning(f" {BLANKS}: {blank} ({round((blank / tot_lines) * 100, 2)}%)")
 
-        if bad_header == 0:
-            logging.info(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}")
-        else:
-            logging.warning(f"{NOTPRINT_HEADER}: {bad_header}/{tot_lines}")
-
-        if fixed_header == 0:
-            logging.info(f"{FIXED_HEADER}: {fixed_header}/{tot_lines}")
-        else:
-            logging.warning(f"{FIXED_HEADER}: {fixed_header}/{tot_lines}")
-
-        if bad_seq == 0:
-            logging.info(f"{BAD_SEQ}: {bad_seq}/{tot_lines}")
-        else:
-            logging.warning(f"{BAD_SEQ}: {bad_seq}/{tot_lines}")
-
-        if bad_plus == 0:
-            logging.info(f"{BAD_PLUS}: {bad_plus}/{tot_lines}")
-        else:
-            logging.warning(f"{BAD_PLUS}: {bad_plus}/{tot_lines}")
-
-        if fixed_plus == 0:
-            logging.info(f"{FIXED_PLUS}: {fixed_plus}/{tot_lines}")
-        else:
-            logging.warning(f"{FIXED_PLUS}: {fixed_plus}/{tot_lines}")
-
-        if bad_qual == 0:
-            logging.info(f"{BAD_QUAL}: {qual_out_of_range}/{tot_lines}")
-        else:
-            logging.warning(f"{BAD_QUAL}: {qual_out_of_range}/{tot_lines}")
-
-        if qual_out_of_range == 0:
-            logging.info(f"{QUAL_OUT_RANGE}: {qual_out_of_range}/{tot_lines}")
-        else:
-            logging.warning(f"{QUAL_OUT_RANGE}: {qual_out_of_range}/{tot_lines}")
-
-        if seq_len_neq_qual_len == 0:
-            logging.info(f"{LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}/{tot_lines}")
-        else:
-            logging.warning(f"{LENGTH_SEQ_QUAL}: {seq_len_neq_qual_len}/{tot_lines}")
-
-        if blank == 0:
-            logging.info(f"{BLANKS}: {blank}/{tot_lines}")
-        else:
-            logging.warning(f"{BLANKS}: {blank}/{tot_lines}")
-
-
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FastqWiper program help')
     fw = FastqWiper()
     fw.set_parser(parser)
 
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
     fw.run(args)

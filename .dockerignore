@@ -1,7 +1,6 @@
 .snakemake
 .vscode
 .gitignore
-.devcontainer
 .github
 .pytest_cache
 .coveragerc
@@ -10,6 +9,4 @@ __pycache__
 
 environment.yml
 requirements.txt
-setup.py
 conda-recipe/
-logs/
