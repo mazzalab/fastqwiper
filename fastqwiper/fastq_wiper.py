@@ -115,6 +115,7 @@ class FastqWiper(WiperTool):
                 f"{fastq_in} does not exist or bad extension "
                 "(.gz or .fastq.gz)"
             )
+
         else:
             logging.info(f" Start wiping {fastq_in}")
 
@@ -211,6 +212,7 @@ class FastqWiper(WiperTool):
         global tot_lines, blank
 
         line: str = ""
+
         for line in fin:
             tot_lines += 1
             self.print_log_during_reading(tot_lines, log_frequency)
@@ -414,7 +416,6 @@ class FastqWiper(WiperTool):
         logging.warning(
             f" {BLANKS}: {blank} ({round((blank / tot_lines) * 100, 2)}%)"
         )
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="FastqWiper program help")

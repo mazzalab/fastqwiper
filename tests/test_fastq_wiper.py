@@ -52,7 +52,6 @@ def fw_parser():
         alphabet=alphabet,
     )
 
-
 @pytest.fixture
 def fw_run(fw, fw_parser):
     fw.run(fw_parser)
