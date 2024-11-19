@@ -1,0 +1,7 @@
+{
+    "wipertools": "1.1.0",
+    "fastqwiper": "1.0.1",
+    "fastqscatter": "1.0.0",
+    "fastqgather": "1.0.0",
+    "summarygather": "1.0.0"
+}

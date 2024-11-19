@@ -1,4 +1,5 @@
 import sys
+import json
 import os.path
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -12,6 +13,8 @@ from fastqwiper.fastq_gather import GatherFastq
 
 def main():
     parser = argparse.ArgumentParser(description='FastqWiper program help')
+    parser.add_argument('-v', '--version', action='version', version=version(), help='It prints the version and exists')
+    
     subparsers = parser.add_subparsers(help='Choices', dest='selected_subparser')
 
     # create the parser for the FastqWiper main program
@@ -30,7 +33,7 @@ def main():
     fg.set_parser(fg_parser)
 
     # create the parser for the gather_summaries program
-    sg_parser = subparsers.add_parser('summarygather', help='Gatherer of FastqWiper summary files')
+    sg_parser = subparsers.add_parser('summarygather', help='Summary gather program')
     sg = GatherSummaries()
     sg.set_parser(sg_parser)
 
@@ -48,6 +51,12 @@ def main():
     else:
         parser.print_help()
 
+
+def version():
+    versions_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'versions.json')
+    with open(versions_file_path) as f:
+        config = json.load(f)
+        return config.get("wipertools", "")
 
 if __name__ == "__main__":
     main()

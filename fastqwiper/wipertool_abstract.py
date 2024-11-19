@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from argparse import Namespace
+import json
 import os
 
 
@@ -10,9 +11,9 @@ class WiperTool(ABC):
     def __init__(self, name):
         self.name = name
         
-        versions_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'versions')
-        with open(versions_file_path, 'r') as file:
-            self.config = {line.split(':')[0]: line.split(':')[1].strip() for line in file if line.strip()}
+        versions_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'versions.json')
+        with open(versions_file_path) as f:
+            self.config = json.load(f)
 
     def version(self):
         return self.config.get(self.name, "")

@@ -15,7 +15,7 @@ RECOVERED_HEADER: str = ""
 
 class GatherSummaries(WiperTool):
     def __init__(self):
-        super().__init__("summarygatherer")
+        super().__init__("summarygather")
 
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
@@ -55,40 +55,67 @@ class GatherSummaries(WiperTool):
                 if line.startswith(TOTAL_LINES):
                     right = line.split(':')[1]
                     m = re.match(INT_REGEX, right)
-                    data[TOTAL_LINES] = int(m.group('var'))
+                    if(m):
+                        data[TOTAL_LINES] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"TOT_LINES match failed for line: {right}")
                 elif line.startswith(WELLFORMED):
                     right = line.split(':')[1]
                     m = re.match(INT_PERCENT_REGEX, right)
-                    data[WELLFORMED] = int(m.group('var'))
+                    if m:
+                        raise ValueError(f"WELLFORMED match failed for line: {right}")
+                    else:
+                        data[WELLFORMED] = 0
                 elif line.startswith(CLEAN):
                     right = line.split(':')[1]
                     m = re.match(INT_REGEX, right)
-                    data[CLEAN] = int(m.group('var'))
+                    if m:
+                        data[CLEAN] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"CLEAN match failed for line: {right}")
                 elif line.startswith(MISPLACED_HEADER):
                     right = line.split(':')[1]
                     m = re.match(INT_INT_REGEX, right)
-                    data[MISPLACED_HEADER] = int(m.group('var'))
-                    data[RECOVERED_HEADER] = int(m.group('var2'))
+                    if m:
+                        data[MISPLACED_HEADER] = int(m.group('var'))
+                        data[RECOVERED_HEADER] = int(m.group('var2'))
+                    else:
+                        raise ValueError(f"MISPLACED_HEADER and RECOVERED_HEADER match failed for line: {right}")
                 elif line.startswith(BAD_SEQ):
                     right = line.split(':')[1]
                     m = re.match(INT_PERCENT_REGEX, right)
-                    data[BAD_SEQ] = int(m.group('var'))
+                    if m:
+                        data[BAD_SEQ] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"BAD_SEQ match failed for line: {right}")
                 elif line.startswith(BAD_PLUS):
                     right = line.split(':')[1]
                     m = re.match(INT_PERCENT_REGEX, right)
-                    data[BAD_PLUS] = int(m.group('var'))
+                    if m:
+                        data[BAD_PLUS] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"BAD_PLUS match failed for line: {right}")
                 elif line.startswith(BAD_QUAL):
                     right = line.split(':')[1]
                     m = re.match(INT_PERCENT_REGEX, right)
-                    data[BAD_QUAL] = int(m.group('var'))
+                    if m:
+                        data[BAD_QUAL] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"BAD_QUAL match failed for line: {right}")
                 elif line.startswith(LENGTH_SEQ_QUAL):
                     right = line.split(':')[1]
                     m = re.match(INT_REGEX, right)
-                    data[LENGTH_SEQ_QUAL] = int(m.group('var'))
+                    if m:
+                        data[LENGTH_SEQ_QUAL] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"LENGTH_SEQ_QUAL match failed for line: {right}")
                 elif line.startswith(BLANKS):
                     right = line.split(':')[1]
                     m = re.match(INT_PERCENT_REGEX, right)
-                    data[BLANKS] = int(m.group('var'))
+                    if m:
+                        data[BLANKS] = int(m.group('var'))
+                    else:
+                        raise ValueError(f"BLANKS match failed for line: {right}")
 
             return data
 

@@ -2,6 +2,7 @@
 data/*
 !data/sample_R1.fastq.gz
 !data/sample_R2.fastq.gz
+conda-recipe/record.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

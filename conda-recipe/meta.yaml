@@ -1,9 +1,5 @@
-{% set data = load_setup_py_data(setup_file="setup.py") %}
-{% set version = data.get('version') %}
-
-# https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html
-# https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html#:~:text=%7B%7B%20version%20%7D%7D-,load_file_data,-%3A%20Parse%20JSON%2C%20TOML
-
+{% set data = load_file_data('versions.json') %}
+{% set version = data.get('wipertools') %}
 {% set sha256 = "898812fc8d2ac86f22f4da9e24eb707383a681c8553aa6813a05b108c8e10582" %}
 
 package:
@@ -23,16 +19,16 @@ build:
   # number: { { environ.get('GITHUB_RUN_NUMBER', 0) } }
   number: 0
   noarch: python
-  # script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   run_exports:
     - {{ pin_subpackage('wipertools', max_pin="x.x") }}
   entry_points:
     - wipertools = fastqwiper.wipertools:main
+  script_env:
+    - WIPERTOOLS_VERSION={{version}}
 
 requirements:
   host:
     - python >=3.7
-    - pip
     - setuptools
   run:
     - python >=3.7

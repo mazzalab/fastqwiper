@@ -1,24 +1,17 @@
 import os
 from setuptools import setup, find_packages
 
-# version='0.0.1'
-# if '--wipertools_version' in sys.argv:
-#      version_idx = sys.argv.index('--wipertools_version')
-#      version = sys.argv[version_idx + 1]
-#      sys.argv.remove('--wipertools_version')
-#      sys.argv.pop(version_idx)
-
 version_string = os.environ.get("WIPERTOOLS_VERSION", "0.0.0.dev0")
 
 setup(
     name="wipertools",
     version=version_string,
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",)),
     # https://setuptools.pypa.io/en/latest/userguide/datafiles.html
     # package_data={"": ["*.txt"], "mypkg1": ["data1.rst"]},
     # include_package_data=True,
-    # exclude_package_data={"mypkg": [".gitattributes"]},
-    install_requires=["setuptools"],
+    # exclude_package_data={"tests": [""]},
+    install_requires=[],
     entry_points={
         "console_scripts": [
             "wipertools=fastqwiper.wipertools:main"
