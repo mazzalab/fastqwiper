@@ -28,5 +28,5 @@ setup(
         "License :: OSI Approved :: Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.10',
 )
