@@ -8,9 +8,7 @@ setup(
     version=version_string,
     packages=find_packages(exclude=("tests",)),
     # https://setuptools.pypa.io/en/latest/userguide/datafiles.html
-    # package_data={"": ["*.txt"], "mypkg1": ["data1.rst"]},
-    # include_package_data=True,
-    # exclude_package_data={"tests": [""]},
+    include_package_data=True,
     install_requires=[],
     entry_points={
         "console_scripts": [
