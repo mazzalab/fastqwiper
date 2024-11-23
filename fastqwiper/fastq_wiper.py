@@ -417,6 +417,7 @@ class FastqWiper(WiperTool):
             f" {BLANKS}: {blank} ({round((blank / tot_lines) * 100, 2)}%)"
         )
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="FastqWiper program help")
     fw = FastqWiper()

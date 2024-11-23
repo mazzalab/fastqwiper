@@ -13,20 +13,20 @@ class SplitFastq(WiperTool):
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
         class OsEnum(Enum):
-            UNIX    = auto()
-            WINDOWS = auto()
+            UNIX           = auto()
+            CROSS_PLATFORM = auto()
         
         class FastqExtEnum(Enum):
-            FASTQ   = auto()
-            GZ      = auto()
+            FASTQ       = auto()
+            FASTQ_GZ    = auto()
 
         parser.add_argument("-f", '--fastq', help='The FASTQ file to be split', required=True)
         parser.add_argument("-n", '--num_splits', type=int, help='Number of splits', required=True)
-        parser.add_argument("-o", '--out_folder', help='The folder where to put the splits', required=True)
         parser.add_argument("-p", '--prefix', help='The prefix of the names of the split files', required=True)
         parser.add_argument("-s", '--suffix', help='The suffix of the names of the split files', required=True)
-        parser.add_argument("-e", '--ext', help='The extension of the split files', default='fastq', choices=[e.name.lower() for e in FastqExtEnum], required=True)
-        parser.add_argument("-O", '--os', help='Underlying OS (Default: %(default)s)', default='windows', choices=[e.name.lower() for e in OsEnum],  required=False)
+        parser.add_argument("-e", '--ext', help='The extension of the split files', default='fastq', choices=[e.name.lower().replace("_", ".") for e in FastqExtEnum], required=True)
+        parser.add_argument("-o", '--out_folder', help='The folder name where to put the splits', default='chunks', required=False)
+        parser.add_argument("-O", '--os', help='Underlying OS (Default: %(default)s)', default='cross_platform', choices=[e.name.lower() for e in OsEnum],  required=False)
         # Add a version flag that prints the version and exits
         parser.add_argument('-v', '--version', action='version', version=self.version(), help='Print the version and exit')
 
@@ -44,8 +44,8 @@ class SplitFastq(WiperTool):
             if not os.path.exists(out_folder):
                 os.mkdir(out_folder)
 
-                if opsys == "windows":
-                    self.split_on_windows(fastq, splits, prefix, suffix, ext, out_folder)
+                if opsys == "cross_platform":
+                    self.split_cross_platform(fastq, splits, prefix, suffix, ext, out_folder)
                 else:
                     self.split_on_unix(fastq, splits, prefix, suffix, ext, out_folder)
             else:
@@ -64,7 +64,7 @@ class SplitFastq(WiperTool):
 
     @staticmethod
     def split_on_unix(file_path: str, splits: int, prefix: str, suffix: str, ext: str, out_folder: str):
-        if file_path.endswith('.gz'):
+        if file_path.endswith('.fastq.gz'):
             cmd_total_lines = f"gzip -dc {file_path} | wc -l"
             process = subprocess.Popen(cmd_total_lines, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
@@ -77,7 +77,7 @@ class SplitFastq(WiperTool):
             # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
             lines_per_split = total_lines // splits  + bool(total_lines % splits)
 
-            if ext == 'gz':
+            if ext == 'fastq.gz':
                 command = (
                     f"gzip -dc {file_path} | "
                     f"split -d -a3 -l {lines_per_split} --additional-suffix=_{suffix}.fastq "
@@ -90,7 +90,7 @@ class SplitFastq(WiperTool):
                     f"- {out_folder}/{prefix}_"
                 )
         else:
-            if ext == 'gz':
+            if ext == 'fastq.gz':
                 command = (
                     f"split -d -a3 -n {splits} --additional-suffix=_{suffix}.fastq "
                     f"--filter='gzip > $FILE.gz' {file_path} {out_folder}/{prefix}_"
@@ -122,20 +122,16 @@ class SplitFastq(WiperTool):
             print(f"Exception occurred: {e}")
 
     @staticmethod
-    def split_on_windows(file_path: str, splits: int, prefix: str, suffix: str, ext: str, out_folder: str):
+    def split_cross_platform(file_path: str, splits: int, prefix: str, suffix: str, ext: str, out_folder: str):
         rows = SplitFastq.line_count(file_path)
 
         # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
         # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
         rows_per_file = rows // splits + bool(rows % splits)
 
-        with (gzip.open(file_path, 'rb') if file_path.endswith('.gz') else open(file_path, 'r', encoding='ISO-8859-1')) as f:
+        with (gzip.open(file_path, 'rb') if file_path.endswith('.fastq.gz') else open(file_path, 'r', encoding='ISO-8859-1')) as f:
             for split in range(1, splits + 1):
-                split_file_name = f"{out_folder}/{prefix}_{split}-of-{splits}_{suffix}"
-                if ext == 'fastq':
-                    split_file_name = f"{split_file_name}.{ext}"
-                else:
-                    split_file_name = f"{split_file_name}.fastq.{ext}"
+                split_file_name = f"{out_folder}/{prefix}_{split}-of-{splits}_{suffix}.{ext}"                
 
                 with open(split_file_name, "w") if ext == "fastq" else gzip.open(split_file_name, 'wb') as split_file:
                     i = 0

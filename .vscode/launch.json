@@ -52,15 +52,15 @@
                 "--num_splits",
                 "3",
                 "--out_folder",
-                "./data/splits_unix",
+                "./data/splits_cp",
                 "--prefix",
                 "ff",
                 "--suffix",
                 "rr",
                 "--ext",
-                "fastq",
+                "fastq.gz",
                 "--os",
-                "unix"
+                "cross_platform"
             ]
         },
         {
