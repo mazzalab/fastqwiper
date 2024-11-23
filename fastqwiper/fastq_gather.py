@@ -9,7 +9,7 @@ from fastqwiper.wipertool_abstract import WiperTool
 class GatherFastq(WiperTool):
     def __init__(self):
         super().__init__("fastqgather")
-        
+
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
         class OsEnum(Enum):
@@ -40,11 +40,11 @@ class GatherFastq(WiperTool):
     def concatenate_fastq(input_directory, output_file, prefix, opsys):
         # List all files in the directory with the given prefix
         files = [os.path.join(input_directory, f) for f in os.listdir(input_directory) if f.startswith(prefix)] if prefix else [os.path.join(input_directory, f) for f in os.listdir(input_directory)]
-        
+
         if not files:
             print(f"No files found in {input_directory} with prefix {prefix}.")
             return
-        
+
         # Separate gzipped files from regular files
         gz_files = [f for f in files if f.endswith('.gz')]
         regular_files = [f for f in files if f.endswith('.fastq')]
@@ -58,7 +58,7 @@ class GatherFastq(WiperTool):
             print("Files concatenated successfully.")
         except Exception as e:
             print(f"Error while concatenating files: {e}")
-    
+
     @staticmethod
     def __concat_unix(regular_files: str, gz_files: str, outfile: str):
         if regular_files:
@@ -101,7 +101,6 @@ class GatherFastq(WiperTool):
 
             if process_compress.returncode != 0:
                 print(f"Error occurred: {stderr.decode()}")
-
 
     def __concat_windows(regular_files, gz_files, outfile: str):
         with gzip.open(outfile, 'wb') if outfile.endswith(".gz") else open(outfile, "w") as output_file:
