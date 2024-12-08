@@ -4,8 +4,10 @@ import re
 import codecs
 import logging
 import argparse
+from enum import auto, Enum
+from pathlib import Path
 from typing import Pattern, TextIO
-from fastqwiper.wipertool_abstract import WiperTool
+from wipertool_abstract import WiperTool
 
 
 # region Variables for final report
@@ -45,49 +47,41 @@ class FastqWiper(WiperTool):
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
         if isinstance(parser, argparse.ArgumentParser):
-            parser.add_argument(
-                "-i",
-                "--fastq_in",
-                help="FASTQ file to be wiped",
-                required=True,
-            )
-            parser.add_argument(
-                "-o", "--fastq_out", help="Wiped FASTQ file", required=True
-            )
-            parser.add_argument(
-                "-l",
-                "--log_out",
-                nargs="?",
-                help="File name of the final quality report summary. "
-                "Print on screen if not specified",
-            )
-            parser.add_argument(
-                "-f",
-                "--log_frequency",
-                type=int,
-                nargs="?",
-                default=500000,
-                const=500000,
-                help="The number of reads you want to print a status message. "
-                "Default: 500000",
-            )
-            parser.add_argument(
-                "-a",
-                "--alphabet",
-                type=str,
-                nargs="?",
-                default="ACGTN",
-                const="ACGTN",
-                help="Allowed characters set in the SEQ line. Default: ACGTN",
-            )
+            class FastqExtEnum(Enum):
+                FASTQ = auto()
+                FQ = auto()
+                FASTQ_GZ = auto()
+                FQ_GZ = auto()
+
+            def file_choices(choices, fname):
+                # Extract double extensions if present
+                path = Path(fname)
+                if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
+                    # Combine the suffixes and remove the dot
+                    ext = ''.join(path.suffixes)[1:]
+                else:
+                    ext = path.suffix[1:]  # Single extension
+
+                if ext not in choices:
+                    parser.error(
+                        f"File '{fname}' doesn't end with one of {choices}")
+                return fname
+
+            parser.add_argument("-i", "--fastq_in", help="FASTQ file to be wiped", type=lambda s: file_choices(
+                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s), required=True)
+            parser.add_argument("-o", "--fastq_out", type=lambda s: file_choices((e.name.lower(
+            ).replace("_", ".") for e in FastqExtEnum), s), help="Wiped FASTQ file", required=True)
+
+            # Optional arguments
+            parser.add_argument("-r", "--report", nargs="?",
+                                help="File name of the final quality report. Print on screen if not specified")
+            parser.add_argument("-f", "--log_frequency", type=int, nargs="?", default=500000, const=500000,
+                                help="Number of reads you want to print a status message. Default: 500000")
+            parser.add_argument("-a", "--alphabet", type=str, nargs="?", default="ACGTN",
+                                const="ACGTN", help="Allowed characters set in the SEQ line. Default: ACGTN")
             # Add a version flag that prints the version and exits
-            parser.add_argument(
-                "-v",
-                "--version",
-                action="version",
-                version=self.version(),
-                help="Prints the version and exists",
-            )
+            parser.add_argument("-v", "--version", action="version",
+                                version=self.version(), help="Prints the version and exists")
         else:
             logging.critical(
                 " Incorrect parser. set_parser accepts an instance of "
@@ -101,38 +95,26 @@ class FastqWiper(WiperTool):
     def run(self, argv: argparse.Namespace):
         fastq_in: str = argv.fastq_in
         fastq_out: str = argv.fastq_out
-        log_out: str = argv.log_out
+        report: str = argv.report
         log_frequency: int = argv.log_frequency
         alphabet: str = argv.alphabet
 
         fin = self.open_fastq_file(fastq_in)
         if not fin:
             logging.critical(
-                f" {fastq_in} does not exist or bad extension "
-                "(.gz or .fastq.gz)"
+                f" {fastq_in} does not exist or is not a file"
             )
             raise ValueError(
-                f"{fastq_in} does not exist or bad extension "
-                "(.gz or .fastq.gz)"
+                f"{fastq_in} does not exist or is not a file"
             )
 
         else:
             logging.info(f" Start wiping {fastq_in}")
 
             # Open file out stream
-            fout: None | TextIO = self.create_fastq_write_file_handler(
+            fout: TextIO = self.create_fastq_write_file_handler(
                 fastq_out
             )
-
-            if not fout:
-                logging.critical(
-                    f" {fastq_out} does not exist or bad extension "
-                    "(.gz or .fastq.gz)"
-                )
-                raise ValueError(
-                    f"{fastq_out} does not exist or bad extension "
-                    "(.gz or .fastq.gz)"
-                )
 
             # global variables anchor
             global tot_lines, clean_reads, seq_len_neq_qual_len, blank
@@ -173,7 +155,7 @@ class FastqWiper(WiperTool):
 
                 # Eventually print to file
                 if len(raw_seq) == len(qual) and len(qual) != 0:
-                    self.print_to_file(header, raw_seq, plus, qual, fout)
+                    self.print_read_to_file(header, raw_seq, plus, qual, fout)
                     clean_reads += 1
                 else:
                     seq_len_neq_qual_len += 1
@@ -184,10 +166,10 @@ class FastqWiper(WiperTool):
             # Print short report
             logging.info(" Successfully wiped\n")
 
-            if log_out:
-                self.print_log_to_file(log_out)
+            if report:
+                self.print_report_to_file(report)
             else:
-                self.print_log_to_screen()
+                self.print_report_to_screen()
 
     # Utility methods and properties
     def open_fastq_file(self, file_path: str) -> None | TextIO:
@@ -197,13 +179,14 @@ class FastqWiper(WiperTool):
             file_path = os.path.join(os.getcwd(), file_path)
 
         if os.path.exists(file_path) and os.path.isfile(file_path):
-            if file_path.endswith(".gz"):
+            if file_path.endswith("fastq.gz") or file_path.endswith("fq.gz"):
                 fastq_file_handler = gzip.open(
-                    file_path, "rt", encoding="utf-8", errors="ignore"
+                    file_path, "rt", encoding="utf-8", errors="replace"
                 )
-            elif file_path.endswith(".fastq"):
+            # if file_path.endswith(".fastq") or file_path.endswith(".fq"):
+            else:
                 fastq_file_handler = codecs.open(
-                    file_path, encoding="utf-8", errors="ignore"
+                    file_path, encoding="utf-8", errors="replace"
                 )
 
         return fastq_file_handler
@@ -226,21 +209,16 @@ class FastqWiper(WiperTool):
         return line
 
     @staticmethod
-    def create_fastq_write_file_handler(file_path: str) -> None | TextIO:
+    def create_fastq_write_file_handler(file_path: str) -> TextIO:
         fastq_file_handler = None
 
-        if "/" not in file_path or "\\" not in file_path:
-            parent_folder = os.getcwd()
+        if file_path.endswith("fastq.gz") or file_path.endswith("fq.gz"):
+            fastq_file_handler = gzip.open(
+                file_path, "wt", encoding="utf-8"
+            )
+        # elif file_path.endswith(".fastq") or file_path.endswith(".fq"):
         else:
-            parent_folder = os.path.abspath(os.path.join(file_path, os.pardir))
-
-        if os.path.isdir(parent_folder):
-            if file_path.endswith(".gz"):
-                fastq_file_handler = gzip.open(
-                    file_path, "wt", encoding="utf-8"
-                )
-            elif file_path.endswith(".fastq"):
-                fastq_file_handler = open(file_path, "wt", encoding="utf-8")
+            fastq_file_handler = open(file_path, "wt", encoding="utf-8")
 
         return fastq_file_handler
 
@@ -313,7 +291,7 @@ class FastqWiper(WiperTool):
             logging.info(f" Cleaned {lines} reads")
 
     @staticmethod
-    def print_to_file(
+    def print_read_to_file(
         header: str, raw_seq: str, head_qual_sep: str, qual: str, fout: TextIO
     ):
         fout.write(header + "\n")
@@ -322,7 +300,7 @@ class FastqWiper(WiperTool):
         fout.write(qual + "\n")
 
     @staticmethod
-    def print_log_to_file(log_out: str) -> None:
+    def print_report_to_file(report: str) -> None:
         global \
             tot_lines, \
             clean_reads, \
@@ -334,23 +312,22 @@ class FastqWiper(WiperTool):
             fixed_header, \
             blank
 
-        # Open file out summary log
-        flog: TextIO = open(log_out, "wt", encoding="utf-8")
+        # Open report file
+        flog: TextIO = open(report, "wt", encoding="utf-8")
 
-        flog.write("FASTQWIPER SUMMARY:" + "\n" + "\n")
-        flog.write(f"{TOTAL_LINES}: {tot_lines}\n")
+        flog.write("FASTQWIPER REPORT:" + "\n\n")
+        flog.write(f"{TOTAL_LINES}: {tot_lines}"+"\n")
 
         flog.write(
             f"{WELLFORMED}: {clean_reads*4} "
             f"({round((clean_reads*4 / tot_lines) * 100, 2)}%)"
             + "\n"
         )
-        flog.write(f"{CLEAN}: {clean_reads}")
-
+        flog.write(f"{CLEAN}: {clean_reads}\n")
         flog.write(
             f"{MISPLACED_HEADER}: {bad_header} "
             f"({round((bad_header / tot_lines) * 100, 2)}%) "
-            f"of which {fixed_header} fixed\n"
+            f"of which {fixed_header} fixed" + "\n"
         )
         flog.write(
             f"{BAD_SEQ}: {bad_seq} ({round((bad_seq / tot_lines) * 100, 2)}%)"
@@ -375,7 +352,7 @@ class FastqWiper(WiperTool):
         flog.close()
 
     @staticmethod
-    def print_log_to_screen() -> None:
+    def print_report_to_screen() -> None:
         global \
             tot_lines, \
             clean_reads, \
@@ -388,13 +365,13 @@ class FastqWiper(WiperTool):
             blank
 
         print("------------------------------")
-        logging.info(" FASTQWIPER SUMMARY:" + "\n")
+        logging.info(" FASTQWIPER REPORT:" + "\n")
         logging.info(f" {TOTAL_LINES}: {tot_lines}")
         logging.info(
             f" {WELLFORMED}: {clean_reads*4} "
             f"({round((clean_reads*4 / tot_lines) * 100, 2)}%)"
         )
-        logging.info(f" {CLEAN}: {clean_reads}\n")
+        logging.info(f" {CLEAN}: {clean_reads}")
 
         logging.warning(
             f" {MISPLACED_HEADER}: {bad_header} "

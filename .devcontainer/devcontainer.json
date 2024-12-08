@@ -17,7 +17,8 @@
       "extensions": [
         "ms-python.python",
         "ms-python.debugpy",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "charliermarsh.ruff"
       ]
     }
   },

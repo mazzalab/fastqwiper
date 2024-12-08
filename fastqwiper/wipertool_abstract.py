@@ -10,7 +10,7 @@ class WiperTool(ABC):
 
     def __init__(self, name):
         self.name = name
-        
+
         versions_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'versions.json')
         with open(versions_file_path) as f:
             self.config = json.load(f)

@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debugger: summarygather",
+            "name": "Debugger: reportgather",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolderBasename}/wipertools.py",
             "console": "integratedTerminal",
             "args": [
-                "summarygather",
-                "--summaries",
-                "data/abba_full_wiped.fastq.log",
-                "data/abba_full_wiped.fastq2.log",
-                "--final_summary",
-                "data/abba_full_wiped.fastq.summary",
+                "reportgather",
+                "--reports",
+                "data/gathered_unix.report",
+                "data/gathered_unix_2.report",
+                "--final_report",
+                "data/gathered_unix_gathered.report",
             ]
         },
         {
@@ -28,13 +28,13 @@
             "args": [
                 "fastqwiper",
                 "--fastq_in",
-                "data/abba_full.fastq",
+                "data/gathered_unix.fastq.gz",
                 "--fastq_out",
-                "data/abba_full_wiped.fastq",
+                "data/gathered_unix_wiped.fq.gz",
                 "-f",
                 "10",
-                "-l",
-                "data/abba_full_wiped.fastq.log",
+                "-r",
+                "data/gathered_unix.report",
                 "-a",
                 "TCGAN"
             ]
@@ -48,11 +48,11 @@
             "args": [
                 "fastqscatter",
                 "--fastq",
-                "data/sample_R1.fastq.gz",
+                "data/gathered_unix.fastq.gz",
                 "--num_splits",
                 "3",
                 "--out_folder",
-                "./data/splits_cp",
+                "./data/splits_unix",
                 "--prefix",
                 "ff",
                 "--suffix",
@@ -60,7 +60,23 @@
                 "--ext",
                 "fastq.gz",
                 "--os",
-                "cross_platform"
+                "unix"
+            ]
+        },
+        {
+            "name": "Debugger: fastqscatter minimal",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolderBasename}/wipertools.py",
+            "console": "integratedTerminal",
+            "args": [
+                "fastqscatter",
+                "--fastq",
+                "data/sample_R1.fastq.gz",
+                "--num_splits",
+                "3",
+                "--prefix",
+                "prefix"
             ]
         },
         {
@@ -71,14 +87,13 @@
             "console": "integratedTerminal",
             "args": [
                 "fastqgather",
-                "--in_folder",
-                "data/splits_unix",
+                "--in_fastq",
+                "data/gathered_unix.fq",
+                "data/sample_R1.fastq.gz",
                 "--out_fastq",
-                "data/gathered_unix.fastq",
-                "--prefix",
-                "ff",
+                "data/gathered_unix_final.fastq",
                 "--os",
-                "unix"
+                "cross_platform"
             ]
         }
     ]
