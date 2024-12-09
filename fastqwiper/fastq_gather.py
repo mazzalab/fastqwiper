@@ -4,7 +4,7 @@ import argparse
 import subprocess
 from pathlib import Path
 from enum import auto, Enum
-from wipertool_abstract import WiperTool
+from fastqwiper.wipertool_abstract import WiperTool
 
 
 class GatherFastq(WiperTool):
@@ -16,39 +16,44 @@ class GatherFastq(WiperTool):
         class OsEnum(Enum):
             UNIX = auto()
             CROSS_PLATFORM = auto()
-        
+
         class FastqExtEnum(Enum):
             FASTQ = auto()
             FQ = auto()
             FASTQ_GZ = auto()
             FQ_GZ = auto()
-            
+
         def files_choices(choices, fname):
             # Extract double extensions if present
             path = Path(fname)
             if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
-                ext = ''.join(path.suffixes)[1:]  # Combine the suffixes and remove the dot
+                # Combine the suffixes and remove the dot
+                ext = ''.join(path.suffixes)[1:]
             else:
                 ext = path.suffix[1:]  # Single extension
 
             if ext not in choices:
-                parser.error(f"File '{fname}' doesn't end with one of {choices}")
-                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
+                parser.error(
+                    f"File '{fname}' doesn't end with one of {choices}")
+                raise ValueError(
+                    f"File '{fname}' doesn't end with one of {choices}")
             return fname
 
         parser.add_argument(
             "-i",
             "--in_fastq",
-            nargs="+", 
-            type=lambda s:files_choices((e.name.lower().replace("_", ".") for e in FastqExtEnum),s),
+            nargs="+",
+            type=lambda s: files_choices(
+                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s),
             help="List of FASTQ files to be joined",
             required=True,
         )
         parser.add_argument(
-            "-o", 
-            "--out_fastq", 
-            type=lambda s:files_choices((e.name.lower().replace("_", ".") for e in FastqExtEnum),s), 
-            help="Name of the resulting fastq file", 
+            "-o",
+            "--out_fastq",
+            type=lambda s: files_choices(
+                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s),
+            help="Name of the resulting fastq file",
             required=True
         )
         # Optional arguments
@@ -100,8 +105,10 @@ class GatherFastq(WiperTool):
             return
 
         # Separate gzipped files from regular files
-        gz_files = [f for f in files if f.endswith("fastq.gz") or f.endswith("fq.gz")]
-        regular_files = [f for f in files if f.endswith(".fastq") or f.endswith(".fq")]
+        gz_files = [f for f in files if f.endswith(
+            "fastq.gz") or f.endswith("fq.gz")]
+        regular_files = [f for f in files if f.endswith(
+            ".fastq") or f.endswith(".fq")]
 
         try:
             if opsys == "cross_platform":
@@ -149,7 +156,8 @@ class GatherFastq(WiperTool):
             uncompressed_file = outfile.removesuffix(".gz")
 
             process_compress = subprocess.Popen(
-                f"mv {outfile} {uncompressed_file} && gzip {uncompressed_file}",
+                f"mv {outfile} {uncompressed_file} && gzip {
+                    uncompressed_file}",
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -174,8 +182,9 @@ class GatherFastq(WiperTool):
                     # Count the replacement characters
                     replacement_count = data.count("�")
                     if replacement_count > 0:
-                        print(f"Warning: File '{file_path}' contains {replacement_count} unreadable characters that were replaced.")
-                        
+                        print(f"Warning: File '{file_path}' contains {
+                              replacement_count} unreadable characters that were replaced.")
+
                     if isinstance(output_file, gzip.GzipFile):
                         # Write as bytes for gzip
                         output_file.write(data.encode())
@@ -187,7 +196,7 @@ class GatherFastq(WiperTool):
             for file_path in gz_files:
                 with gzip.open(file_path, "rb") as infile:
                     data = infile.read()
-                        
+
                     if isinstance(output_file, gzip.GzipFile):
                         # Write as bytes for gzip
                         output_file.write(data)
@@ -197,8 +206,10 @@ class GatherFastq(WiperTool):
                             decoded_data = data.decode("utf-8")
                         except UnicodeDecodeError:
                             # Gracefully handle decoding errors
-                            print(f"Warning: Decoding error in {file_path}, replacing invalid characters.")
-                            decoded_data = data.decode("utf-8", errors="replace")
+                            print(f"Warning: Decoding error in {
+                                  file_path}, replacing invalid characters.")
+                            decoded_data = data.decode(
+                                "utf-8", errors="replace")
                         output_file.write(decoded_data)
 
 

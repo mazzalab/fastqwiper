@@ -1,8 +1,8 @@
 import argparse
 import re
-from wipertool_abstract import WiperTool
-from fastq_wiper import (TOTAL_LINES, WELLFORMED, CLEAN, MISPLACED_HEADER,
-                         BAD_SEQ, BAD_PLUS, BAD_QUAL, LENGTH_SEQ_QUAL, BLANKS)
+from fastqwiper.wipertool_abstract import WiperTool
+from fastqwiper.fastq_wiper import (TOTAL_LINES, WELLFORMED, CLEAN, MISPLACED_HEADER,
+                                    BAD_SEQ, BAD_PLUS, BAD_QUAL, LENGTH_SEQ_QUAL, BLANKS)
 
 # region CONST REGEX for output
 INT_PERCENT_REGEX: str = r"\s*(?P<var>\d+)\s*\(.+\)\s*"
