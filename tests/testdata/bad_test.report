@@ -1,8 +1,9 @@
-FASTQWIPER SUMMARY:
+FASTQWIPER REPORT:
 
 Total lines: 60
 Well-formed lines: 16 (26.67%)
-Clean reads: 4Bad headers or misplaced lines: 10 (16.67%) of which 4 fixed
+Clean reads: 4
+Bad headers or misplaced lines: 10 (16.67%) of which 4 fixed
 BAD SEQ lines: 2 (3.33%)
 BAD '+' lines: 2 (3.33%)
 BAD QUAL lines: 2 (3.33%)

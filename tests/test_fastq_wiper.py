@@ -40,17 +40,18 @@ def fw_bad_fastq(fw):
 def fw_parser():
     fastq_in: str = "./tests/testdata/bad.fastq"
     fastq_out: str = "./tests/testdata/bad_wiped.fastq"
-    log_out: str = "./tests/testdata/bad.log"
+    report: str = "./tests/testdata/bad.report"
     log_frequency: int = 100
     alphabet: str = "ACGTN"
 
     return argparse.Namespace(
         fastq_in=fastq_in,
         fastq_out=fastq_out,
-        log_out=log_out,
+        report=report,
         log_frequency=log_frequency,
         alphabet=alphabet,
     )
+
 
 @pytest.fixture
 def fw_run(fw, fw_parser):
@@ -59,7 +60,7 @@ def fw_run(fw, fw_parser):
     print("\nSetting up resources...")
     with open("./tests/testdata/bad_wiped.fastq", "r") as file:
         data = file.read()
-    with open("./tests/testdata/bad.log", "r") as file_log:
+    with open("./tests/testdata/bad.report", "r") as file_log:
         data_log = file_log.read()
 
     # Execute the actual test
@@ -67,10 +68,18 @@ def fw_run(fw, fw_parser):
 
     print("\nTearing down resources...")
     os.remove("./tests/testdata/bad_wiped.fastq")
-    os.remove("./tests/testdata/bad.log")
+    os.remove("./tests/testdata/bad.report")
 
 
 def test_set_parser(fw, fw_parser):
+    with pytest.raises(ValueError):
+        fw.set_parser(fw_parser)
+    # print(f"\n{excinfo.value}")
+
+
+def test_set_parser_bad_argument_ext(fw, fw_parser):
+    fw_parser.fastq_out = "wrong_ext.txt"
+
     with pytest.raises(ValueError):
         fw.set_parser(fw_parser)
     # print(f"\n{excinfo.value}")
@@ -91,16 +100,8 @@ def test_run_wrong_filein(fw, fw_parser):
     # print(f"\n{excinfo.value}")
 
 
-def test_run_wrong_fileout(fw, fw_parser):
-    fw_parser.fastq_out = "wrong_file.txt"
-
-    with pytest.raises(ValueError):
-        fw.run(fw_parser)
-    # print(f"\n{excinfo.value}")
-
-
-def test_summary(fw_run):
-    with open("./tests/testdata/bad_test.log", "r") as file_log_test:
+def test_report(fw_run):
+    with open("./tests/testdata/bad_test.report", "r") as file_log_test:
         data_test = file_log_test.read()
 
         assert fw_run[1] == data_test

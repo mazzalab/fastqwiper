@@ -7,7 +7,7 @@ import argparse
 from enum import auto, Enum
 from pathlib import Path
 from typing import Pattern, TextIO
-from wipertool_abstract import WiperTool
+from fastqwiper.wipertool_abstract import WiperTool
 
 
 # region Variables for final report
@@ -65,6 +65,7 @@ class FastqWiper(WiperTool):
                 if ext not in choices:
                     parser.error(
                         f"File '{fname}' doesn't end with one of {choices}")
+                    raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
                 return fname
 
             parser.add_argument("-i", "--fastq_in", help="FASTQ file to be wiped", type=lambda s: file_choices(
@@ -188,7 +189,7 @@ class FastqWiper(WiperTool):
                 fastq_file_handler = codecs.open(
                     file_path, encoding="utf-8", errors="replace"
                 )
-
+        
         return fastq_file_handler
 
     def read_next_line(self, fin: TextIO, log_frequency: int) -> str:
