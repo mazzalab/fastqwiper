@@ -33,6 +33,7 @@ class GatherFastq(WiperTool):
 
             if ext not in choices:
                 parser.error(f"File '{fname}' doesn't end with one of {choices}")
+                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
             return fname
 
         parser.add_argument(

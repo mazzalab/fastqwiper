@@ -35,6 +35,7 @@ class SplitFastq(WiperTool):
             if ext not in choices:
                 parser.error(
                     f"File '{fname}' doesn't end with one of {choices}")
+                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
             return fname
 
         parser.add_argument("-f", "--fastq", type=lambda s: file_choices((e.name.lower().replace("_", ".")
