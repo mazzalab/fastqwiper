@@ -13,7 +13,7 @@ jobs:
       OS: ${{ matrix.os }}
       PYTHON: "3.10"
 
-    name: Test FastqWiper
+    name: Test Wipertools
     steps:
       - uses: actions/checkout@v4
         name: Clone repository
@@ -30,7 +30,7 @@ jobs:
 
       - name: Run tests and collect coverage
         shell: bash -el {0}
-        run: pytest --pyargs ./tests --cov-config=.coveragerc --cov=./fastqwiper --cov-report=xml
+        run: pytest --pyargs ./tests --cov-config=.coveragerc --cov=./wipertools --cov-report=xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
