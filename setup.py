@@ -12,13 +12,14 @@ setup(
     install_requires=[],
     entry_points={
         "console_scripts": [
-            "wipertools=fastqwiper.wipertools:main"
+            "wipertools=wipertools.main:main"
         ]
     },
     author="Tommaso Mazza",
     author_email="mazza.tommaso@gmail.com",
     description="A suite of programs that drop or fix pesky lines in FASTQ files and that split or merge FASTQ chunk files.",
-    long_description=open("README.md").read() if os.path.exists("README.md") else "",
+    long_description=open("README.md").read(
+    ) if os.path.exists("README.md") else "",
     long_description_content_type="text/markdown",
     url="https://github.com/mazzalab/fastqwiper",
     classifiers=[

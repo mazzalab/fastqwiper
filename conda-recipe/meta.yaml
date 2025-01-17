@@ -22,7 +22,7 @@ build:
   run_exports:
     - {{ pin_subpackage('wipertools', max_pin="x.x") }}
   entry_points:
-    - wipertools = fastqwiper.wipertools:main
+    - wipertools = wipertools.main:main
   script_env:
     - WIPERTOOLS_VERSION={{version}}
 
@@ -35,7 +35,7 @@ requirements:
 
 test:
   imports:
-    - fastqwiper
+    - wipertools
   commands:
     - wipertools --help
 

@@ -8,7 +8,8 @@
             "name": "Debugger: reportgather",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolderBasename}/wipertools.py",
+            // "program": "${workspaceFolderBasename}/wipertools.py",
+            "module": "wipertools.main",
             "console": "integratedTerminal",
             "args": [
                 "reportgather",
@@ -23,8 +24,9 @@
             "name": "Debugger: fastqwiper",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolderBasename}/wipertools.py",
             "console": "integratedTerminal",
+            // "program": "${workspaceFolder}/wipertools/main.py",
+            "module": "wipertools.main",
             "args": [
                 "fastqwiper",
                 "--fastq_in",
@@ -43,14 +45,15 @@
             "name": "Debugger: fastqscatter",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolderBasename}/wipertools.py",
+            // "program": "${workspaceFolderBasename}/wipertools.py",
+            "module": "wipertools.main",
             "console": "integratedTerminal",
             "args": [
                 "fastqscatter",
                 "--fastq",
-                "data/gathered_unix.fastq.gz",
+                "data/test2_1.fastq.gz",
                 "--num_splits",
-                "3",
+                "2",
                 "--out_folder",
                 "./data/splits_unix",
                 "--prefix",
@@ -60,14 +63,15 @@
                 "--ext",
                 "fastq.gz",
                 "--os",
-                "unix"
+                "cross_platform"
             ]
         },
         {
             "name": "Debugger: fastqscatter minimal",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolderBasename}/wipertools.py",
+            // "program": "${workspaceFolderBasename}/wipertools.py",
+            "module": "wipertools.main",
             "console": "integratedTerminal",
             "args": [
                 "fastqscatter",
@@ -83,7 +87,8 @@
             "name": "Debugger: fastqgather",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolderBasename}/wipertools.py",
+            // "program": "${workspaceFolderBasename}/wipertools.py",
+            "module": "wipertools.main",
             "console": "integratedTerminal",
             "args": [
                 "fastqgather",

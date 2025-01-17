@@ -1,13 +1,10 @@
 import argparse
 import json
-import os.path
-from fastqwiper.report_gather import GatherReport
-from fastqwiper.fastq_scatter import SplitFastq
-from fastqwiper.fastq_wiper import FastqWiper
-from fastqwiper.fastq_gather import GatherFastq
-
-# sys.path.insert(0, os.path.abspath(
-#     os.path.join(os.path.dirname(__file__), "..")))
+import os
+from wipertools.fastq_gather import GatherFastq
+from wipertools.fastq_wiper import FastqWiper
+from wipertools.fastq_scatter import SplitFastq
+from wipertools.report_gather import GatherReport
 
 
 def main():

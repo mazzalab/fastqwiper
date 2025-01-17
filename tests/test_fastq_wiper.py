@@ -5,7 +5,7 @@ import argparse
 from typing import Pattern
 from io import TextIOWrapper
 from codecs import StreamReaderWriter
-from fastqwiper.fastq_wiper import FastqWiper
+from wipertools.fastq_wiper import FastqWiper
 
 
 @pytest.fixture
