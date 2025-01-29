@@ -24,24 +24,19 @@ class SplitFastq(WiperTool):
             FQ_GZ = auto()
 
         def file_choices(choices, fname):
-            # Extract double extensions if present
-            path = Path(fname)
-            if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
-                # Combine the suffixes and remove the dot
-                ext = "".join(path.suffixes)[1:]
+            if fname.lower().endswith(tuple(choices)):
+                return fname
             else:
-                ext = path.suffix[1:]  # Single extension
-
-            if ext not in choices:
-                parser.error(f"File '{fname}' doesn't end with one of {choices}")
-                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
-            return fname
+                parser.error(f"File '{fname}' doesn't end with one of [{
+                             ", ".join(choices)}]")
+                raise ValueError(f"File '{fname}' doesn't end with one of [{
+                                 ", ".join(choices)}]")
 
         parser.add_argument(
             "-f",
             "--fastq",
             type=lambda s: file_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s
+                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
             ),
             help="The FASTQ file to be split",
             required=True,
@@ -114,9 +109,11 @@ class SplitFastq(WiperTool):
                         fastq, splits, prefix, suffix, ext, out_folder
                     )
                 else:
-                    self.split_on_unix(fastq, splits, prefix, suffix, ext, out_folder)
+                    self.split_on_unix(fastq, splits, prefix,
+                                       suffix, ext, out_folder)
             else:
-                print(f"The destination folder ({out_folder}) is not empty. Aborted!")
+                print(f"The destination folder ({
+                      out_folder}) is not empty. Aborted!")
 
         except PermissionError:
             print(f"Permission denied: Unable to create '{out_folder}'.")
@@ -157,29 +154,35 @@ class SplitFastq(WiperTool):
             total_lines = int(stdout.strip())
             # add 1 if the division produces a nonzero remainder. This has the benefit of not introducing floating-point
             # imprecision, so it'll be correct in extreme cases where math.ceil produces the wrong answer.
-            lines_per_split = total_lines // splits + bool(total_lines % splits)
+            lines_per_split = total_lines // splits + \
+                bool(total_lines % splits)
 
             if ext == "fastq.gz" or ext == "fq.gz":
                 command = (
                     f"gzip -dc {file_path} | "
-                    f"split -d -a3 -l {lines_per_split} --additional-suffix={formatted_suffix}.fastq "
+                    f"split -d -a3 -l {lines_per_split} --additional-suffix={
+                        formatted_suffix}.fastq "
                     f"--filter='gzip > $FILE.gz' - {out_folder}/{prefix}_"
                 )
             else:
                 command = (
                     f"gzip -dc {file_path} | "
-                    f"split -d -a3 -l {lines_per_split} --additional-suffix={formatted_suffix}.fastq "
+                    f"split -d -a3 -l {lines_per_split} --additional-suffix={
+                        formatted_suffix}.fastq "
                     f"- {out_folder}/{prefix}_"
                 )
         else:
             if ext == "fastq.gz" or ext == "fq.gz":
                 command = (
-                    f"split -d -a3 -n {splits} --additional-suffix={formatted_suffix}.fastq "
-                    f"--filter='gzip > $FILE.gz' {file_path} {out_folder}/{prefix}_"
+                    f"split -d -a3 -n {splits} --additional-suffix={
+                        formatted_suffix}.fastq "
+                    f"--filter='gzip > $FILE.gz' {
+                        file_path} {out_folder}/{prefix}_"
                 )
             else:
                 command = (
-                    f"split -d -a3 -n {splits} --additional-suffix={formatted_suffix}.fastq "
+                    f"split -d -a3 -n {splits} --additional-suffix={
+                        formatted_suffix}.fastq "
                     f"{file_path} {out_folder}/{prefix}_"
                 )
 
