@@ -2,7 +2,6 @@ import os
 import gzip
 import argparse
 import subprocess
-from pathlib import Path
 from enum import auto, Enum
 from wipertools.wipertool_abstract import WiperTool
 
@@ -23,26 +22,12 @@ class GatherFastq(WiperTool):
             FASTQ_GZ = auto()
             FQ_GZ = auto()
 
-        def files_choices(choices, fname):
-            # Extract double extensions if present
-            path = Path(fname)
-            if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
-                # Combine the suffixes and remove the dot
-                ext = "".join(path.suffixes)[1:]
-            else:
-                ext = path.suffix[1:]  # Single extension
-
-            if ext not in choices:
-                parser.error(f"File '{fname}' doesn't end with one of {choices}")
-                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
-            return fname
-
         parser.add_argument(
             "-i",
             "--in_fastq",
             nargs="+",
-            type=lambda s: files_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s
+            type=lambda s: WiperTool.file_choices(
+                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
             ),
             help="List of FASTQ files to be joined",
             required=True,
@@ -50,8 +35,8 @@ class GatherFastq(WiperTool):
         parser.add_argument(
             "-o",
             "--out_fastq",
-            type=lambda s: files_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s
+            type=lambda s: WiperTool.file_choices(
+                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
             ),
             help="Name of the resulting fastq file",
             required=True,

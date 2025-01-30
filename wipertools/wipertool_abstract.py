@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from argparse import Namespace
+from argparse import Namespace, ArgumentTypeError
 import json
 import os
 
@@ -16,11 +16,12 @@ class WiperTool(ABC):
         with open(versions_file_path) as f:
             self.config = json.load(f)
 
-    def file_choices(self, choices, fname):
+    @staticmethod
+    def file_choices(choices: list[str], fname: str) -> str:
         if fname.lower().endswith(tuple(choices)):
             return fname
         else:
-            raise ValueError(
+            raise ArgumentTypeError(
                 f"File '{fname}' doesn't end with one of [{", ".join(choices)}]")
 
     def version(self):

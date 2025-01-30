@@ -53,26 +53,10 @@ class FastqWiper(WiperTool):
                 FASTQ_GZ = auto()
                 FQ_GZ = auto()
 
-            def file_choices(choices, fname):
-                # Extract double extensions if present
-                path = Path(fname)
-                if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
-                    # Combine the suffixes and remove the dot
-                    ext = ''.join(path.suffixes)[1:]
-                else:
-                    ext = path.suffix[1:]  # Single extension
-
-                if ext not in choices:
-                    parser.error(
-                        f"File '{fname}' doesn't end with one of {choices}")
-                    raise ValueError(
-                        f"File '{fname}' doesn't end with one of {choices}")
-                return fname
-
-            parser.add_argument("-i", "--fastq_in", help="FASTQ file to be wiped", type=lambda s: file_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s), required=True)
-            parser.add_argument("-o", "--fastq_out", type=lambda s: file_choices((e.name.lower(
-            ).replace("_", ".") for e in FastqExtEnum), s), help="Wiped FASTQ file", required=True)
+            parser.add_argument("-i", "--fastq_in", help="FASTQ file to be wiped", type=lambda s: WiperTool.file_choices(
+                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s), required=True)
+            parser.add_argument("-o", "--fastq_out", type=lambda s: WiperTool.file_choices([e.name.lower(
+            ).replace("_", ".") for e in FastqExtEnum], s), help="Wiped FASTQ file", required=True)
 
             # Optional arguments
             parser.add_argument("-r", "--report", nargs="?",

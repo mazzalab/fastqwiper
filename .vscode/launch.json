@@ -51,7 +51,7 @@
             "args": [
                 "fastqscatter",
                 "--fastq",
-                //"data/test2_1.fastq.gz",
+                // "data/sample_R1.fastq.gz",
                 "data/a.b.ba1.fastq.gs",
                 "--num_splits",
                 "2",
