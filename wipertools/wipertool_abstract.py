@@ -22,7 +22,7 @@ class WiperTool(ABC):
             return fname
         else:
             raise ArgumentTypeError(
-                f"File '{fname}' doesn't end with one of [{", ".join(choices)}]")
+                f"File '{fname}' doesn't end with one of [{', '.join(choices)}]")
 
     def version(self):
         return self.config.get(self.name, "")
