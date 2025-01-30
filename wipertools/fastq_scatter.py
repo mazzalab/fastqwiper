@@ -23,24 +23,28 @@ class SplitFastq(WiperTool):
             FASTQ_GZ = auto()
             FQ_GZ = auto()
 
-        def file_choices(choices, fname):
-            if fname.lower().endswith(tuple(choices)):
-                return fname
-            else:
-                parser.error(f"File '{fname}' doesn't end with one of [{
-                             ", ".join(choices)}]")
-                raise ValueError(f"File '{fname}' doesn't end with one of [{
-                                 ", ".join(choices)}]")
+        # def file_choices(choices, fname):
+        #     if fname.lower().endswith(tuple(choices)):
+        #         return fname
+        #     else:
+        #         parser.error(f"File '{fname}' doesn't end with one of [{
+        #                      ", ".join(choices)}]")
+        #         raise ValueError(f"File '{fname}' doesn't end with one of [{
+        #                          ", ".join(choices)}]")
 
-        parser.add_argument(
-            "-f",
-            "--fastq",
-            type=lambda s: file_choices(
-                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
-            ),
-            help="The FASTQ file to be split",
-            required=True,
-        )
+        try:
+            parser.add_argument(
+                "-f",
+                "--fastq",
+                type=lambda s: self.file_choices(
+                    [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
+                ),
+                help="The FASTQ file to be split",
+                required=True,
+            )
+        except:
+            print(f"Errorssss: {e}")
+
         parser.add_argument(
             "-n", "--num_splits", type=int, help="Number of splits", required=True
         )
