@@ -1,4 +1,5 @@
 import re
+import logging
 import argparse
 from wipertools.wipertool_abstract import WiperTool
 from wipertools.fastq_wiper import (
@@ -25,23 +26,34 @@ RECOVERED_HEADER: str = ""
 class GatherReport(WiperTool):
     def __init__(self):
         super().__init__("reportgather")
+        logging.basicConfig(level=logging.DEBUG)
 
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
-        parser.add_argument(
-            "-r", "--reports", nargs="+", help="List of report files", required=True
-        )
-        parser.add_argument(
-            "-f", "--final_report", help="The final report file", required=True
-        )
-        # Add a version flag that prints the version and exits
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version=self.version(),
-            help="It prints the version and exists",
-        )
+        if isinstance(parser, argparse.ArgumentParser):
+            parser.add_argument(
+                "-r", "--reports", nargs="+", help="List of report files", required=True
+            )
+            parser.add_argument(
+                "-f", "--final_report", help="The final report file", required=True
+            )
+            # Add a version flag that prints the version and exits
+            parser.add_argument(
+                "-v",
+                "--version",
+                action="version",
+                version=self.version(),
+                help="It prints the version and exists",
+            )
+        else:
+            logging.critical(
+                " Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
+            raise ValueError(
+                "Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
 
     def run(self, argv: argparse.Namespace):
         report_filepaths = argv.reports
@@ -80,6 +92,9 @@ class GatherReport(WiperTool):
                 f"{BLANKS}: {final_report[BLANKS]} ({round((final_report[BLANKS] / final_report[TOTAL_LINES]) * 100, 2)}%)"
                 + "\n"
             )
+        
+        logging.info(f"Final report written to {final_report_filepath}")
+        
 
     # Utility methods and properties
     @staticmethod
@@ -95,6 +110,7 @@ class GatherReport(WiperTool):
                     if m:
                         data[TOTAL_LINES] = int(m.group("var"))
                     else:
+                        logging.critical(f"TOT_LINES match failed for line: {right}")
                         raise ValueError(f"TOT_LINES match failed for line: {right}")
                 elif line.startswith(WELLFORMED):
                     right = line.split(":")[1]
@@ -102,6 +118,7 @@ class GatherReport(WiperTool):
                     if m:
                         data[WELLFORMED] = int(m.group("var"))
                     else:
+                        logging.critical(f"WELLFORMED match failed for line: {right}")
                         raise ValueError(f"WELLFORMED match failed for line: {right}")
                 elif line.startswith(CLEAN):
                     right = line.split(":")[1]
@@ -109,6 +126,7 @@ class GatherReport(WiperTool):
                     if m:
                         data[CLEAN] = int(m.group("var"))
                     else:
+                        logging.critical(f"CLEAN match failed for line: {right}")
                         raise ValueError(f"CLEAN match failed for line: {right}")
                 elif line.startswith(MISPLACED_HEADER):
                     right = line.split(":")[1]
@@ -117,15 +135,15 @@ class GatherReport(WiperTool):
                         data[MISPLACED_HEADER] = int(m.group("var"))
                         data[RECOVERED_HEADER] = int(m.group("var2"))
                     else:
-                        raise ValueError(
-                            f"MISPLACED_HEADER and RECOVERED_HEADER match failed for line: {right}"
-                        )
+                        logging.critical(f"MISPLACED_HEADER and RECOVERED_HEADER match failed for line: {right}")
+                        raise ValueError(f"MISPLACED_HEADER and RECOVERED_HEADER match failed for line: {right}")
                 elif line.startswith(BAD_SEQ):
                     right = line.split(":")[1]
                     m = re.match(INT_PERCENT_REGEX, right)
                     if m:
                         data[BAD_SEQ] = int(m.group("var"))
                     else:
+                        logging.critical(f"BAD_SEQ match failed for line: {right}")
                         raise ValueError(f"BAD_SEQ match failed for line: {right}")
                 elif line.startswith(BAD_PLUS):
                     right = line.split(":")[1]
@@ -133,6 +151,7 @@ class GatherReport(WiperTool):
                     if m:
                         data[BAD_PLUS] = int(m.group("var"))
                     else:
+                        logging.critical(f"BAD_PLUS match failed for line: {right}")
                         raise ValueError(f"BAD_PLUS match failed for line: {right}")
                 elif line.startswith(BAD_QUAL):
                     right = line.split(":")[1]
@@ -140,6 +159,7 @@ class GatherReport(WiperTool):
                     if m:
                         data[BAD_QUAL] = int(m.group("var"))
                     else:
+                        logging.critical(f"BAD_QUAL match failed for line: {right}")
                         raise ValueError(f"BAD_QUAL match failed for line: {right}")
                 elif line.startswith(LENGTH_SEQ_QUAL):
                     right = line.split(":")[1]
@@ -147,15 +167,15 @@ class GatherReport(WiperTool):
                     if m:
                         data[LENGTH_SEQ_QUAL] = int(m.group("var"))
                     else:
-                        raise ValueError(
-                            f"LENGTH_SEQ_QUAL match failed for line: {right}"
-                        )
+                        logging.critical(f"LENGTH_SEQ_QUAL match failed for line: {right}")
+                        raise ValueError(f"LENGTH_SEQ_QUAL match failed for line: {right}")
                 elif line.startswith(BLANKS):
                     right = line.split(":")[1]
                     m = re.match(INT_PERCENT_REGEX, right)
                     if m:
                         data[BLANKS] = int(m.group("var"))
                     else:
+                        logging.critical(f"BLANKS match failed for line: {right}")
                         raise ValueError(f"BLANKS match failed for line: {right}")
 
             return data

@@ -45,12 +45,7 @@ def main():
     rg.set_parser(rg_parser)
 
     # Process command-line arguments and parse them
-    try:
-        args = parser.parse_args()
-    except ValueError as e:
-        print(f"Error: {e}")
-    except Exception as ex:
-        print(f"GENERAL ERROR: {ex}")
+    args = parser.parse_args()
 
     if args.selected_subparser == "fastqwiper":
         fw.run(args)

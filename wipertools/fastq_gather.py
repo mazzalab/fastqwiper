@@ -1,8 +1,8 @@
 import os
 import gzip
+import logging
 import argparse
 import subprocess
-from pathlib import Path
 from enum import auto, Enum
 from wipertools.wipertool_abstract import WiperTool
 
@@ -10,76 +10,74 @@ from wipertools.wipertool_abstract import WiperTool
 class GatherFastq(WiperTool):
     def __init__(self):
         super().__init__("fastqgather")
+        logging.basicConfig(level=logging.DEBUG)
 
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
-        class OsEnum(Enum):
-            UNIX = auto()
-            CROSS_PLATFORM = auto()
+        if isinstance(parser, argparse.ArgumentParser):
+            
+            class OsEnum(Enum):
+                UNIX = auto()
+                CROSS_PLATFORM = auto()
 
-        class FastqExtEnum(Enum):
-            FASTQ = auto()
-            FQ = auto()
-            FASTQ_GZ = auto()
-            FQ_GZ = auto()
+            class FastqExtEnum(Enum):
+                FASTQ = auto()
+                FQ = auto()
+                FASTQ_GZ = auto()
+                FQ_GZ = auto()
 
-        def files_choices(choices, fname):
-            # Extract double extensions if present
-            path = Path(fname)
-            if len(path.suffixes) == 2:  # Handle double extensions like ".fastq.gz"
-                # Combine the suffixes and remove the dot
-                ext = "".join(path.suffixes)[1:]
-            else:
-                ext = path.suffix[1:]  # Single extension
-
-            if ext not in choices:
-                parser.error(f"File '{fname}' doesn't end with one of {choices}")
-                raise ValueError(f"File '{fname}' doesn't end with one of {choices}")
-            return fname
-
-        parser.add_argument(
-            "-i",
-            "--in_fastq",
-            nargs="+",
-            type=lambda s: files_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s
-            ),
-            help="List of FASTQ files to be joined",
-            required=True,
-        )
-        parser.add_argument(
-            "-o",
-            "--out_fastq",
-            type=lambda s: files_choices(
-                (e.name.lower().replace("_", ".") for e in FastqExtEnum), s
-            ),
-            help="Name of the resulting fastq file",
-            required=True,
-        )
-        # Optional arguments
-        parser.add_argument(
-            "-p",
-            "--prefix",
-            nargs="?",
-            help="Prefix common to the files to be joined",
-            required=False,
-        )
-        parser.add_argument(
-            "-O",
-            "--os",
-            help="Underlying OS (Default: %(default)s)",
-            default="cross_platform",
-            choices=[e.name.lower() for e in OsEnum],
-            required=False,
-        )
-        # Add a version flag that prints the version and exits
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version=self.version(),
-            help="Print the version and exits",
-        )
+            parser.add_argument(
+                "-i",
+                "--in_fastq",
+                nargs="+",
+                type=lambda s: WiperTool.file_choices(
+                    [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
+                ),
+                help="List of FASTQ files to be joined",
+                required=True,
+            )
+            parser.add_argument(
+                "-o",
+                "--out_fastq",
+                type=lambda s: WiperTool.file_choices(
+                    [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
+                ),
+                help="Name of the resulting fastq file",
+                required=True,
+            )
+            # Optional arguments
+            parser.add_argument(
+                "-p",
+                "--prefix",
+                nargs="?",
+                help="Prefix common to the files to be joined",
+                required=False,
+            )
+            parser.add_argument(
+                "-O",
+                "--os",
+                help="Underlying OS (Default: %(default)s)",
+                default="cross_platform",
+                choices=[e.name.lower() for e in OsEnum],
+                required=False,
+            )
+            # Add a version flag that prints the version and exits
+            parser.add_argument(
+                "-v",
+                "--version",
+                action="version",
+                version=self.version(),
+                help="Print the version and exits",
+            )
+        else:
+            logging.critical(
+                " Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
+            raise ValueError(
+                "Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
 
     def run(self, argv: argparse.Namespace):
         in_fastq: list[str] = argv.in_fastq
@@ -104,7 +102,7 @@ class GatherFastq(WiperTool):
         )
 
         if not files:
-            print(f"No files with prefix {prefix}.")
+            logging.critical(f"No files with prefix {prefix}.")
             return
 
         # Separate gzipped files from regular files
@@ -121,9 +119,9 @@ class GatherFastq(WiperTool):
                     " ".join(regular_files), " ".join(gz_files), output_file
                 )
 
-            print("Files concatenated successfully.")
+            logging.info("Files concatenated successfully.")
         except Exception as e:
-            print(f"Error while concatenating files: {e}")
+            logging.critical(f"Error while concatenating files: {e}")
 
     @staticmethod
     def __concat_unix(regular_files: str, gz_files: str, outfile: str):
@@ -138,7 +136,7 @@ class GatherFastq(WiperTool):
             stdout, stderr = process_regular.communicate()
 
             if process_regular.returncode != 0:
-                print(f"Error occurred: {stderr.decode()}")
+                logging.critical(f"Error occurred: {stderr.decode()}")
 
         if gz_files:
             process_gzip = subprocess.Popen(
@@ -151,7 +149,7 @@ class GatherFastq(WiperTool):
             stdout, stderr = process_gzip.communicate()
 
             if process_gzip.returncode != 0:
-                print(f"Error occurred: {stderr.decode()}")
+                logging.critical(f"Error occurred: {stderr.decode()}")
 
         if outfile.endswith(".gz"):
             uncompressed_file = outfile.removesuffix(".gz")
@@ -166,7 +164,7 @@ class GatherFastq(WiperTool):
             stdout, stderr = process_compress.communicate()
 
             if process_compress.returncode != 0:
-                print(f"Error occurred: {stderr.decode()}")
+                logging.critical(f"Error occurred: {stderr.decode()}")
 
     @staticmethod
     def __concat_cross_platform(regular_files, gz_files, outfile: str):
@@ -182,7 +180,7 @@ class GatherFastq(WiperTool):
                     # Count the replacement characters
                     replacement_count = data.count("�")
                     if replacement_count > 0:
-                        print(f"Warning: File '{file_path}' contains {replacement_count} unreadable characters that were replaced.")
+                        logging.warning(f"Warning: File '{file_path}' contains {replacement_count} unreadable characters that were replaced.")
 
                     if isinstance(output_file, gzip.GzipFile):
                         # Write as bytes for gzip
@@ -205,7 +203,7 @@ class GatherFastq(WiperTool):
                             decoded_data = data.decode("utf-8")
                         except UnicodeDecodeError:
                             # Gracefully handle decoding errors
-                            print(f"Warning: Decoding error in {file_path}, replacing invalid characters.")
+                            logging.warning(f"Warning: Decoding error in {file_path}, replacing invalid characters.")
                             decoded_data = data.decode("utf-8", errors="replace")
                         output_file.write(decoded_data)
 

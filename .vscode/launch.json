@@ -30,7 +30,7 @@
             "args": [
                 "fastqwiper",
                 "--fastq_in",
-                "data/gathered_unix.fastq.gz",
+                "data/gathered_unix_final.fastq",
                 "--fastq_out",
                 "data/gathered_unix_wiped.fq.gz",
                 "-f",
@@ -51,8 +51,8 @@
             "args": [
                 "fastqscatter",
                 "--fastq",
-                //"data/test2_1.fastq.gz",
-                "data/a.b.ba1.fastq.gs",
+                "data/sample_R1.fastq.gz",
+                // "data/a.b.ba1.fastq.gs",
                 "--num_splits",
                 "2",
                 "--out_folder",
@@ -94,7 +94,7 @@
             "args": [
                 "fastqgather",
                 "--in_fastq",
-                "data/gathered_unix.fq",
+                "data/sample_R2.fastq.gz",
                 "data/sample_R1.fastq.gz",
                 "--out_fastq",
                 "data/gathered_unix_final.fastq",
