@@ -5,7 +5,6 @@ import codecs
 import logging
 import argparse
 from enum import auto, Enum
-from pathlib import Path
 from typing import Pattern, TextIO
 from wipertools.wipertool_abstract import WiperTool
 
@@ -90,9 +89,7 @@ class FastqWiper(WiperTool):
             logging.critical(
                 f" {fastq_in} does not exist or is not a file"
             )
-            raise ValueError(
-                f"{fastq_in} does not exist or is not a file"
-            )
+            raise ValueError(f" {fastq_in} does not exist or is not a file")
 
         else:
             logging.info(f" Start wiping {fastq_in}")

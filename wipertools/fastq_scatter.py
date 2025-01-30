@@ -1,5 +1,6 @@
 import os
 import gzip
+import logging
 import argparse
 import subprocess
 from enum import auto, Enum
@@ -9,76 +10,88 @@ from wipertools.wipertool_abstract import WiperTool
 class SplitFastq(WiperTool):
     def __init__(self):
         super().__init__("fastqscatter")
+        logging.basicConfig(level=logging.DEBUG)
 
     # Inherited methods
     def set_parser(self, parser: argparse.ArgumentParser):
-        class OsEnum(Enum):
-            UNIX = auto()
-            CROSS_PLATFORM = auto()
+        if isinstance(parser, argparse.ArgumentParser):
+            
+            class OsEnum(Enum):
+                UNIX = auto()
+                CROSS_PLATFORM = auto()
 
-        class FastqExtEnum(Enum):
-            FASTQ = auto()
-            FQ = auto()
-            FASTQ_GZ = auto()
-            FQ_GZ = auto()
+            class FastqExtEnum(Enum):
+                FASTQ = auto()
+                FQ = auto()
+                FASTQ_GZ = auto()
+                FQ_GZ = auto()
 
-        parser.add_argument(
-            "-f",
-            "--fastq",
-            type=lambda s: WiperTool.file_choices(
-                [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
-            ),
-            help="The FASTQ file to be split",
-            required=True,
-        )
-        parser.add_argument(
-            "-n", "--num_splits", type=int, help="Number of splits", required=True
-        )
-        parser.add_argument(
-            "-p",
-            "--prefix",
-            help="The prefix of the names of the split files",
-            required=True,
-        )
-        # Optional arguments
-        parser.add_argument(
-            "-s",
-            "--suffix",
-            nargs="?",
-            help="The suffix of the names of the split files",
-            required=False,
-        )
-        parser.add_argument(
-            "-e",
-            "--ext",
-            help="The extension of the split files",
-            default="fastq.gz",
-            choices=[e.name.lower().replace("_", ".") for e in FastqExtEnum],
-            required=False,
-        )
-        parser.add_argument(
-            "-o",
-            "--out_folder",
-            help="The folder name where to put the splits",
-            default=os.path.join(os.getcwd(), "chunks"),
-            required=False,
-        )
-        parser.add_argument(
-            "-O",
-            "--os",
-            help="Underlying OS (Default: %(default)s)",
-            default="cross_platform",
-            choices=[e.name.lower() for e in OsEnum],
-            required=False,
-        )
-        # Add a version flag that prints the version and exits
-        parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version=self.version(),
-            help="Print the version and exit",
-        )
+            parser.add_argument(
+                "-f",
+                "--fastq",
+                type=lambda s: WiperTool.file_choices(
+                    [e.name.lower().replace("_", ".") for e in FastqExtEnum], s
+                ),
+                help="The FASTQ file to be split",
+                required=True,
+            )
+            parser.add_argument(
+                "-n", "--num_splits", type=int, help="Number of splits", required=True
+            )
+            parser.add_argument(
+                "-p",
+                "--prefix",
+                help="The prefix of the names of the split files",
+                required=True,
+            )
+            # Optional arguments
+            parser.add_argument(
+                "-s",
+                "--suffix",
+                nargs="?",
+                help="The suffix of the names of the split files",
+                required=False,
+            )
+            parser.add_argument(
+                "-e",
+                "--ext",
+                help="The extension of the split files",
+                default="fastq.gz",
+                choices=[e.name.lower().replace("_", ".") for e in FastqExtEnum],
+                required=False,
+            )
+            parser.add_argument(
+                "-o",
+                "--out_folder",
+                help="The folder name where to put the splits",
+                default=os.path.join(os.getcwd(), "chunks"),
+                required=False,
+            )
+            parser.add_argument(
+                "-O",
+                "--os",
+                help="Underlying OS (Default: %(default)s)",
+                default="cross_platform",
+                choices=[e.name.lower() for e in OsEnum],
+                required=False,
+            )
+            # Add a version flag that prints the version and exits
+            parser.add_argument(
+                "-v",
+                "--version",
+                action="version",
+                version=self.version(),
+                help="Print the version and exit",
+            )
+        else:
+            logging.critical(
+                " Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
+            raise ValueError(
+                "Incorrect parser. set_parser accepts an instance of "
+                + f"argparse.Namespace. Passed: {parser}"
+            )
 
     def run(self, argv: argparse.Namespace):
         fastq: str = argv.fastq
@@ -102,13 +115,12 @@ class SplitFastq(WiperTool):
                     self.split_on_unix(fastq, splits, prefix,
                                        suffix, ext, out_folder)
             else:
-                print(f"The destination folder ({
-                      out_folder}) is not empty. Aborted!")
+                logging.critical(f" The destination folder ({out_folder}) is not empty. Aborted!")
 
         except PermissionError:
-            print(f"Permission denied: Unable to create '{out_folder}'.")
+            logging.critical(f"Permission denied: Unable to create '{out_folder}'.")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logging.critical(f"An error occurred: {e}")
 
     # Utility methods and properties
     @staticmethod
@@ -137,6 +149,7 @@ class SplitFastq(WiperTool):
             stdout, stderr = process.communicate()
 
             if process.returncode != 0:
+                logging.critical(f"Error calculating line count: {stderr.decode().strip()}")
                 raise RuntimeError(
                     f"Error calculating line count: {stderr.decode().strip()}"
                 )
@@ -186,12 +199,12 @@ class SplitFastq(WiperTool):
             stdout, stderr = process.communicate()
 
             if process.returncode == 0:
-                print("Split operation completed successfully.")
+                logging.info("Split operation completed successfully.")
             else:
-                print(f"Error occurred: {stderr.decode()}")
+                logging.critical(f"Error occurred: {stderr.decode()}")
 
         except Exception as e:
-            print(f"Exception occurred: {e}")
+            logging.critical(f"Exception occurred: {e}")
 
     @staticmethod
     def split_cross_platform(
@@ -235,7 +248,7 @@ class SplitFastq(WiperTool):
                             split_file.write(line)  # Write as a string
                         i += 1
 
-        print("Split operation completed successfully.")
+        logging.info("Split operation completed successfully.")
 
 
 if __name__ == "__main__":
